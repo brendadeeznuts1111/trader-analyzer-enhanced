@@ -1,5 +1,5 @@
 # Bun Configuration File
-# https://bun.sh/docs/runtime/bunfig
+# https://bun.com/docs/runtime/bunfig [#REF:BUN-BUNFIG]
 
 [build]
 root = "."

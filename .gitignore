@@ -16,6 +16,10 @@ package-lock.json
 /out/
 /build
 
+# ============ Build Output ============
+/dist/
+/dist-worker/
+
 # ============ Testing ============
 /coverage
 
