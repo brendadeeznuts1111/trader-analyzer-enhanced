@@ -6,6 +6,7 @@
 
 interface Env {
   ORCA_MOCK_CACHE: KVNamespace;
+  ORCA_FEED_HUB: DurableObjectNamespace;
 }
 
 // CRC32 implementation for ETag checksums
@@ -24,6 +25,188 @@ function crc32(str: string): string {
     crc = table[(crc ^ str.charCodeAt(i)) & 0xff] ^ (crc >>> 8);
   }
   return ((crc ^ 0xffffffff) >>> 0).toString(16).padStart(8, '0');
+}
+
+// FeedHub Durable Object for WebSocket state management
+export class FeedHub {
+  state: DurableObjectState;
+  clients: Map<WebSocket, { key: string; lastSeen: number; subscribed: boolean }>;
+
+  constructor(state: DurableObjectState) {
+    this.state = state;
+    this.clients = new Map();
+  }
+
+  async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+
+    if (url.pathname === '/ws') {
+      const upgradeHeader = request.headers.get('Upgrade');
+      if (upgradeHeader !== 'websocket') {
+        return new Response('Expected Upgrade: websocket', { status: 426 });
+      }
+
+      const key = url.searchParams.get('key') || 'anonymous';
+
+      // Accept the WebSocket
+      const webSocketPair = new WebSocketPair();
+      const client = webSocketPair[0];
+      const server = webSocketPair[1];
+
+      // Handle WebSocket on the server side
+      server.accept();
+
+      // Add client to our map
+      this.clients.set(server, {
+        key,
+        lastSeen: Date.now(),
+        subscribed: true,
+      });
+
+      // Send welcome message
+      server.send(
+        JSON.stringify({
+          type: 'subscribed',
+          key,
+          timestamp: Date.now(),
+          message: 'Connected to ORCA Feed Hub',
+        })
+      );
+
+      // Handle messages
+      server.addEventListener('message', event => {
+        try {
+          const data = JSON.parse(event.data as string);
+
+          if (data.type === 'ping') {
+            // Update last seen
+            const client = this.clients.get(server);
+            if (client) {
+              client.lastSeen = Date.now();
+            }
+            server.send(JSON.stringify({ type: 'pong', timestamp: Date.now() }));
+          }
+        } catch (error) {
+          console.error('WebSocket message error:', error);
+        }
+      });
+
+      server.addEventListener('close', () => {
+        this.clients.delete(server);
+      });
+
+      server.addEventListener('error', error => {
+        console.error('WebSocket error:', error);
+        this.clients.delete(server);
+      });
+
+      return new Response(null, {
+        status: 101,
+        webSocket: client,
+      });
+    }
+
+    return new Response('Not found', { status: 404 });
+  }
+
+  async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+
+    if (url.pathname === '/ws') {
+      const upgradeHeader = request.headers.get('Upgrade');
+      if (upgradeHeader !== 'websocket') {
+        return new Response('Expected Upgrade: websocket', { status: 426 });
+      }
+
+      const key = url.searchParams.get('key') || 'anonymous';
+      const [client, server] = Object.values(new WebSocketPair());
+
+      // Handle WebSocket messages
+      server.addEventListener('message', event => {
+        try {
+          const data = JSON.parse(event.data as string);
+
+          if (data.type === 'subscribe') {
+            // Subscribe client to feed
+            this.clients.set(server, {
+              key,
+              lastSeen: Date.now(),
+              subscribed: true,
+            });
+
+            // Send welcome message with current state
+            server.send(
+              JSON.stringify({
+                type: 'subscribed',
+                key,
+                timestamp: Date.now(),
+                message: 'Connected to ORCA Feed Hub',
+              })
+            );
+          } else if (data.type === 'ping') {
+            // Update last seen
+            const client = this.clients.get(server);
+            if (client) {
+              client.lastSeen = Date.now();
+            }
+            server.send(JSON.stringify({ type: 'pong', timestamp: Date.now() }));
+          }
+        } catch (error) {
+          console.error('WebSocket message error:', error);
+        }
+      });
+
+      server.addEventListener('close', () => {
+        this.clients.delete(server);
+      });
+
+      server.addEventListener('error', error => {
+        console.error('WebSocket error:', error);
+        this.clients.delete(server);
+      });
+
+      return new Response(null, {
+        status: 101,
+        webSocket: client,
+      });
+    }
+
+    return new Response('Not found', { status: 404 });
+  }
+
+  // Broadcast delta to all subscribed clients
+  async broadcastDelta(delta: any) {
+    const message = JSON.stringify({
+      type: 'delta',
+      changes: delta.changes || [],
+      checksum: delta.checksum || crc32(JSON.stringify(delta)),
+      timestamp: Date.now(),
+    });
+
+    let sent = 0;
+    for (const [ws, client] of this.clients) {
+      if (client.subscribed && ws.readyState === WebSocket.OPEN) {
+        try {
+          ws.send(message);
+          sent++;
+        } catch (error) {
+          console.error('Broadcast error:', error);
+          this.clients.delete(ws);
+        }
+      }
+    }
+
+    return sent;
+  }
+
+  // Get connection stats
+  getStats() {
+    return {
+      connections: this.clients.size,
+      subscribed: Array.from(this.clients.values()).filter(c => c.subscribed).length,
+      timestamp: Date.now(),
+    };
+  }
 }
 
 // Canonical market definitions (copied from server.ts)
@@ -308,6 +491,57 @@ export default {
             ...corsHeaders,
             'Content-Type': 'application/json',
             'Cache-Control': 'public, max-age=300',
+          },
+        });
+      }
+
+      // WebSocket upgrade to Durable Object
+      if (url.pathname === '/ws') {
+        // Get or create Durable Object instance
+        const id = env.ORCA_FEED_HUB.idFromName('global-feed-hub');
+        const stub = env.ORCA_FEED_HUB.get(id);
+
+        // Forward the request to the Durable Object
+        return stub.fetch(request);
+      }
+
+      // ETag polling fallback for /v1/feed
+      if (url.pathname === '/v1/feed' && request.method === 'GET') {
+        const since = url.searchParams.get('since');
+        const key = url.searchParams.get('key') || 'anonymous';
+
+        // Generate mock feed data
+        const sampleMarkets = CANONICAL_MARKETS.slice(0, 5);
+        const feedData = {
+          type: 'feed',
+          key,
+          timestamp: Date.now(),
+          data: {
+            markets: sampleMarkets,
+            lastUpdate: new Date().toISOString(),
+          },
+          checksum: crc32(JSON.stringify(sampleMarkets)),
+        };
+
+        // Check If-None-Match for polling fallback
+        const ifNoneMatch = request.headers.get('If-None-Match');
+        if (ifNoneMatch === `"v${feedData.checksum}"`) {
+          return new Response(null, {
+            status: 304,
+            headers: {
+              ...corsHeaders,
+              ETag: `"v${feedData.checksum}"`,
+              'Cache-Control': 'public, max-age=30',
+            },
+          });
+        }
+
+        return new Response(JSON.stringify(feedData), {
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json',
+            ETag: `"v${feedData.checksum}"`,
+            'Cache-Control': 'public, max-age=30',
           },
         });
       }

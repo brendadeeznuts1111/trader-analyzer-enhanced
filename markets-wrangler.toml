@@ -13,16 +13,29 @@ NODE_ENV = "production"
 # KV namespace for markets caching
 [[kv_namespaces]]
 binding = "ORCA_MOCK_CACHE"
-id = "347f3009657844489e1793d63c6fdeb3"
+id = "272440df0ab0421ea16ca34ec1a6785d"
+
+# Durable Object for WebSocket feed hub
+[[durable_objects.bindings]]
+name = "ORCA_FEED_HUB"
+class_name = "FeedHub"
+
+[durable_objects]
+class_name = "FeedHub"
+
+# Migrations for Durable Objects
+[[migrations]]
+tag = "v1"
+new_classes = ["FeedHub"]
 
 # Staging environment
 [env.staging]
 name = "trader-analyzer-markets-staging"
 
-# KV namespace for staging
-[[kv_namespaces]]
-binding = "ORCA_MOCK_CACHE"
-id = "272440df0ab0421ea16ca34ec1a6785d"
+# Durable Object for staging
+[[durable_objects.bindings]]
+name = "ORCA_FEED_HUB"
+class_name = "FeedHub"
 
 # Production environment (when ready)
 [env.production]

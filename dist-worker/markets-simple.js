@@ -15,6 +15,143 @@ function crc32(str) {
   }
   return ((crc ^ 4294967295) >>> 0).toString(16).padStart(8, "0");
 }
+
+class FeedHub {
+  state;
+  clients;
+  constructor(state) {
+    this.state = state;
+    this.clients = new Map;
+  }
+  async fetch(request) {
+    const url = new URL(request.url);
+    if (url.pathname === "/ws") {
+      const upgradeHeader = request.headers.get("Upgrade");
+      if (upgradeHeader !== "websocket") {
+        return new Response("Expected Upgrade: websocket", { status: 426 });
+      }
+      const key = url.searchParams.get("key") || "anonymous";
+      const webSocketPair = new WebSocketPair;
+      const client = webSocketPair[0];
+      const server = webSocketPair[1];
+      server.accept();
+      this.clients.set(server, {
+        key,
+        lastSeen: Date.now(),
+        subscribed: true
+      });
+      server.send(JSON.stringify({
+        type: "subscribed",
+        key,
+        timestamp: Date.now(),
+        message: "Connected to ORCA Feed Hub"
+      }));
+      server.addEventListener("message", (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === "ping") {
+            const client2 = this.clients.get(server);
+            if (client2) {
+              client2.lastSeen = Date.now();
+            }
+            server.send(JSON.stringify({ type: "pong", timestamp: Date.now() }));
+          }
+        } catch (error) {
+          console.error("WebSocket message error:", error);
+        }
+      });
+      server.addEventListener("close", () => {
+        this.clients.delete(server);
+      });
+      server.addEventListener("error", (error) => {
+        console.error("WebSocket error:", error);
+        this.clients.delete(server);
+      });
+      return new Response(null, {
+        status: 101,
+        webSocket: client
+      });
+    }
+    return new Response("Not found", { status: 404 });
+  }
+  async fetch(request) {
+    const url = new URL(request.url);
+    if (url.pathname === "/ws") {
+      const upgradeHeader = request.headers.get("Upgrade");
+      if (upgradeHeader !== "websocket") {
+        return new Response("Expected Upgrade: websocket", { status: 426 });
+      }
+      const key = url.searchParams.get("key") || "anonymous";
+      const [client, server] = Object.values(new WebSocketPair);
+      server.addEventListener("message", (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === "subscribe") {
+            this.clients.set(server, {
+              key,
+              lastSeen: Date.now(),
+              subscribed: true
+            });
+            server.send(JSON.stringify({
+              type: "subscribed",
+              key,
+              timestamp: Date.now(),
+              message: "Connected to ORCA Feed Hub"
+            }));
+          } else if (data.type === "ping") {
+            const client2 = this.clients.get(server);
+            if (client2) {
+              client2.lastSeen = Date.now();
+            }
+            server.send(JSON.stringify({ type: "pong", timestamp: Date.now() }));
+          }
+        } catch (error) {
+          console.error("WebSocket message error:", error);
+        }
+      });
+      server.addEventListener("close", () => {
+        this.clients.delete(server);
+      });
+      server.addEventListener("error", (error) => {
+        console.error("WebSocket error:", error);
+        this.clients.delete(server);
+      });
+      return new Response(null, {
+        status: 101,
+        webSocket: client
+      });
+    }
+    return new Response("Not found", { status: 404 });
+  }
+  async broadcastDelta(delta) {
+    const message = JSON.stringify({
+      type: "delta",
+      changes: delta.changes || [],
+      checksum: delta.checksum || crc32(JSON.stringify(delta)),
+      timestamp: Date.now()
+    });
+    let sent = 0;
+    for (const [ws, client] of this.clients) {
+      if (client.subscribed && ws.readyState === WebSocket.OPEN) {
+        try {
+          ws.send(message);
+          sent++;
+        } catch (error) {
+          console.error("Broadcast error:", error);
+          this.clients.delete(ws);
+        }
+      }
+    }
+    return sent;
+  }
+  getStats() {
+    return {
+      connections: this.clients.size,
+      subscribed: Array.from(this.clients.values()).filter((c) => c.subscribed).length,
+      timestamp: Date.now()
+    };
+  }
+}
 var CANONICAL_MARKETS = [
   {
     id: "presidential-election-winner-2024",
@@ -270,6 +407,45 @@ var markets_simple_default = {
           }
         });
       }
+      if (url.pathname === "/ws") {
+        const id = env.ORCA_FEED_HUB.idFromName("global-feed-hub");
+        const stub = env.ORCA_FEED_HUB.get(id);
+        return stub.fetch(request);
+      }
+      if (url.pathname === "/v1/feed" && request.method === "GET") {
+        const since = url.searchParams.get("since");
+        const key = url.searchParams.get("key") || "anonymous";
+        const sampleMarkets = CANONICAL_MARKETS.slice(0, 5);
+        const feedData = {
+          type: "feed",
+          key,
+          timestamp: Date.now(),
+          data: {
+            markets: sampleMarkets,
+            lastUpdate: new Date().toISOString()
+          },
+          checksum: crc32(JSON.stringify(sampleMarkets))
+        };
+        const ifNoneMatch = request.headers.get("If-None-Match");
+        if (ifNoneMatch === `"v${feedData.checksum}"`) {
+          return new Response(null, {
+            status: 304,
+            headers: {
+              ...corsHeaders,
+              ETag: `"v${feedData.checksum}"`,
+              "Cache-Control": "public, max-age=30"
+            }
+          });
+        }
+        return new Response(JSON.stringify(feedData), {
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+            ETag: `"v${feedData.checksum}"`,
+            "Cache-Control": "public, max-age=30"
+          }
+        });
+      }
       return new Response(JSON.stringify({ error: "Not found" }), {
         status: 404,
         headers: {
@@ -290,5 +466,6 @@ var markets_simple_default = {
   }
 };
 export {
-  markets_simple_default as default
+  markets_simple_default as default,
+  FeedHub
 };
