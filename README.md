@@ -5,8 +5,12 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)
 ![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-orange?logo=cloudflare)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss)
+![Bun](https://img.shields.io/badge/Bun-1.3.2-FFDF37?logo=bun)
 
 Intelligent analysis platform for learning trading strategies by role-playing as top traders. **Now powered by Cloudflare Workers** for global edge deployment and real-time data streaming.
+
+> **Note**: Built with Bun runtime for lightning-fast development and deployment [#REF:v0.1.15.BUN-RUNTIME]
+> **RSS**: Latest Bun updates at [bun.sh/blog](https://bun.sh/blog) [#REF:BUN-BLOG-RSS]
 
 ## ✨ Core Features
 
@@ -117,23 +121,89 @@ NEXT_PUBLIC_WORKERS_API=https://trader-analyzer-markets-staging.utahj4754.worker
 
 ### Cloudflare Workers Endpoints
 
-All APIs are now served via Cloudflare Workers with global edge distribution.
+All APIs are now served via Cloudflare Workers with global edge distribution and ETag caching.
 
-#### Markets API
+#### Markets API [#REF:v0.1.15.API.MARKETS]
 ```http
 GET /api/markets
 GET /api/markets/{id}
-GET /api/markets/{id}/ohlcv?timeframe=1d&limit=100
-````
+GET /api/markets/{id}/ohlcv?timeframe=1d&limit=100&since=1640995200
+```
 
-#### Trading Data API
+**URL Search Parameters:**
+- `timeframe`: `1m|5m|15m|30m|1h|4h|1d|1w` (default: `1d`) [#REF:TIMEFRAME-HEX:0x54464D45]
+- `limit`: `1-1000` (default: `100`) [#REF:LIMIT-HEX:0x4C494D49]
+- `since`: Unix timestamp for incremental data [#REF:SINCE-HEX:0x53494E43]
+
+#### Trading Data API [#REF:v0.1.15.API.TRADES]
 
 ```http
-GET /api/trades?type=stats          # Trading statistics
-GET /api/trades?type=equity&days=30 # Equity curve
-GET /api/trades?type=sessions       # Position sessions
-GET /api/trades?sessionId={id}      # Session details
+GET /api/trades?type=stats
+GET /api/trades?type=equity&days=30
+GET /api/trades?type=sessions&page=1&limit=20
+GET /api/trades?sessionId=session-123
 ```
+
+**URL Search Parameters:**
+- `type`: `stats|equity|sessions` (required for multi-type endpoints) [#REF:TYPE-HEX:0x54595045]
+- `days`: `7-730` (equity curve duration, default: `365`) [#REF:DAYS-HEX:0x44415953]
+- `page`: `1-N` (pagination page, default: `1`) [#REF:PAGE-HEX:0x50414745]
+- `limit`: `1-100` (items per page, default: `20`) [#REF:LIMIT-HEX:0x4C494D49]
+- `sessionId`: Session identifier (UUID format) [#REF:SESSION-HEX:0x53455353]
+
+#### Real-time WebSocket [#REF:v0.1.15.WS.DO]
+
+```javascript
+// Connect to WebSocket with Durable Objects
+const ws = new WebSocket('wss://your-worker.workers.dev/ws?key=user123');
+
+// Subscribe to real-time feed
+ws.send(JSON.stringify({ type: 'subscribe', key: 'user123' }));
+
+// Handle incoming messages
+ws.onmessage = event => {
+  const data = JSON.parse(event.data);
+  switch (data.type) {
+    case 'subscribed':
+      console.log('Connected to DO FeedHub:', data.message);
+      break;
+    case 'delta':
+      // Surgical delta updates [#REF:DELTA-HEX:0x44454C54]
+      handleMarketUpdate(data.changes, data.checksum);
+      break;
+    case 'pong':
+      // Keepalive response
+      break;
+  }
+};
+
+// Send ping for connection health
+setInterval(() => ws.send(JSON.stringify({ type: 'ping' })), 30000);
+```
+
+**WebSocket URL Parameters:**
+- `key`: Client identifier (recommended: UUID or session ID) [#REF:WS-KEY-HEX:0x574B4559]
+
+#### Polling Fallback [#REF:v0.1.15.POLLING.ETAG]
+
+```http
+GET /v1/feed?key=user123&since=1640995200
+# Returns 304 Not Modified if no changes (ETag caching)
+# Response includes checksum for data integrity validation
+```
+
+**URL Search Parameters:**
+- `key`: Client identifier [#REF:POLL-KEY-HEX:0x504B4559]
+- `since`: Unix timestamp for incremental updates [#REF:POLL-SINCE-HEX:0x5053494E]
+
+**ETag Response Headers:**
+```
+ETag: "v1deee103"
+Cache-Control: public, max-age=30
+```
+
+> **Note**: ETag checksums use CRC32 algorithm for data integrity [#REF:CRC32-HEX:0x43524333]
+> **RSS**: Cloudflare Workers updates at [blog.cloudflare.com/rss](https://blog.cloudflare.com/rss/) [#REF:CF-BLOG-RSS]
 
 #### Real-time WebSocket
 
@@ -382,3 +452,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 MIT License
 ```
+````

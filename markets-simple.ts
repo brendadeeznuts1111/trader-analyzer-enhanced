@@ -137,7 +137,7 @@ export class FeedHub {
 }
 
 export default {
-  async fetch(request: Request, env: Env, ctx: any): Promise<Response> {
+  async fetch(request: Request, _env: Env, _ctx: any): Promise<Response> {
     const url = new URL(request.url);
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
