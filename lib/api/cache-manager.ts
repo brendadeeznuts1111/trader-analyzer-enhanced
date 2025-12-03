@@ -280,10 +280,12 @@ export class APICacheManager {
 
       memoryCacheMetrics.hits++;
 
+      // SQLite uses snake_case column names
+      const row = cached as any;
       return {
-        data: JSON.parse((cached as CacheEntry).response),
-        cachedAt: (cached as CacheEntry).cachedAt,
-        hitCount: ((cached as CacheEntry).hitCount || 0) + 1,
+        data: JSON.parse(row.response),
+        cachedAt: row.cached_at,
+        hitCount: (row.hit_count || 0) + 1,
       };
     } else {
       // In-memory cache
