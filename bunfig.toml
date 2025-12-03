@@ -10,10 +10,9 @@ minify = true
 sourcemap = "inline"
 splitting = true
 
-[preload]
+# [preload]
 # Preload critical files for faster startup
-"./app/globals.css" = true
-"./lib/types.ts" = true
+# files = ["./app/globals.css", "./lib/types.ts"]
 
 [install]
 # Use Bun's fast package manager

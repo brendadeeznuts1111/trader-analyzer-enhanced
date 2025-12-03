@@ -266,3 +266,171 @@ export class MarketMapper {
  * Global Market Mapper Instance
  */
 export const marketMapper = new MarketMapper();
+
+/**
+ * Polymarket Data Pipeline
+ * [[TECH][MODULE][INSTANCE][META:{blueprint=BP-INTEGRATION-POLY@0.1.0;instance-id=ORCA-PIPELINE-001}]
+ * [PROPERTIES:{pipeline=fetch-sign-throttle-cache;@root:ROOT-DATA-FLOW;@transform:stream-merge;@cache:sqlite-ttl=5m}]
+ * [CLASS:PolymarketPipeline][#REF:v-0.1.0.BP.PIPELINE.1.0.A.1.1.POLY.1.0]]
+ */
+export interface PolymarketOdds {
+    yes: number;
+    no: number;
+    timestamp: number;
+}
+
+export interface NormalizedPolymarket {
+    marketId: string;           // ORCA canonical UUID
+    conditionId: string;        // Polymarket condition ID
+    question: string;
+    outcomes: string[];
+    odds: PolymarketOdds;
+    volume: number;
+    liquidity: number;
+    endDate: string;
+    book: 'polymarket';
+    clv?: number;               // Closing Line Value vs Pinnacle
+    lastUpdate: number;
+}
+
+export class PolymarketPipeline {
+    private cache: Map<string, NormalizedPolymarket> = new Map();
+    private lastFetch: number = 0;
+    private readonly cacheTTL = 300000; // 5 minutes
+    private readonly baseUrl = 'https://gamma-api.polymarket.com';
+    
+    /**
+     * Pipeline: fetch → normalize → cache
+     */
+    async fetchAndNormalize(): Promise<NormalizedPolymarket[]> {
+        const now = Date.now();
+        
+        // Check cache
+        if (now - this.lastFetch < this.cacheTTL && this.cache.size > 0) {
+            return Array.from(this.cache.values());
+        }
+
+        try {
+            const res = await fetch(`${this.baseUrl}/markets?active=true&closed=false&limit=100`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Accept-Encoding': 'gzip'
+                }
+            });
+
+            if (!res.ok) {
+                throw new Error(`Polymarket API error: ${res.status}`);
+            }
+
+            const data = await res.json();
+            const normalized: NormalizedPolymarket[] = [];
+
+            for (const market of data) {
+                const prices = market.outcomePrices || market.outcome_prices || ['0.5', '0.5'];
+                const yesPrice = parseFloat(prices[0]) || 0.5;
+                const noPrice = parseFloat(prices[1]) || (1 - yesPrice);
+
+                const entry: NormalizedPolymarket = {
+                    marketId: this.generateMarketUUID(market),
+                    conditionId: market.condition_id || market.conditionId || market.id,
+                    question: market.question || market.title || 'Unknown',
+                    outcomes: market.outcomes || ['Yes', 'No'],
+                    odds: {
+                        yes: yesPrice * 100,
+                        no: noPrice * 100,
+                        timestamp: now
+                    },
+                    volume: parseFloat(market.volume || '0'),
+                    liquidity: parseFloat(market.liquidity || '0'),
+                    endDate: market.end_date_iso || market.endDate || '',
+                    book: 'polymarket',
+                    lastUpdate: now
+                };
+
+                normalized.push(entry);
+                this.cache.set(entry.marketId, entry);
+            }
+
+            this.lastFetch = now;
+            return normalized;
+
+        } catch (error) {
+            console.error('Polymarket pipeline error:', error);
+            return Array.from(this.cache.values());
+        }
+    }
+
+    /**
+     * Generate ORCA canonical UUID v5
+     */
+    private generateMarketUUID(market: any): string {
+        const input = `polymarket:${market.condition_id || market.id}:${market.question || market.title}`;
+        let hash = 0;
+        for (let i = 0; i < input.length; i++) {
+            const char = input.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        const hex = Math.abs(hash).toString(16).padStart(12, '0');
+        return `orca-pm-${hex.slice(0, 8)}-${hex.slice(0, 4)}-${hex.slice(0, 4)}-${hex.slice(0, 4)}-${hex.padEnd(12, '0').slice(0, 12)}`;
+    }
+
+    /**
+     * Merge with existing market data
+     */
+    mergeWithExisting(existing: NormalizedMarketData[]): NormalizedMarketData[] {
+        const polyMarkets = Array.from(this.cache.values());
+        
+        const converted: NormalizedMarketData[] = polyMarkets.map(pm => ({
+            marketId: pm.marketId,
+            exchange: 'polymarket',
+            symbol: pm.conditionId,
+            displaySymbol: pm.question.slice(0, 50),
+            marketType: 'prediction' as ExchangeType,
+            lastPrice: pm.odds.yes,
+            bid: pm.odds.yes - 1,
+            ask: pm.odds.yes + 1,
+            volume: pm.volume,
+            timestamp: new Date(pm.lastUpdate).toISOString(),
+            exchangeSpecific: {
+                outcomes: pm.outcomes,
+                odds: pm.odds,
+                liquidity: pm.liquidity,
+                endDate: pm.endDate
+            }
+        }));
+
+        return [...existing, ...converted];
+    }
+
+    /**
+     * Get cached market by ID
+     */
+    getMarket(marketId: string): NormalizedPolymarket | undefined {
+        return this.cache.get(marketId);
+    }
+
+    /**
+     * Get pipeline stats
+     */
+    getStats(): { cacheSize: number; lastFetch: number; cacheTTL: number } {
+        return {
+            cacheSize: this.cache.size,
+            lastFetch: this.lastFetch,
+            cacheTTL: this.cacheTTL
+        };
+    }
+
+    /**
+     * Clear cache
+     */
+    clearCache(): void {
+        this.cache.clear();
+        this.lastFetch = 0;
+    }
+}
+
+/**
+ * Global Polymarket Pipeline Instance
+ */
+export const polymarketPipeline = new PolymarketPipeline();
