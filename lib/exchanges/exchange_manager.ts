@@ -6,7 +6,7 @@
 import { BaseExchange, ExchangeCredentials } from './base_exchange';
 import { BitmexExchange } from './bitmex_exchange';
 import { PolymarketExchange } from './polymarket_exchange';
-import { KalishiExchange } from './kalishi_exchange';
+import { KalshiExchange } from './kalshi_exchange';
 import { SportsTradingExchange } from './sports_exchange';
 
 /**
@@ -32,7 +32,7 @@ export class ExchangeManager {
     // Register default exchanges
     this.registerExchange('bitmex', new BitmexExchange());
     this.registerExchange('polymarket', new PolymarketExchange());
-    this.registerExchange('kalishi', new KalishiExchange());
+    this.registerExchange('kalshi', new KalshiExchange());
     this.registerExchange('sports', new SportsTradingExchange());
 
     this.initialized = true;

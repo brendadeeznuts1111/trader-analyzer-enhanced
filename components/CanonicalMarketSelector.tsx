@@ -26,7 +26,7 @@ interface CanonicalMarket {
   exchanges: string[];
   odds?: { yes: number; no: number };
   volume?: string;
-  source?: 'preset' | 'polymarket' | 'kalishi';
+  source?: 'preset' | 'polymarket' | 'kalshi';
 }
 
 interface CanonicalMarketSelectorProps {
@@ -63,7 +63,7 @@ const CANONICAL_PRESETS: CanonicalMarket[] = [
     description: 'Who will win the 2024 US Presidential Election?',
     icon: <Target className="w-4 h-4" />,
     color: 'text-cyan-400',
-    exchanges: ['Polymarket', 'Kalishi'],
+    exchanges: ['Polymarket', 'Kalshi'],
     source: 'preset',
   },
   {
