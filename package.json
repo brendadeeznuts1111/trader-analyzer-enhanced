@@ -1,6 +1,6 @@
 {
   "name": "trader-roleplay-analyzer",
-  "version": "1.0.0",
+  "version": "0.1.15",
   "private": true,
   "description": "Trader Role-Play Analyzer - Learn trading strategies by role-playing as top traders",
   "packageManager": "bun@1.0.0",
@@ -24,9 +24,10 @@
   "scripts": {
     "dev": "bun run next dev --port 3002",
     "dev:debug": "bun --inspect run next dev --port 3002",
+    "dev:workers": "bunx wrangler dev --config markets-wrangler.toml",
     "build": "bun run next build",
     "build:analyze": "ANALYZE=true bun run next build",
-    "build:worker": "bun build ./worker.ts --outdir ./dist-worker --target bun",
+    "build:worker": "bun build ./markets-simple.ts --outdir ./dist-worker --target bun",
     "start": "bun run next start --port 3002",
     "lint": "bunx eslint . --fix",
     "lint:check": "bunx eslint .",
@@ -41,11 +42,11 @@
     "validate": "bun run lint:check && bun run type-check && bun test",
     "bundle": "bun build ./app/page.tsx --outdir ./dist",
     "bundle:analyze": "bun build ./app/page.tsx --outdir ./dist --analyze",
-    "deploy:worker": "wrangler deploy",
-    "deploy:markets": "wrangler deploy --config markets-wrangler.toml",
-    "deploy:markets:staging": "wrangler deploy --config markets-wrangler.toml --env staging",
-    "dev:worker": "wrangler dev",
-    "dev:markets": "wrangler dev --config markets-wrangler.toml"
+    "deploy:workers": "bunx wrangler deploy --config markets-wrangler.toml --env staging",
+    "deploy:workers:prod": "bunx wrangler deploy --config markets-wrangler.toml --env production",
+    "deploy:pages": "bun run build && bunx wrangler pages deploy ./out",
+    "dev:full": "concurrently \"bun run dev\" \"bun run dev:workers\"",
+    "test:api": "bunx wrangler dev --config markets-wrangler.toml & sleep 3 && curl -s http://localhost:8788/api/markets | jq '.total' && pkill -f wrangler"
   },
   "dependencies": {
     "@types/uuid": "10.0.0",
