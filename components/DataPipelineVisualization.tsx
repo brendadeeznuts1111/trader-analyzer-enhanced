@@ -21,7 +21,7 @@ export function DataPipelineVisualization() {
     lastUpdate: new Date(),
     uptime: 0,
     memoryUsage: 0,
-    activeConnections: 0
+    activeConnections: 0,
   });
 
   const [isConnected, setIsConnected] = useState(false);
@@ -34,7 +34,7 @@ export function DataPipelineVisualization() {
       setIsConnected(true);
     };
 
-    evt.onmessage = (e) => {
+    evt.onmessage = e => {
       try {
         const data = JSON.parse(e.data);
         setStats(data);
@@ -85,7 +85,9 @@ export function DataPipelineVisualization() {
     <div className="space-y-6">
       {/* Connection Status */}
       <div className="flex items-center justify-center gap-2 mb-4">
-        <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
+        <div
+          className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}
+        />
         <span className={`text-sm font-medium ${isConnected ? 'text-green-400' : 'text-red-400'}`}>
           {isConnected ? 'Live' : 'Connecting...'}
         </span>
@@ -110,7 +112,7 @@ export function DataPipelineVisualization() {
           </div>
           <div className="text-4xl font-bold text-white mb-1">{stats.exchanges}</div>
           <div className="text-sm text-yellow-300 font-medium">Connected Exchanges</div>
-          <div className="text-xs text-slate-400 mt-1">Polymarket, Kalishi, Binance</div>
+          <div className="text-xs text-slate-400 mt-1">Polymarket, Kalshi, Binance</div>
         </div>
 
         <div className="glass rounded-2xl p-8 text-center hover-card group">
@@ -118,7 +120,9 @@ export function DataPipelineVisualization() {
             <Activity className="w-12 h-12 mx-auto mb-4 text-green-400 group-hover:text-green-300 transition-colors animate-pulse" />
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse" />
           </div>
-          <div className="text-4xl font-bold text-white mb-1">{stats.messagesPerSec.toFixed(1)}</div>
+          <div className="text-4xl font-bold text-white mb-1">
+            {stats.messagesPerSec.toFixed(1)}
+          </div>
           <div className="text-sm text-green-300 font-medium">msgs/sec</div>
           <div className="text-xs text-slate-400 mt-1">Real-time data flow</div>
         </div>
@@ -160,8 +164,10 @@ export function DataPipelineVisualization() {
               <span className="font-medium text-white">2024 US Election Winner</span>
             </div>
             <div className="flex gap-2">
-              <span className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded">Polymarket</span>
-              <span className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded">Kalishi</span>
+              <span className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded">
+                Polymarket
+              </span>
+              <span className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded">Kalshi</span>
             </div>
           </div>
 
@@ -172,7 +178,9 @@ export function DataPipelineVisualization() {
               <span className="font-medium text-white">BTC/USD Perpetual</span>
             </div>
             <div className="flex gap-2">
-              <span className="px-2 py-1 bg-orange-500/20 text-orange-300 text-xs rounded">Binance</span>
+              <span className="px-2 py-1 bg-orange-500/20 text-orange-300 text-xs rounded">
+                Binance
+              </span>
               <span className="px-2 py-1 bg-red-500/20 text-red-300 text-xs rounded">BitMEX</span>
             </div>
           </div>
@@ -184,7 +192,9 @@ export function DataPipelineVisualization() {
               <span className="font-medium text-white">Super Bowl LVIII</span>
             </div>
             <div className="flex gap-2">
-              <span className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded">Polymarket</span>
+              <span className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded">
+                Polymarket
+              </span>
             </div>
           </div>
         </div>

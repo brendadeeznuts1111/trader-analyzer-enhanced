@@ -545,7 +545,7 @@ export function Dashboard() {
                 >
                   <option value="bitmex">Bitmex (Crypto Futures)</option>
                   <option value="polymarket">Polymarket (Prediction Markets)</option>
-                  <option value="kalishi">Kalishi (P2P Trading)</option>
+                  <option value="kalshi">Kalshi (Prediction Markets)</option>
                   <option value="sports">Sports Trading (NFL, NBA, Soccer)</option>
                   <option value="hyperliquid" disabled>
                     HyperLiquid (Coming Soon)
