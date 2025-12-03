@@ -67,7 +67,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@typescript-eslint/eslint-plugin": "^7",
-    "@typescript-eslint/parser": "^7",
+    "@typescript-eslint/parser": "^8",
     "bunx": "latest",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
