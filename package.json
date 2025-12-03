@@ -22,13 +22,13 @@
     "bun": ">=1.0.0"
   },
   "scripts": {
-    "dev": "bun run next dev --port 3002",
-    "dev:debug": "bun --inspect run next dev --port 3002",
+    "dev": "bun run scripts/dev-server.ts",
+    "dev:debug": "bun --inspect run scripts/dev-server.ts",
     "dev:workers": "bunx wrangler dev --config markets-wrangler.toml",
     "build": "bun run next build",
     "build:analyze": "ANALYZE=true bun run next build",
     "build:worker": "bun build ./markets-simple.ts --outdir ./dist-worker --target bun",
-    "start": "bun run next start --port 3002",
+    "start": "bun run scripts/start-server.ts",
     "lint": "bunx eslint . --fix",
     "lint:check": "bunx eslint .",
     "type-check": "bun run tsc --noEmit",
