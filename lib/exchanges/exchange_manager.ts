@@ -8,7 +8,6 @@ import { BitmexExchange } from './bitmex_exchange';
 import { PolymarketExchange } from './polymarket_exchange';
 import { KalishiExchange } from './kalishi_exchange';
 import { SportsTradingExchange } from './sports_exchange';
-import { marketMapper, MarketIdentifier, NormalizedMarketData } from '../market_mapping';
 
 /**
  * Exchange Manager Class
