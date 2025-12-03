@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
+import { buildApiHeaders, headersToObject } from '../../../../lib/api-headers';
 
 // REST fallback endpoint for pipeline stats
-export async function GET() {
+export async function GET(request: Request) {
+  const startTime = Date.now();
+
   try {
     // Fetch from Bun backend
     const bunUrl = process.env.BUN_BACKEND_URL || 'http://localhost:3000';
@@ -12,7 +15,22 @@ export async function GET() {
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+
+    const headers = buildApiHeaders({
+      cache: 'short',
+      request,
+      responseTime: Date.now() - startTime,
+      etagContent: data,
+      preconnect: [bunUrl],
+      custom: {
+        'X-Data-Type': 'pipeline-stats',
+        'X-Data-Source': 'backend',
+      },
+    });
+
+    return NextResponse.json(data, {
+      headers: headersToObject(headers),
+    });
   } catch (error) {
     console.error('Pipeline stats error:', error);
 
@@ -21,12 +39,25 @@ export async function GET() {
       markets: 5,
       exchanges: 4,
       messagesPerSec: 45.7,
-      lastUpdate: new Date(),
-      uptime: 3600, // 1 hour
+      lastUpdate: new Date().toISOString(),
+      uptime: 3600,
       memoryUsage: 67.2,
-      activeConnections: 3
+      activeConnections: 3,
     };
 
-    return NextResponse.json(mockStats);
+    const headers = buildApiHeaders({
+      cache: 'short',
+      request,
+      responseTime: Date.now() - startTime,
+      etagContent: mockStats,
+      custom: {
+        'X-Data-Type': 'pipeline-stats',
+        'X-Data-Source': 'fallback',
+      },
+    });
+
+    return NextResponse.json(mockStats, {
+      headers: headersToObject(headers),
+    });
   }
 }

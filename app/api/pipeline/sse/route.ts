@@ -1,8 +1,21 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { buildApiHeaders, headersToObject } from '../../../../lib/api-headers';
 
 // SSE endpoint for pipeline stats - proxies to Bun backend
 export async function GET(request: NextRequest) {
   const encoder = new TextEncoder();
+
+  // Build base headers for SSE
+  const baseHeaders = buildApiHeaders({
+    cache: 'no-cache',
+    request,
+    custom: {
+      'Content-Type': 'text/event-stream',
+      Connection: 'keep-alive',
+      'X-Data-Type': 'sse-stream',
+      'X-Stream-Source': 'pipeline',
+    },
+  });
 
   // Create a ReadableStream for SSE
   const stream = new ReadableStream({
@@ -14,7 +27,7 @@ export async function GET(request: NextRequest) {
       const bunUrl = process.env.BUN_BACKEND_URL || 'http://localhost:3000';
       const evt = new EventSource(`${bunUrl}/pipeline/sse`);
 
-      evt.onmessage = (e) => {
+      evt.onmessage = e => {
         try {
           // Forward the data from Bun backend to client
           controller.enqueue(encoder.encode(`data: ${e.data}\n\n`));
@@ -23,7 +36,7 @@ export async function GET(request: NextRequest) {
         }
       };
 
-      evt.onerror = (error) => {
+      evt.onerror = error => {
         console.error('Bun backend SSE error:', error);
         // Send error message to client
         controller.enqueue(encoder.encode('data: {"error": "Backend connection failed"}\n\n'));
@@ -38,23 +51,21 @@ export async function GET(request: NextRequest) {
   });
 
   return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control',
-    },
+    headers: headersToObject(baseHeaders),
   });
 }
 
 // Handle CORS preflight
-export async function OPTIONS() {
-  return new Response(null, {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
+export async function OPTIONS(request: Request) {
+  const headers = buildApiHeaders({
+    cache: 'no-cache',
+    request,
+    custom: {
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
     },
+  });
+
+  return new Response(null, {
+    headers: headersToObject(headers),
   });
 }

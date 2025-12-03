@@ -111,6 +111,135 @@ describe('API Endpoints', () => {
   });
 });
 
+// Enhanced Headers Tests
+describe('Enhanced Headers', () => {
+  const baseUrl = 'http://localhost:3002';
+
+  describe('Tracking Headers', () => {
+    test('GET /api/health includes server identification headers', async () => {
+      const response = await fetch(`${baseUrl}/api/health`);
+
+      // Server identification
+      expect(response.headers.get('X-Server-Name')).toBeTruthy();
+      expect(response.headers.get('X-Server-Version')).toBeTruthy();
+      expect(response.headers.get('X-Server-Port')).toBeTruthy();
+      expect(response.headers.get('X-Powered-By')).toBe('Bun');
+    });
+
+    test('GET /api/health includes request tracing headers', async () => {
+      const response = await fetch(`${baseUrl}/api/health`);
+
+      // Request tracing
+      expect(response.headers.get('X-Request-Id')).toBeTruthy();
+      expect(response.headers.get('X-Response-Timestamp')).toBeTruthy();
+      expect(response.headers.get('X-Response-Time')).toMatch(/\d+ms/);
+    });
+
+    test('GET /api/health includes client info headers', async () => {
+      const response = await fetch(`${baseUrl}/api/health`, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/120.0.0.0',
+        },
+      });
+
+      // Client info
+      expect(response.headers.get('X-Client-OS')).toBeTruthy();
+      expect(response.headers.get('X-Client-Browser')).toBeTruthy();
+      expect(response.headers.get('X-Client-Type')).toBeTruthy();
+    });
+  });
+
+  describe('Caching Headers', () => {
+    test('GET /api/health has no-cache headers', async () => {
+      const response = await fetch(`${baseUrl}/api/health`);
+
+      const cacheControl = response.headers.get('Cache-Control');
+      expect(cacheControl).toContain('no-store');
+      expect(cacheControl).toContain('no-cache');
+    });
+
+    test('GET /api/ohlcv has caching headers', async () => {
+      const response = await fetch(`${baseUrl}/api/ohlcv?symbol=BTCUSD&timeframe=1d`);
+
+      if (response.ok) {
+        const cacheControl = response.headers.get('Cache-Control');
+        expect(cacheControl).toContain('max-age');
+      }
+    });
+
+    test('ETag header is present for cacheable responses', async () => {
+      const response = await fetch(`${baseUrl}/api/health`);
+
+      // Health endpoint generates ETags
+      expect(response.headers.get('ETag')).toBeTruthy();
+    });
+  });
+
+  describe('DNS & Preconnect Hints', () => {
+    test('API includes Link header with preconnect hints', async () => {
+      const response = await fetch(`${baseUrl}/api/health`);
+
+      const link = response.headers.get('Link');
+      expect(link).toBeTruthy();
+      expect(link).toContain('rel=preconnect');
+    });
+
+    test('DNS prefetch control is enabled', async () => {
+      const response = await fetch(`${baseUrl}/api/health`);
+
+      expect(response.headers.get('X-DNS-Prefetch-Control')).toBe('on');
+    });
+  });
+
+  describe('Security Headers', () => {
+    test('Security headers are present', async () => {
+      const response = await fetch(`${baseUrl}/api/health`);
+
+      expect(response.headers.get('X-Content-Type-Options')).toBe('nosniff');
+      expect(response.headers.get('X-Frame-Options')).toBe('DENY');
+      expect(response.headers.get('X-XSS-Protection')).toBe('1; mode=block');
+    });
+
+    test('CORS headers are present', async () => {
+      const response = await fetch(`${baseUrl}/api/health`);
+
+      expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*');
+      expect(response.headers.get('Access-Control-Allow-Methods')).toContain('GET');
+      expect(response.headers.get('Access-Control-Expose-Headers')).toContain('X-Request-Id');
+    });
+  });
+
+  describe('Custom Endpoint Headers', () => {
+    test('OHLCV endpoint includes data-specific headers', async () => {
+      const response = await fetch(`${baseUrl}/api/ohlcv?symbol=BTCUSD&timeframe=1d`);
+
+      if (response.ok) {
+        expect(response.headers.get('X-Data-Type')).toBe('ohlcv');
+        expect(response.headers.get('X-Symbol')).toBe('BTCUSD');
+        expect(response.headers.get('X-Timeframe')).toBe('1d');
+        expect(response.headers.get('X-Candle-Count')).toBeTruthy();
+      }
+    });
+
+    test('Profile endpoint includes profile-specific headers', async () => {
+      const response = await fetch(`${baseUrl}/api/profile`);
+
+      if (response.ok) {
+        expect(response.headers.get('X-Data-Type')).toBe('trader-profile');
+      }
+    });
+
+    test('Exchanges endpoint includes exchange-specific headers', async () => {
+      const response = await fetch(`${baseUrl}/api/exchanges`);
+
+      if (response.ok) {
+        expect(response.headers.get('X-Data-Type')).toBe('exchanges');
+        expect(response.headers.get('X-Exchange-Count')).toBeTruthy();
+      }
+    });
+  });
+});
+
 // Type safety tests
 describe('Type Safety', () => {
   test('API responses have expected structure', async () => {

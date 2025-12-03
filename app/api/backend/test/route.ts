@@ -1,38 +1,60 @@
 import { NextResponse } from 'next/server';
+import { buildApiHeaders, headersToObject, createErrorResponse } from '../../../../lib/api-headers';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 
 export async function POST(request: Request) {
-    try {
-        const body = await request.json();
+  const startTime = Date.now();
 
-        const response = await fetch(`${BACKEND_URL}/api/test/connection`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                api_key: body.api_key,
-                api_secret: body.api_secret,
-                exchange: body.exchange || 'bitmex'
-            }),
-        });
+  try {
+    const body = await request.json();
 
-        const data = await response.json();
+    const response = await fetch(`${BACKEND_URL}/api/test/connection`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        api_key: body.api_key,
+        api_secret: body.api_secret,
+        exchange: body.exchange || 'bitmex',
+      }),
+    });
 
-        if (!response.ok) {
-            return NextResponse.json(
-                { error: data.detail || 'Connection test failed' },
-                { status: response.status }
-            );
-        }
+    const data = await response.json();
 
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error('Backend API Error:', error);
-        return NextResponse.json(
-            { error: 'Failed to connect to backend service' },
-            { status: 500 }
-        );
+    if (!response.ok) {
+      const { body: errBody, init } = createErrorResponse(
+        data.detail || 'Connection test failed',
+        response.status,
+        undefined,
+        request
+      );
+      return NextResponse.json(errBody, init);
     }
+
+    const headers = buildApiHeaders({
+      cache: 'no-cache',
+      request,
+      responseTime: Date.now() - startTime,
+      preconnect: [BACKEND_URL],
+      custom: {
+        'X-Operation': 'connection-test',
+        'X-Exchange': body.exchange || 'bitmex',
+      },
+    });
+
+    return NextResponse.json(data, {
+      headers: headersToObject(headers),
+    });
+  } catch (error) {
+    console.error('Backend API Error:', error);
+    const { body, init } = createErrorResponse(
+      'Failed to connect to backend service',
+      500,
+      error instanceof Error ? error.message : 'Unknown error',
+      request
+    );
+    return NextResponse.json(body, init);
+  }
 }
