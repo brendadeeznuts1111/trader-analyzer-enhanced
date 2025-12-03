@@ -1,8 +1,9 @@
 import { test, expect, describe } from 'bun:test';
+import { WORKERS_URLS, PORTS } from '../lib/constants';
 
 // Basic API endpoint tests for Cloudflare Workers
 describe('API Endpoints', () => {
-  const baseUrl = 'http://localhost:8788';
+  const baseUrl = WORKERS_URLS.local;
 
   describe('Markets API', () => {
     test('GET /api/markets returns market list', async () => {
@@ -113,7 +114,7 @@ describe('API Endpoints', () => {
 
 // Enhanced Headers Tests
 describe('Enhanced Headers', () => {
-  const baseUrl = 'http://localhost:3002';
+  const baseUrl = `http://localhost:${PORTS.nextjs}`;
 
   describe('Tracking Headers', () => {
     test('GET /api/health includes server identification headers', async () => {
@@ -243,7 +244,7 @@ describe('Enhanced Headers', () => {
 // Type safety tests
 describe('Type Safety', () => {
   test('API responses have expected structure', async () => {
-    const baseUrl = 'http://localhost:8788';
+    const baseUrl = WORKERS_URLS.local;
     const response = await fetch(`${baseUrl}/api/markets`);
     const data = await response.json();
 

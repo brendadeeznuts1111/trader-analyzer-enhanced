@@ -11,6 +11,7 @@ import {
   RefreshCw,
   TrendingUp,
 } from 'lucide-react';
+import { WORKERS_URLS } from '@/lib/constants';
 
 // [[TECH][MODULE][INSTANCE][META:{blueprint=BP-INTEGRATION-POLY@0.1.0;instance-id=ORCA-SELECTOR-001;version=0.1.1}]
 // [PROPERTIES:{selector={value:"poly-uuids";@override:true}}][CLASS:MarketSelector]
@@ -154,7 +155,7 @@ export function CanonicalMarketSelector({
 
     try {
       // Use staging Worker endpoint for now
-      const workerUrl = 'https://trader-analyzer-markets-staging.utahj4754.workers.dev/api/markets';
+      const workerUrl = `${WORKERS_URLS.staging}/api/markets`;
 
       // Include If-None-Match header if we have a cached ETag
       const headers: Record<string, string> = {

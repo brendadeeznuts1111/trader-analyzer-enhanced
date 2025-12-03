@@ -362,6 +362,139 @@ export const CLOUDFLARE_DOCS = {
 } as const;
 
 // =============================================================================
+// API CONFIGURATION [#REF:API-CONFIG]
+// =============================================================================
+
+/** Default ports for various services */
+export const PORTS = {
+  /** Next.js frontend */
+  nextjs: 3002,
+  /** Bun backend API */
+  bunBackend: 8000,
+  /** Cloudflare Workers local */
+  workersLocal: 8788,
+  /** Grafana dashboard */
+  grafana: 3000,
+} as const;
+
+/** Worker URLs by environment */
+export const WORKERS_URLS = {
+  staging: 'https://trader-analyzer-markets-staging.utahj4754.workers.dev',
+  production: 'https://trader-analyzer-markets.utahj4754.workers.dev',
+  local: `http://localhost:${PORTS.workersLocal}`,
+} as const;
+
+/** Backend URLs by environment */
+export const BACKEND_URLS = {
+  development: `http://localhost:${PORTS.bunBackend}`,
+  staging: WORKERS_URLS.staging,
+  production: WORKERS_URLS.production,
+} as const;
+
+/**
+ * Get the current environment
+ */
+export function getEnv(): 'development' | 'staging' | 'production' {
+  const env = process.env.NODE_ENV || 'development';
+  if (env === 'production') return 'production';
+  if (process.env.STAGING === 'true') return 'staging';
+  return 'development';
+}
+
+/**
+ * API Configuration - centralized URLs and settings
+ *
+ * @example
+ * ```ts
+ * import { API_CONFIG } from '@/lib/constants';
+ *
+ * const response = await fetch(`${API_CONFIG.workersUrl}/api/markets`);
+ * ```
+ */
+export const API_CONFIG = {
+  /** Current environment */
+  get env() {
+    return getEnv();
+  },
+
+  /** Bun backend URL (respects BUN_BACKEND_URL env var) */
+  get backendUrl() {
+    return process.env.BUN_BACKEND_URL || BACKEND_URLS[this.env];
+  },
+
+  /** Workers URL (respects NEXT_PUBLIC_WORKERS_API env var) */
+  get workersUrl() {
+    return (
+      process.env.NEXT_PUBLIC_WORKERS_API ||
+      WORKERS_URLS[this.env === 'development' ? 'staging' : this.env]
+    );
+  },
+
+  /** Base URL for the app (respects NEXT_PUBLIC_BASE_URL env var) */
+  get baseUrl() {
+    return process.env.NEXT_PUBLIC_BASE_URL || `http://localhost:${PORTS.nextjs}`;
+  },
+
+  /** Grafana dashboard URL */
+  get grafanaUrl() {
+    return process.env.GRAFANA_URL || `http://localhost:${PORTS.grafana}/d/blueprint`;
+  },
+
+  /** API endpoints */
+  endpoints: {
+    markets: '/api/markets',
+    trades: '/api/trades',
+    ohlcv: (marketId: string, timeframe = '1d', limit = 100) =>
+      `/api/markets/${marketId}/ohlcv?timeframe=${timeframe}&limit=${limit}`,
+    sessions: (page = 1, limit = 20, symbol?: string) => {
+      let url = `/api/trades?type=sessions&page=${page}&limit=${limit}`;
+      if (symbol) url += `&symbol=${encodeURIComponent(symbol)}`;
+      return url;
+    },
+    sessionDetail: (sessionId: string) => `/api/trades?sessionId=${encodeURIComponent(sessionId)}`,
+    stats: '/api/trades?type=stats',
+    equity: (days = 30) => `/api/trades?type=equity&days=${days}`,
+    health: '/api/health',
+    pipeline: {
+      stats: '/pipeline/stats',
+      events: '/events',
+    },
+  },
+
+  /** Cache TTLs in milliseconds */
+  cache: {
+    polymarket: 300_000, // 5 minutes
+    kalshi: 60_000, // 1 minute
+    bitmex: 30_000, // 30 seconds
+    sports: 120_000, // 2 minutes
+    default: 300_000, // 5 minutes
+  },
+
+  /** Timeouts in milliseconds */
+  timeouts: {
+    default: 30_000, // 30 seconds
+    long: 60_000, // 1 minute
+    short: 10_000, // 10 seconds
+  },
+} as const;
+
+/**
+ * Build full API URL
+ *
+ * @example
+ * ```ts
+ * const url = buildApiUrl('/api/markets');
+ * // Returns: https://trader-analyzer-markets-staging.utahj4754.workers.dev/api/markets
+ *
+ * const url = buildApiUrl(API_CONFIG.endpoints.ohlcv('btc-usd', '1h', 50));
+ * ```
+ */
+export function buildApiUrl(endpoint: string, useBackend = false): string {
+  const base = useBackend ? API_CONFIG.backendUrl : API_CONFIG.workersUrl;
+  return `${base}${endpoint}`;
+}
+
+// =============================================================================
 // TYPE EXPORTS
 // =============================================================================
 
@@ -369,3 +502,5 @@ export type BunDocsKey = keyof typeof BUN_DOCS;
 export type CloudflareDocsKey = keyof typeof CLOUDFLARE_DOCS;
 export type BunVerboseFetchMode = 'curl' | 'true' | 'false';
 export type BunPolyfill = (typeof BUN_POLYFILLS)[number];
+export type Environment = 'development' | 'staging' | 'production';
+export type Port = keyof typeof PORTS;

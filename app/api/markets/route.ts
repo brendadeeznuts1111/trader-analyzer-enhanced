@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
-import { buildApiHeaders, headersToObject, createErrorResponse } from '../../../lib/api-headers';
+import { buildApiHeaders, headersToObject, createErrorResponse } from '@/lib/api-headers';
+import { API_CONFIG } from '@/lib/constants';
 
 // Adapter layer: Next.js dashboard ↔ Bun unified pipeline
-const BUN_BACKEND_URL = process.env.BUN_BACKEND_URL || 'http://localhost:8000';
 
 export async function GET(request: Request) {
   const startTime = Date.now();
 
   try {
-    const response = await fetch(`${BUN_BACKEND_URL}/markets`);
+    const response = await fetch(`${API_CONFIG.backendUrl}/markets`);
     if (!response.ok) throw new Error('Failed to fetch markets');
 
     const data = await response.json();
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
       request,
       responseTime: Date.now() - startTime,
       etagContent: data,
-      preconnect: [BUN_BACKEND_URL],
+      preconnect: [API_CONFIG.backendUrl],
     });
 
     return NextResponse.json(data, {

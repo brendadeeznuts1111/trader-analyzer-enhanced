@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
-import { buildApiHeaders, headersToObject } from '../../../../lib/api-headers';
+import { buildApiHeaders, headersToObject } from '@/lib/api-headers';
+import { API_CONFIG } from '@/lib/constants';
 
 // SSE endpoint for pipeline stats - proxies to Bun backend
 export async function GET(request: NextRequest) {
@@ -24,8 +25,9 @@ export async function GET(request: NextRequest) {
       controller.enqueue(encoder.encode('data: {"status": "connected"}\n\n'));
 
       // Connect to Bun backend SSE
-      const bunUrl = process.env.BUN_BACKEND_URL || 'http://localhost:3000';
-      const evt = new EventSource(`${bunUrl}/pipeline/sse`);
+      const evt = new EventSource(
+        `${API_CONFIG.backendUrl}${API_CONFIG.endpoints.pipeline.events}`
+      );
 
       evt.onmessage = e => {
         try {

@@ -5,6 +5,8 @@
  * [CLASS:FeatureFlags][#REF:v-0.1.9.BP.CONFIG.1.0.A.1.1]]
  */
 
+import { API_CONFIG } from '../lib/constants';
+
 export interface BlueprintVersions {
   [key: string]: string;
 }
@@ -127,5 +129,5 @@ export const monitoringConfig = {
     sqliteQueryTime: 10, // <10ms target
   },
   alertChannels: ['prometheus', 'grafana'],
-  dashboardUrl: process.env.GRAFANA_URL || 'http://localhost:3000/d/blueprint',
+  dashboardUrl: API_CONFIG.grafanaUrl,
 };
