@@ -79,8 +79,13 @@ console.log(canonical.uuid); // "d4551ab8-b0d7-5444-ab99-915c1a29308e"
 
 ### Prerequisites
 
-- [Bun](https://bun.sh/) runtime (v1.3+)
-- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/) for Cloudflare Workers
+- [Bun](https://bun.com/) runtime (v1.3+) [#REF:BUN-RUNTIME]
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/) for Cloudflare Workers [#REF:CF-WRANGLER]
+
+### Debug Resources
+
+- [Bun Debugger](https://bun.com/docs/runtime/debugger) [#REF:BUN-DEBUG]
+- [HTTP Error Handling](https://bun.com/docs/runtime/http/error-handling) [#REF:BUN-HTTP-ERR]
 
 ### 1. Install Dependencies
 
@@ -111,12 +116,20 @@ bun test tests/canonical.test.ts
 ### 4. Build & Deploy
 
 ```bash
-# Build for production
+# Build Next.js for production
 bun run build
+
+# Build with environment-specific constants (uses --define)
+bun run build:dev      # Development build
+bun run build:staging  # Staging build  
+bun run build:prod     # Production build (minified)
+bun run build:compile  # Compile to standalone executable
 
 # Deploy Workers to staging
 bunx wrangler deploy --config scripts/deploy/markets-wrangler.toml --env staging
 ```
+
+> **Note**: Build scripts inject git metadata (version, commit, branch) automatically via `--define` flags. See `lib/constants.ts` for available helpers. [#REF:BUN-BUILD]
 
 ## Project Structure
 

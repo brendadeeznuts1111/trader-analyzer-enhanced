@@ -5,7 +5,8 @@
 The Trader Analyzer API is now fully hosted on Cloudflare Workers, providing global edge deployment with sub-50ms latency worldwide. All endpoints support ETag caching for efficient bandwidth usage.
 
 > **Technical Note**: Built with Bun runtime v1.3.2 for optimal performance [#REF:BUN-RUNTIME-HEX:0x42554E2D]
-> **RSS Feed**: Bun release notes at [bun.sh/blog/rss.xml](https://bun.sh/blog/rss.xml) [#REF:BUN-RSS-HEX:0x5253532D]
+> **RSS Feed**: Bun release notes at [bun.com/blog/rss.xml](https://bun.com/blog/rss.xml) [#REF:BUN-RSS-HEX:0x5253532D]
+> **Debug**: [Debugger](https://bun.com/docs/runtime/debugger) | [HTTP Error Handling](https://bun.com/docs/runtime/http/error-handling) [#REF:BUN-DEBUG]
 
 ## Base URL
 
@@ -971,7 +972,7 @@ class TraderAPI:
 
 ### RSS Feed References
 
-- **Bun Runtime**: [bun.sh/blog/rss.xml](https://bun.sh/blog/rss.xml) [#REF:BUN-RSS]
+- **Bun Runtime**: [bun.com/blog/rss.xml](https://bun.com/blog/rss.xml) [#REF:BUN-RSS]
 - **Cloudflare Workers**: [blog.cloudflare.com/rss](https://blog.cloudflare.com/rss/) [#REF:CF-RSS]
 - **Durable Objects**: [blog.cloudflare.com/tag/durable-objects](https://blog.cloudflare.com/tag/durable-objects) [#REF:CF-DO-RSS]
 
@@ -1010,7 +1011,7 @@ const CRC32_TABLE = new Uint32Array(256);
 
 - Added comprehensive [#REF] tags throughout documentation
 - Included hex code references for all components
-- Added RSS feed references from bun.com/blog and Cloudflare
+- Added RSS feed references from [bun.com/blog](https://bun.com/blog) and Cloudflare [#REF:BUN-BLOG]
 - Detailed URL search parameter documentation
 - Technical algorithm references and implementations
 

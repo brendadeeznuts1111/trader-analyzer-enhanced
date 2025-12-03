@@ -35,7 +35,7 @@ check_dependencies() {
     log_info "Checking dependencies..."
 
     if ! command -v bun &> /dev/null; then
-        log_error "Bun is not installed. Please install Bun first: https://bun.sh"
+        log_error "Bun is not installed. Please install Bun first: https://bun.com"
         exit 1
     fi
 
