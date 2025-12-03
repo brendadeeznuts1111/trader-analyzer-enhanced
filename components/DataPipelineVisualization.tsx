@@ -4,6 +4,17 @@ import { useEffect, useState } from 'react';
 import { Network, Activity, Zap, TrendingUp, Globe, Database } from 'lucide-react';
 import { BACKEND_URLS, API_CONFIG } from '@/lib/constants';
 
+// Client-safe logging
+const clientLog = {
+  error: (msg: string, data?: unknown) =>
+    console.error(`%c[ERROR] ${msg}`, 'color: #ef4444', data ?? ''),
+  debug: (msg: string, data?: unknown) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.debug(`%c[DEBUG] ${msg}`, 'color: #6b7280', data ?? '');
+    }
+  },
+};
+
 interface PipelineStats {
   markets: number;
   exchanges: number;
@@ -42,7 +53,7 @@ export function DataPipelineVisualization() {
         const data = JSON.parse(e.data);
         setStats(data);
       } catch (error) {
-        console.error('Failed to parse pipeline stats:', error);
+        clientLog.error('Failed to parse pipeline stats', error);
       }
     };
 
@@ -59,7 +70,7 @@ export function DataPipelineVisualization() {
             setStats(data);
           }
         } catch (error) {
-          console.error('Failed to fetch pipeline stats:', error);
+          clientLog.error('Failed to fetch pipeline stats', error);
         }
       };
 
