@@ -76,7 +76,7 @@ export class PropertyQueryEngine {
       throw new Error(`Property not found: ${propertyKey} in ${instance.blueprintId}`);
     }
 
-    let resolved = await this.resolveProperty(prop, blueprint);
+    const resolved = await this.resolveProperty(prop, blueprint);
 
     // Validate constraints
     if (prop.constraints?.includes('required') && resolved === undefined) {

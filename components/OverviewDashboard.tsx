@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { EquityCurve } from './EquityCurve';
 import { MonthlyPnLChart } from './MonthlyPnLChart';
 import { TVChart } from './TVChart';
 import { StatsOverview } from './StatsOverview';
 import { useBatchFetch } from '@/lib/hooks/useDataFetch';
+import { BACKEND_URLS } from '@/lib/constants';
 import { Loader2, TrendingUp, BarChart3, Activity } from 'lucide-react';
 
 interface OverviewDashboardProps {
@@ -35,43 +36,19 @@ export function OverviewDashboard({
 }: OverviewDashboardProps) {
   const [chartData, setChartData] = useState<ChartData>({ candles: [], markers: [] });
   const [chartLoading, setChartLoading] = useState(true);
-  const [stats, setStats] = useState<StatsData | null>(null);
-  const [equity, setEquity] = useState<EquityData | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  // Load stats and equity data
-  useEffect(() => {
-    const loadOverviewData = async () => {
-      try {
-        const [statsRes, equityRes] = await Promise.allSettled([
-          fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/trades?type=stats`
-          ),
-          fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/trades?type=equity&days=30`
-          ),
-        ]);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || BACKEND_URLS.development;
 
-        if (statsRes.status === 'fulfilled' && statsRes.value.ok) {
-          const statsData = await statsRes.value.json();
-          setStats(statsData);
-        }
+  // Use useBatchFetch for stats and equity data
+  const { data: overviewData, loading: overviewLoading } = useBatchFetch<{
+    stats: StatsData;
+    equity: EquityData;
+  }>({
+    stats: `${apiUrl}/api/trades?type=stats`,
+    equity: `${apiUrl}/api/trades?type=equity&days=30`,
+  });
 
-        if (equityRes.status === 'fulfilled' && equityRes.value.ok) {
-          const equityData = await equityRes.value.json();
-          setEquity(equityData);
-        }
-      } catch (error) {
-        console.error('Error loading overview data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadOverviewData();
-  }, []);
-
-  // Load chart data
+  // Load chart data separately since it depends on selectedSymbol and timeframe
   useEffect(() => {
     const loadChartData = async () => {
       setChartLoading(true);
@@ -86,7 +63,7 @@ export function OverviewDashboard({
           symbolToMarketId[selectedSymbol as keyof typeof symbolToMarketId] || 'btc-usd-perp';
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/markets/${marketId}/ohlcv?timeframe=${timeframe}&limit=100`
+          `${apiUrl}/api/markets/${marketId}/ohlcv?timeframe=${timeframe}&limit=100`
         );
 
         if (response.ok) {
@@ -102,9 +79,9 @@ export function OverviewDashboard({
     };
 
     loadChartData();
-  }, [selectedSymbol, timeframe]);
+  }, [selectedSymbol, timeframe, apiUrl]);
 
-  if (loading) {
+  if (overviewLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] bg-background">
         <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
@@ -115,7 +92,9 @@ export function OverviewDashboard({
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {stats && <StatsOverview stats={stats.stats} account={stats.account} />}
+      {overviewData?.stats && (
+        <StatsOverview stats={overviewData.stats.stats} account={overviewData.stats.account} />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="glass rounded-xl p-6 hover-card">
@@ -123,14 +102,16 @@ export function OverviewDashboard({
             <TrendingUp className="w-5 h-5 text-primary" />
             Equity Curve
           </h3>
-          {equity && <EquityCurve data={equity.equityCurve} />}
+          {overviewData?.equity && <EquityCurve data={overviewData.equity.equityCurve || []} />}
         </div>
         <div className="glass rounded-xl p-6 hover-card">
           <h3 className="text-lg font-semibold mb-6 flex items-center gap-2 text-foreground">
             <BarChart3 className="w-5 h-5 text-primary" />
             Monthly PnL
           </h3>
-          {stats && <MonthlyPnLChart data={stats.stats.monthlyPnl} />}
+          {overviewData?.stats && (
+            <MonthlyPnLChart data={overviewData.stats.stats?.monthlyPnl || []} />
+          )}
         </div>
       </div>
 

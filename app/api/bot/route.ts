@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 // Mock bot state (in-memory, will reset on server restart)
-let botState = {
+const botState = {
   running: false,
   startedAt: null as number | null,
 };
