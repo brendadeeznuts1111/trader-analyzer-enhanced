@@ -17,17 +17,14 @@ import { sendToThread, sendAndPin, sendMessage, TelegramResponse, MessageResult 
 // Update these after creating topics or use existing ones
 export const THREADS = {
   GENERAL: undefined, // General topic (no thread_id needed)
-  GIT_LOG: 6, // Git-log thread
-  TESTING: 2, // Testing-thread
-  ERROR_LOG: process.env.TELEGRAM_ERROR_THREAD
-    ? parseInt(process.env.TELEGRAM_ERROR_THREAD)
-    : undefined,
-  TRADE_ALERTS: process.env.TELEGRAM_TRADE_THREAD
-    ? parseInt(process.env.TELEGRAM_TRADE_THREAD)
-    : undefined,
-  SYSTEM_STATUS: process.env.TELEGRAM_SYSTEM_THREAD
-    ? parseInt(process.env.TELEGRAM_SYSTEM_THREAD)
-    : undefined,
+  GIT_LOG: 6, // Git-log thread - commits, branches, PRs
+  TESTING: 2, // Testing-thread - errors, debug, dev logs
+  ERROR_LOG: parseInt(process.env.TELEGRAM_ERROR_THREAD || '2'), // Errors (fallback to Testing)
+  TRADE_ALERTS: parseInt(process.env.TELEGRAM_TRADE_THREAD || '0') || undefined,
+  SYSTEM_STATUS: parseInt(process.env.TELEGRAM_SYSTEM_THREAD || '0') || undefined,
+  PIPELINE: parseInt(process.env.TELEGRAM_PIPELINE_THREAD || '0') || undefined,
+  COMMANDS: parseInt(process.env.TELEGRAM_COMMANDS_THREAD || '6'), // Commands (fallback to Git-log)
+  FEEDBACK: parseInt(process.env.TELEGRAM_FEEDBACK_THREAD || '0') || undefined,
 } as const;
 
 // ═══════════════════════════════════════════════════════════════
@@ -467,6 +464,179 @@ function formatUptime(seconds: number): string {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// PIPELINE LOGGING
+// ═══════════════════════════════════════════════════════════════
+
+export interface PipelineStatus {
+  stage: string;
+  status: 'running' | 'success' | 'failed' | 'pending';
+  duration?: number;
+  details?: string;
+}
+
+/**
+ * Log pipeline stage update
+ */
+export async function logPipeline(
+  pipeline: PipelineStatus
+): Promise<TelegramResponse<MessageResult>> {
+  const emoji = {
+    running: '🔄',
+    success: '✅',
+    failed: '❌',
+    pending: '⏳',
+  };
+
+  const durationText = pipeline.duration ? ` (${pipeline.duration}ms)` : '';
+
+  const text = `
+${emoji[pipeline.status]} <b>Pipeline: ${pipeline.stage}</b>${durationText}
+${pipeline.details ? `\n${pipeline.details}` : ''}
+`.trim();
+
+  const threadId = THREADS.PIPELINE || THREADS.GIT_LOG;
+  if (threadId) {
+    return sendToThread(threadId, text);
+  }
+  return sendMessage({ text });
+}
+
+/**
+ * Log full pipeline run
+ */
+export async function logPipelineRun(
+  stages: PipelineStatus[],
+  totalDuration: number,
+  success: boolean
+): Promise<TelegramResponse<MessageResult>> {
+  const stageList = stages
+    .map(s => {
+      const emoji = s.status === 'success' ? '✅' : s.status === 'failed' ? '❌' : '⏳';
+      return `${emoji} ${s.stage}${s.duration ? ` (${s.duration}ms)` : ''}`;
+    })
+    .join('\n');
+
+  const text = `
+${success ? '✅' : '❌'} <b>PIPELINE ${success ? 'PASSED' : 'FAILED'}</b>
+
+${stageList}
+
+⏱️ <b>Total:</b> ${totalDuration}ms
+⏰ ${new Date().toISOString()}
+`.trim();
+
+  const threadId = THREADS.PIPELINE || THREADS.GIT_LOG;
+  if (threadId) {
+    return sendToThread(threadId, text);
+  }
+  return sendMessage({ text });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FEEDBACK & TOOL CALLS
+// ═══════════════════════════════════════════════════════════════
+
+export interface ToolCall {
+  tool: string;
+  action: string;
+  params?: Record<string, any>;
+  result?: 'success' | 'error';
+  duration?: number;
+  error?: string;
+}
+
+/**
+ * Log a tool call for feedback loop
+ */
+export async function logToolCall(call: ToolCall): Promise<TelegramResponse<MessageResult>> {
+  const emoji = call.result === 'success' ? '✅' : call.result === 'error' ? '❌' : '🔧';
+
+  const paramsText = call.params
+    ? `\n<code>${JSON.stringify(call.params, null, 2).slice(0, 300)}</code>`
+    : '';
+
+  const errorText = call.error ? `\n⚠️ ${escapeHtml(call.error)}` : '';
+
+  const text = `
+${emoji} <b>${call.tool}.${call.action}</b>${call.duration ? ` (${call.duration}ms)` : ''}${paramsText}${errorText}
+`.trim();
+
+  const threadId = THREADS.FEEDBACK || THREADS.TESTING;
+  if (threadId) {
+    return sendToThread(threadId, text);
+  }
+  return sendMessage({ text });
+}
+
+/**
+ * Log user feedback
+ */
+export async function logFeedback(
+  type: 'bug' | 'feature' | 'question' | 'praise',
+  message: string,
+  user?: string
+): Promise<TelegramResponse<MessageResult>> {
+  const emoji = {
+    bug: '🐛',
+    feature: '💡',
+    question: '❓',
+    praise: '⭐',
+  };
+
+  const label = {
+    bug: 'BUG REPORT',
+    feature: 'FEATURE REQUEST',
+    question: 'QUESTION',
+    praise: 'FEEDBACK',
+  };
+
+  const text = `
+${emoji[type]} <b>${label[type]}</b>
+
+${escapeHtml(message)}
+${user ? `\n👤 ${user}` : ''}
+
+⏰ ${new Date().toISOString()}
+`.trim();
+
+  const threadId = THREADS.FEEDBACK || THREADS.TESTING;
+  if (threadId) {
+    return sendToThread(threadId, text);
+  }
+  return sendMessage({ text });
+}
+
+/**
+ * Log AI/LLM interaction for debugging
+ */
+export async function logAIInteraction(
+  action: string,
+  input: string,
+  output: string,
+  tokens?: { input: number; output: number }
+): Promise<TelegramResponse<MessageResult>> {
+  const tokensText = tokens ? `\n📊 Tokens: ${tokens.input} in / ${tokens.output} out` : '';
+
+  const text = `
+🤖 <b>AI: ${action}</b>
+
+<b>Input:</b>
+<code>${escapeHtml(input.slice(0, 200))}${input.length > 200 ? '...' : ''}</code>
+
+<b>Output:</b>
+<code>${escapeHtml(output.slice(0, 300))}${output.length > 300 ? '...' : ''}</code>${tokensText}
+
+⏰ ${new Date().toISOString()}
+`.trim();
+
+  const threadId = THREADS.FEEDBACK || THREADS.TESTING;
+  if (threadId) {
+    return sendToThread(threadId, text);
+  }
+  return sendMessage({ text });
+}
+
+// ═══════════════════════════════════════════════════════════════
 // BATCH OPERATIONS
 // ═══════════════════════════════════════════════════════════════
 
@@ -500,4 +670,42 @@ export async function initializeThreadPins(): Promise<void> {
       THREADS.TRADE_ALERTS
     );
   }
+}
+
+/**
+ * Send startup notification
+ */
+export async function logStartup(version: string): Promise<TelegramResponse<MessageResult>> {
+  const text = `
+🚀 <b>TRADER ANALYZER STARTED</b>
+
+<b>Version:</b> ${version}
+<b>Environment:</b> ${process.env.NODE_ENV || 'development'}
+<b>Node:</b> ${process.version}
+
+<b>Threads Active:</b>
+• Git-log: #${THREADS.GIT_LOG}
+• Testing: #${THREADS.TESTING}
+${THREADS.PIPELINE ? `• Pipeline: #${THREADS.PIPELINE}` : ''}
+${THREADS.TRADE_ALERTS ? `• Trades: #${THREADS.TRADE_ALERTS}` : ''}
+
+⏰ ${new Date().toISOString()}
+`.trim();
+
+  return sendMessage({ text });
+}
+
+/**
+ * Send shutdown notification
+ */
+export async function logShutdown(reason?: string): Promise<TelegramResponse<MessageResult>> {
+  const text = `
+🛑 <b>TRADER ANALYZER STOPPING</b>
+
+${reason ? `<b>Reason:</b> ${reason}\n` : ''}<b>Uptime:</b> ${formatUptime(process.uptime())}
+
+⏰ ${new Date().toISOString()}
+`.trim();
+
+  return sendMessage({ text });
 }
