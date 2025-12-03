@@ -73,3 +73,8 @@ next-env.d.ts
 # ============ Test Scripts (optional) ============
 # test_*.js
 # verify_exchange.js
+
+# SQLite databases
+data/*.db
+data/*.db-shm
+data/*.db-wal
