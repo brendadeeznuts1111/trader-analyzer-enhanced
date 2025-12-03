@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 // Telegram Mini App SDK types
 declare global {
@@ -96,6 +96,12 @@ interface SystemStatus {
   version: string;
 }
 
+// Bot status interface
+interface BotStatus {
+  running: boolean;
+  uptime: number;
+}
+
 export default function MiniAppPage() {
   const [tg, setTg] = useState<Window['Telegram']>();
   const [user, setUser] = useState<{ id: number; first_name: string; username?: string } | null>(
@@ -104,7 +110,9 @@ export default function MiniAppPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [systemStatus, setSystemStatus] = useState<SystemStatus | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'trades' | 'settings'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'trades' | 'settings' | 'bot'>('dashboard');
+  const [botStatus, setBotStatus] = useState<BotStatus | null>(null);
+  const [botLoading, setBotLoading] = useState(false);
 
   useEffect(() => {
     // Initialize Telegram Mini App
@@ -133,6 +141,7 @@ export default function MiniAppPage() {
     }
 
     loadData();
+    fetchBotStatus();
   }, []);
 
   async function loadData() {
@@ -166,6 +175,45 @@ export default function MiniAppPage() {
     setLoading(false);
   }
 
+  async function fetchBotStatus() {
+    try {
+      const res = await fetch('/api/bot');
+      if (res.ok) {
+        const data = await res.json();
+        setBotStatus(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch bot status:', error);
+    }
+  }
+
+  async function handleBotAction(action: 'start' | 'stop') {
+    if (!tg) return;
+    setBotLoading(true);
+    try {
+      const res = await fetch('/api/bot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setBotStatus(data);
+        tg.WebApp.HapticFeedback.notificationOccurred('success');
+      } else {
+        const err = await res.json();
+        tg.WebApp.showAlert(`Error: ${err.error}`);
+        tg.WebApp.HapticFeedback.notificationOccurred('error');
+      }
+    } catch (error) {
+      console.error('Bot action failed:', error);
+      tg.WebApp.showAlert('Network error');
+      tg.WebApp.HapticFeedback.notificationOccurred('error');
+    } finally {
+      setBotLoading(false);
+    }
+  }
+
   const themeParams = tg?.WebApp.themeParams || {};
   const isDark = tg?.WebApp.colorScheme === 'dark';
 
@@ -190,7 +238,7 @@ export default function MiniAppPage() {
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6">
-        {(['dashboard', 'trades', 'settings'] as const).map(tab => (
+        {(['dashboard', 'trades', 'bot', 'settings'] as const).map(tab => (
           <button
             key={tab}
             onClick={() => {
@@ -212,7 +260,7 @@ export default function MiniAppPage() {
         ))}
       </div>
 
-      {loading ? (
+      {loading && activeTab !== 'bot' ? ( // Only show loading for non-bot tabs? We'll adjust.
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
         </div>
@@ -294,6 +342,63 @@ export default function MiniAppPage() {
             </div>
           )}
 
+          {/* Bot Tab */}
+          {activeTab === 'bot' && (
+            <div className="space-y-4">
+              <div
+                className="rounded-xl p-4"
+                style={{
+                  backgroundColor:
+                    themeParams.secondary_bg_color || (isDark ? '#2a2a2a' : '#f5f5f5'),
+                }}
+              >
+                <h2 className="font-semibold mb-4">Trading Bot Control</h2>
+                {botStatus ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Status:</span>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          botStatus.running
+                            ? 'bg-green-500/20 text-green-500'
+                            : 'bg-red-500/20 text-red-500'
+                        }`}
+                      >
+                        {botStatus.running ? 'RUNNING' : 'STOPPED'}
+                      </span>
+                    </div>
+                    {botStatus.running && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Uptime:</span>
+                        <span className="text-sm">
+                          {formatUptime(botStatus.uptime)}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex gap-4 mt-4">
+                      <button
+                        onClick={() => handleBotAction('start')}
+                        disabled={botLoading || botStatus.running}
+                        className="flex-1 py-2 rounded-lg bg-green-500 text-white disabled:opacity-50"
+                      >
+                        Start
+                      </button>
+                      <button
+                        onClick={() => handleBotAction('stop')}
+                        disabled={botLoading || !botStatus.running}
+                        className="flex-1 py-2 rounded-lg bg-red-500 text-white disabled:opacity-50"
+                      >
+                        Stop
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm opacity-70">Loading bot status...</p>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Settings Tab */}
           {activeTab === 'settings' && (
             <div className="space-y-4">
@@ -354,9 +459,7 @@ function StatCard({
       style={{ backgroundColor: bgColor || (isDark ? '#2a2a2a' : '#f5f5f5') }}
     >
       <p className="text-xs opacity-70 mb-1">{label}</p>
-      <p className="text-xl font-bold" style={{ color: valueColor }}>
-        {value}
-      </p>
+      <p className="text-xl font-bold" style={{ color: valueColor }}>{value}</p>
     </div>
   );
 }
@@ -368,4 +471,10 @@ function SettingRow({ label, value }: { label: string; value: string }) {
       <span className="text-sm opacity-70">{value}</span>
     </div>
   );
+}
+
+function formatUptime(seconds: number): string {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  return `${hours}h ${minutes}m`;
 }

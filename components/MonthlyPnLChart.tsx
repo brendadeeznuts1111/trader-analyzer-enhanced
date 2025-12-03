@@ -17,9 +17,10 @@ interface MonthlyPnLChartProps {
 export function MonthlyPnLChart({ data }: MonthlyPnLChartProps) {
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const chartRef = useRef<IChartApi | null>(null);
+    const safeData = data || [];
 
     useEffect(() => {
-        if (!chartContainerRef.current || data.length === 0) return;
+        if (!chartContainerRef.current || safeData.length === 0) return;
 
         const chart = createChart(chartContainerRef.current, {
             layout: {
@@ -54,7 +55,7 @@ export function MonthlyPnLChart({ data }: MonthlyPnLChartProps) {
 
         // Convert monthly data to chart format
         // Using month index as time (workaround for string months)
-        const chartData = data.map((d, index) => {
+        const chartData = safeData.map((d, index) => {
             const [year, month] = d.month.split('-');
             const date = new Date(parseInt(year), parseInt(month) - 1, 1);
             return {
@@ -79,20 +80,20 @@ export function MonthlyPnLChart({ data }: MonthlyPnLChartProps) {
             window.removeEventListener('resize', handleResize);
             chart.remove();
         };
-    }, [data]);
+    }, [safeData]);
 
     // Calculate summary stats
-    const totalPnl = data.reduce((sum, d) => sum + d.pnl, 0);
-    const totalFunding = data.reduce((sum, d) => sum + d.funding, 0);
-    const profitableMonths = data.filter(d => d.pnl > 0).length;
-    const avgMonthlyPnl = data.length > 0 ? totalPnl / data.length : 0;
+    const totalPnl = safeData.reduce((sum, d) => sum + d.pnl, 0);
+    const totalFunding = safeData.reduce((sum, d) => sum + d.funding, 0);
+    const profitableMonths = safeData.filter(d => d.pnl > 0).length;
+    const avgMonthlyPnl = safeData.length > 0 ? totalPnl / safeData.length : 0;
 
     return (
         <div className="w-full">
             <div className="flex justify-between items-start mb-4">
                 <div>
                     <p className="text-sm text-muted-foreground">
-                        {data.length} months tracked
+                        {safeData.length} months tracked
                     </p>
                 </div>
                 <div className="text-right">
@@ -100,7 +101,7 @@ export function MonthlyPnLChart({ data }: MonthlyPnLChartProps) {
                         {totalPnl >= 0 ? '+' : ''}{totalPnl.toFixed(4)} BTC
                     </p>
                     <p className="text-xs text-muted-foreground">
-                        {profitableMonths}/{data.length} profitable months ({((profitableMonths / data.length) * 100).toFixed(0)}%)
+                        {profitableMonths}/{safeData.length} profitable months ({((profitableMonths / safeData.length) * 100).toFixed(0)}%)
                     </p>
                 </div>
             </div>
@@ -119,7 +120,7 @@ export function MonthlyPnLChart({ data }: MonthlyPnLChartProps) {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-border/50">
-                        {[...data].reverse().slice(0, 12).map((d) => (
+                        {[...safeData].reverse().slice(0, 12).map((d) => (
                             <tr key={d.month} className="hover:bg-secondary/30 transition-colors">
                                 <td className="py-2 font-medium">{d.month}</td>
                                 <td className={`py-2 text-right font-bold ${d.pnl >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
