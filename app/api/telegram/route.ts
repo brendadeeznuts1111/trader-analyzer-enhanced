@@ -54,6 +54,20 @@ import {
   getBotInfo,
   getUpdates,
   TOPIC_COLORS,
+  // Mini App
+  sendWithMiniApp,
+  sendWithKeyboard,
+  answerCallbackQuery,
+  setChatMenuButton,
+  getChatMenuButton,
+  // Channel
+  sendToChannel,
+  getChannelInfo,
+  getChannelMemberCount,
+  // Bot commands
+  setMyCommands,
+  getMyCommands,
+  setMyDescription,
 } from '../../../lib/telegram';
 import { buildApiHeaders, headersToObject, createErrorResponse } from '../../../lib/api-headers';
 
@@ -398,6 +412,95 @@ export async function POST(request: Request) {
 
       case 'health':
         result = await sendHealthCheck(body.threadId);
+        break;
+
+      // ═══════════════════════════════════════════════════════════
+      // MINI APP
+      // ═══════════════════════════════════════════════════════════
+      case 'sendMiniApp':
+        if (!body.text || !body.webAppUrl) {
+          return errorResponse('Missing required fields: text, webAppUrl', request);
+        }
+        result = await sendWithMiniApp(
+          body.text,
+          body.webAppUrl,
+          body.buttonText || 'Open App',
+          body.chatId,
+          body.threadId
+        );
+        break;
+
+      case 'sendKeyboard':
+        if (!body.text || !body.keyboard) {
+          return errorResponse('Missing required fields: text, keyboard', request);
+        }
+        result = await sendWithKeyboard(body.text, body.keyboard, body.chatId, {
+          threadId: body.threadId,
+          parseMode: body.parseMode,
+        });
+        break;
+
+      case 'answerCallback':
+        if (!body.callbackQueryId) {
+          return errorResponse('Missing required field: callbackQueryId', request);
+        }
+        result = await answerCallbackQuery(body.callbackQueryId, {
+          text: body.text,
+          show_alert: body.showAlert,
+          url: body.url,
+        });
+        break;
+
+      case 'setMenuButton':
+        result = await setChatMenuButton(body.chatId, body.menuButton);
+        break;
+
+      case 'getMenuButton':
+        result = await getChatMenuButton(body.chatId);
+        break;
+
+      // ═══════════════════════════════════════════════════════════
+      // CHANNEL
+      // ═══════════════════════════════════════════════════════════
+      case 'sendToChannel':
+        if (!body.text) {
+          return errorResponse('Missing required field: text', request);
+        }
+        result = await sendToChannel(body.text, {
+          parseMode: body.parseMode,
+          disableNotification: body.silent,
+          protectContent: body.protectContent,
+          keyboard: body.keyboard,
+        });
+        break;
+
+      case 'getChannel':
+        result = await getChannelInfo();
+        break;
+
+      case 'getChannelMembers':
+        result = await getChannelMemberCount();
+        break;
+
+      // ═══════════════════════════════════════════════════════════
+      // BOT COMMANDS
+      // ═══════════════════════════════════════════════════════════
+      case 'setCommands':
+        if (!body.commands) {
+          return errorResponse('Missing required field: commands', request);
+        }
+        result = await setMyCommands(body.commands, body.scope, body.languageCode);
+        break;
+
+      case 'getCommands':
+        result = await getMyCommands(body.scope, body.languageCode);
+        break;
+
+      case 'setBotDescription':
+        if (!body.description) {
+          return errorResponse('Missing required field: description', request);
+        }
+        result = await setMyDescription(body.description, body.languageCode);
         break;
 
       default:
