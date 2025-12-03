@@ -311,6 +311,121 @@ export const EXCHANGE_BLUEPRINTS: Blueprint[] = [
       dependencies: ['BP-RUNTIME-BUN@1.3.3', 'BP-BACKPRESSURE', 'BP-BATCH-SEND'],
     },
   },
+  // [[TECH][GLOBAL][BLUEPRINT][META:{blueprint-id=BP-EXCHANGE-KALSHI;version=0.1.0;root=ROOT-API-CLIENT;status=queued}]]
+  // Kalshi: CFTC-regulated prediction market (US-only, event contracts)
+  {
+    id: 'BP-EXCHANGE-KALSHI',
+    version: '0.1.0',
+    root: 'ROOT-API-CLIENT',
+    properties: {
+      baseUrl: {
+        value: 'https://trading-api.kalshi.com',
+        type: 'string',
+        constraints: 'required',
+        root: 'ROOT-URL-KALSHI',
+      },
+      auth: {
+        value: { apiKey: 'ORCA_KALSHI_APIKEY', method: 'bearer' },
+        type: 'object',
+        chain: 'BP-SIGN-REQUEST,BP-RATE-LIMIT',
+      },
+      endpoints: {
+        value: {
+          markets: '/trade-api/v2/markets',
+          events: '/trade-api/v2/events',
+          portfolio: '/trade-api/v2/portfolio/positions',
+          orders: '/trade-api/v2/portfolio/orders',
+          trades: '/trade-api/v2/markets/{ticker}/trades',
+        },
+        type: 'object',
+        root: 'ROOT-ENDPOINT-MAP',
+      },
+      rateLimit: {
+        value: { requests: 10, window: '1s', burstLimit: 100 },
+        type: 'object',
+        root: 'ROOT-RATE-THROTTLE',
+      },
+      regulatory: {
+        value: {
+          regulator: 'CFTC',
+          jurisdiction: 'US',
+          contractType: 'event',
+          positionLimits: { maxContracts: 25000, maxNotional: 25000 },
+          eligibility: 'US-residents-only',
+          kycRequired: true,
+        },
+        type: 'object',
+        root: 'ROOT-COMPLIANCE',
+      },
+      errorHandling: {
+        value: { retry: 3, backoff: 'exp', codes: [429, 502, 503] },
+        type: 'object',
+        override: 'true',
+        root: 'ROOT-ERROR-STRATEGY',
+      },
+      compression: {
+        value: 'gzip',
+        type: 'string',
+        inherit: 'BP-RUNTIME-BUN/streams',
+      },
+      marketNormalizer: {
+        value: { uuid: 'v5-namespace', format: 'ORCA-canonical', tickerPrefix: 'kalshi' },
+        type: 'object',
+        chain: 'BP-NORMALIZE-ODDS,BP-MERGE-BOOKS',
+        root: 'ROOT-UUID-TAXONOMY',
+      },
+      dataTypes: {
+        value: {
+          contract: { type: 'binary', fields: ['yes_price', 'no_price', 'volume'] },
+          order: { type: 'limit', fields: ['price', 'count', 'side'] },
+          trade: { type: 'fill', fields: ['created_time', 'count', 'yes_price'] },
+        },
+        type: 'object',
+        root: 'ROOT-SCHEMA-JSON',
+      },
+      websocket: {
+        value: {
+          url: 'wss://trading-api.kalshi.com/trade-api/ws/v2',
+          channels: ['orderbook_delta', 'ticker', 'trade'],
+        },
+        type: 'object',
+        inherit: 'BP-WS-OPTIMIZATION/websocket',
+      },
+    },
+    hierarchy: '0.1.0.EXCHANGE.CLIENT.1.0.A.1.2.KALSHI',
+    backLinks: {
+      root: 'ROOT-API-CLIENT',
+      dependencies: ['BP-RUNTIME-BUN@1.3.3', 'BP-UUID-V5', 'BP-WS-OPTIMIZATION@0.1.0'],
+    },
+  },
+  {
+    id: 'BP-INTEGRATION-KALSHI',
+    version: '0.1.0',
+    root: 'ROOT-EXCHANGE-PIPELINE',
+    properties: {
+      selector: {
+        value: 'UUID-dropdown',
+        type: 'string',
+        chain: 'BP-KALSHI-MARKETS,BP-NORMALIZE',
+        root: 'ROOT-MARKET-UI',
+      },
+      pipeline: {
+        value: 'fetch-auth-throttle-cache',
+        type: 'string',
+        root: 'ROOT-DATA-FLOW',
+      },
+      compliance: {
+        value: { geoCheck: true, kycVerify: true, positionCheck: true },
+        type: 'object',
+        root: 'ROOT-COMPLIANCE',
+      },
+      metrics: {
+        value: { latency: 'p95<200ms', errors: '<0.1%', cache: 'hit>80%' },
+        type: 'object',
+      },
+    },
+    hierarchy: '0.1.0.INTEGRATION.EXCHANGE.1.0.A.1.2',
+  },
 ];
 
 export const ALL_BLUEPRINTS: Blueprint[] = [

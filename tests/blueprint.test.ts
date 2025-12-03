@@ -278,4 +278,55 @@ describe('Blueprint System', () => {
       expect(limits.maxPayloadLength).toBe(8388608); // 8MB
     });
   });
+
+  describe('Kalshi Exchange Blueprint (v0.2.0)', () => {
+    it('should have Kalshi exchange blueprint', () => {
+      const bp = blueprintRegistry.getBlueprint('BP-EXCHANGE-KALSHI@0.1.0');
+
+      expect(bp).toBeDefined();
+      expect(bp?.properties.baseUrl.value).toBe('https://trading-api.kalshi.com');
+    });
+
+    it('should have CFTC regulatory properties', () => {
+      const bp = blueprintRegistry.getBlueprint('BP-EXCHANGE-KALSHI@0.1.0');
+
+      expect(bp?.properties.regulatory.value.regulator).toBe('CFTC');
+      expect(bp?.properties.regulatory.value.jurisdiction).toBe('US');
+      expect(bp?.properties.regulatory.value.kycRequired).toBe(true);
+    });
+
+    it('should have position limits', () => {
+      const bp = blueprintRegistry.getBlueprint('BP-EXCHANGE-KALSHI@0.1.0');
+
+      expect(bp?.properties.regulatory.value.positionLimits.maxContracts).toBe(25000);
+      expect(bp?.properties.regulatory.value.positionLimits.maxNotional).toBe(25000);
+    });
+
+    it('should have WebSocket configuration', () => {
+      const bp = blueprintRegistry.getBlueprint('BP-EXCHANGE-KALSHI@0.1.0');
+
+      expect(bp?.properties.websocket.value.url).toBe(
+        'wss://trading-api.kalshi.com/trade-api/ws/v2'
+      );
+      expect(bp?.properties.websocket.value.channels).toContain('orderbook_delta');
+    });
+
+    it('should have Kalshi integration blueprint', () => {
+      const bp = blueprintRegistry.getBlueprint('BP-INTEGRATION-KALSHI@0.1.0');
+
+      expect(bp).toBeDefined();
+      expect(bp?.properties.compliance.value.geoCheck).toBe(true);
+      expect(bp?.properties.compliance.value.kycVerify).toBe(true);
+    });
+
+    it('should resolve Kalshi instance properties', async () => {
+      const instance = blueprintRegistry.createInstance('BP-EXCHANGE-KALSHI@0.1.0');
+
+      const baseUrl = await resolver.resolve(instance.id, 'baseUrl');
+      const regulatory = await resolver.resolve(instance.id, 'regulatory');
+
+      expect(baseUrl).toBe('https://trading-api.kalshi.com');
+      expect(regulatory.regulator).toBe('CFTC');
+    });
+  });
 });
