@@ -780,3 +780,345 @@ export async function deleteWebhook(
 export async function getWebhookInfo(): Promise<TelegramResponse<any>> {
   return telegramApi('getWebhookInfo');
 }
+
+// ═══════════════════════════════════════════════════════════════
+// MINI APP (WEB APP) SUPPORT
+// ═══════════════════════════════════════════════════════════════
+
+export interface WebAppInfo {
+  url: string;
+}
+
+export interface InlineKeyboardButton {
+  text: string;
+  url?: string;
+  callback_data?: string;
+  web_app?: WebAppInfo;
+  login_url?: { url: string };
+  switch_inline_query?: string;
+  switch_inline_query_current_chat?: string;
+}
+
+export interface InlineKeyboardMarkup {
+  inline_keyboard: InlineKeyboardButton[][];
+}
+
+/**
+ * Send message with Mini App button
+ */
+export async function sendWithMiniApp(
+  text: string,
+  webAppUrl: string,
+  buttonText: string = 'Open App',
+  chatId: string | number = TELEGRAM_CHAT_ID || '',
+  threadId?: number
+): Promise<TelegramResponse<MessageResult>> {
+  return telegramApi<MessageResult>('sendMessage', {
+    chat_id: chatId,
+    text,
+    parse_mode: 'HTML',
+    message_thread_id: threadId,
+    reply_markup: {
+      inline_keyboard: [[{ text: buttonText, web_app: { url: webAppUrl } }]],
+    },
+  });
+}
+
+/**
+ * Send message with inline keyboard
+ */
+export async function sendWithKeyboard(
+  text: string,
+  keyboard: InlineKeyboardButton[][],
+  chatId: string | number = TELEGRAM_CHAT_ID || '',
+  options: {
+    threadId?: number;
+    parseMode?: 'HTML' | 'Markdown' | 'MarkdownV2';
+  } = {}
+): Promise<TelegramResponse<MessageResult>> {
+  return telegramApi<MessageResult>('sendMessage', {
+    chat_id: chatId,
+    text,
+    parse_mode: options.parseMode || 'HTML',
+    message_thread_id: options.threadId,
+    reply_markup: { inline_keyboard: keyboard },
+  });
+}
+
+/**
+ * Edit message reply markup (buttons)
+ */
+export async function editMessageReplyMarkup(
+  messageId: number,
+  keyboard: InlineKeyboardButton[][] | null,
+  chatId: string | number = TELEGRAM_CHAT_ID || ''
+): Promise<TelegramResponse<MessageResult>> {
+  return telegramApi<MessageResult>('editMessageReplyMarkup', {
+    chat_id: chatId,
+    message_id: messageId,
+    reply_markup: keyboard ? { inline_keyboard: keyboard } : undefined,
+  });
+}
+
+/**
+ * Answer callback query (when user clicks inline button)
+ */
+export async function answerCallbackQuery(
+  callbackQueryId: string,
+  options: {
+    text?: string;
+    show_alert?: boolean;
+    url?: string;
+    cache_time?: number;
+  } = {}
+): Promise<TelegramResponse<boolean>> {
+  return telegramApi<boolean>('answerCallbackQuery', {
+    callback_query_id: callbackQueryId,
+    ...options,
+  });
+}
+
+/**
+ * Set bot menu button (Mini App launcher)
+ */
+export async function setChatMenuButton(
+  chatId?: string | number,
+  menuButton?: {
+    type: 'commands' | 'web_app' | 'default';
+    text?: string;
+    web_app?: WebAppInfo;
+  }
+): Promise<TelegramResponse<boolean>> {
+  return telegramApi<boolean>('setChatMenuButton', {
+    chat_id: chatId,
+    menu_button: menuButton,
+  });
+}
+
+/**
+ * Get bot menu button
+ */
+export async function getChatMenuButton(chatId?: string | number): Promise<TelegramResponse<any>> {
+  return telegramApi('getChatMenuButton', { chat_id: chatId });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CHANNEL SUPPORT
+// ═══════════════════════════════════════════════════════════════
+
+const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
+
+/**
+ * Send message to channel
+ */
+export async function sendToChannel(
+  text: string,
+  options: {
+    parseMode?: 'HTML' | 'Markdown' | 'MarkdownV2';
+    disableNotification?: boolean;
+    protectContent?: boolean;
+    keyboard?: InlineKeyboardButton[][];
+  } = {}
+): Promise<TelegramResponse<MessageResult>> {
+  if (!TELEGRAM_CHANNEL_ID) {
+    return { ok: false, description: 'Channel ID not configured' };
+  }
+
+  return telegramApi<MessageResult>('sendMessage', {
+    chat_id: TELEGRAM_CHANNEL_ID,
+    text,
+    parse_mode: options.parseMode || 'HTML',
+    disable_notification: options.disableNotification,
+    protect_content: options.protectContent,
+    reply_markup: options.keyboard ? { inline_keyboard: options.keyboard } : undefined,
+  });
+}
+
+/**
+ * Forward message to channel
+ */
+export async function forwardToChannel(
+  fromChatId: string | number,
+  messageId: number
+): Promise<TelegramResponse<MessageResult>> {
+  if (!TELEGRAM_CHANNEL_ID) {
+    return { ok: false, description: 'Channel ID not configured' };
+  }
+
+  return telegramApi<MessageResult>('forwardMessage', {
+    chat_id: TELEGRAM_CHANNEL_ID,
+    from_chat_id: fromChatId,
+    message_id: messageId,
+  });
+}
+
+/**
+ * Get channel info
+ */
+export async function getChannelInfo(): Promise<TelegramResponse<any>> {
+  if (!TELEGRAM_CHANNEL_ID) {
+    return { ok: false, description: 'Channel ID not configured' };
+  }
+
+  return telegramApi('getChat', { chat_id: TELEGRAM_CHANNEL_ID });
+}
+
+/**
+ * Get channel member count
+ */
+export async function getChannelMemberCount(): Promise<TelegramResponse<number>> {
+  if (!TELEGRAM_CHANNEL_ID) {
+    return { ok: false, description: 'Channel ID not configured' };
+  }
+
+  return telegramApi<number>('getChatMemberCount', { chat_id: TELEGRAM_CHANNEL_ID });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INLINE QUERIES
+// ═══════════════════════════════════════════════════════════════
+
+export interface InlineQueryResult {
+  type: 'article' | 'photo' | 'gif' | 'video' | 'audio' | 'document';
+  id: string;
+  title?: string;
+  description?: string;
+  thumb_url?: string;
+  input_message_content?: {
+    message_text: string;
+    parse_mode?: string;
+  };
+  reply_markup?: InlineKeyboardMarkup;
+}
+
+/**
+ * Answer inline query
+ */
+export async function answerInlineQuery(
+  inlineQueryId: string,
+  results: InlineQueryResult[],
+  options: {
+    cache_time?: number;
+    is_personal?: boolean;
+    next_offset?: string;
+    button?: {
+      text: string;
+      web_app?: WebAppInfo;
+      start_parameter?: string;
+    };
+  } = {}
+): Promise<TelegramResponse<boolean>> {
+  return telegramApi<boolean>('answerInlineQuery', {
+    inline_query_id: inlineQueryId,
+    results,
+    ...options,
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BOT COMMANDS
+// ═══════════════════════════════════════════════════════════════
+
+export interface BotCommand {
+  command: string;
+  description: string;
+}
+
+/**
+ * Set bot commands
+ */
+export async function setMyCommands(
+  commands: BotCommand[],
+  scope?: {
+    type:
+      | 'default'
+      | 'all_private_chats'
+      | 'all_group_chats'
+      | 'all_chat_administrators'
+      | 'chat'
+      | 'chat_administrators'
+      | 'chat_member';
+    chat_id?: string | number;
+    user_id?: number;
+  },
+  languageCode?: string
+): Promise<TelegramResponse<boolean>> {
+  return telegramApi<boolean>('setMyCommands', {
+    commands,
+    scope,
+    language_code: languageCode,
+  });
+}
+
+/**
+ * Get bot commands
+ */
+export async function getMyCommands(
+  scope?: {
+    type: string;
+    chat_id?: string | number;
+    user_id?: number;
+  },
+  languageCode?: string
+): Promise<TelegramResponse<BotCommand[]>> {
+  return telegramApi<BotCommand[]>('getMyCommands', {
+    scope,
+    language_code: languageCode,
+  });
+}
+
+/**
+ * Delete bot commands
+ */
+export async function deleteMyCommands(
+  scope?: {
+    type: string;
+    chat_id?: string | number;
+    user_id?: number;
+  },
+  languageCode?: string
+): Promise<TelegramResponse<boolean>> {
+  return telegramApi<boolean>('deleteMyCommands', {
+    scope,
+    language_code: languageCode,
+  });
+}
+
+/**
+ * Set bot name
+ */
+export async function setMyName(
+  name: string,
+  languageCode?: string
+): Promise<TelegramResponse<boolean>> {
+  return telegramApi<boolean>('setMyName', {
+    name,
+    language_code: languageCode,
+  });
+}
+
+/**
+ * Set bot description
+ */
+export async function setMyDescription(
+  description: string,
+  languageCode?: string
+): Promise<TelegramResponse<boolean>> {
+  return telegramApi<boolean>('setMyDescription', {
+    description,
+    language_code: languageCode,
+  });
+}
+
+/**
+ * Set bot short description (shown in profile)
+ */
+export async function setMyShortDescription(
+  shortDescription: string,
+  languageCode?: string
+): Promise<TelegramResponse<boolean>> {
+  return telegramApi<boolean>('setMyShortDescription', {
+    short_description: shortDescription,
+    language_code: languageCode,
+  });
+}
