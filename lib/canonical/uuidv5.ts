@@ -5,10 +5,61 @@
  * [CLASS:MarketCanonicalizer][#REF:v-0.1.16.CANONICAL.UUID.1.0.A.1.1][@ROOT:ROOT-MARKET-TAXONOMY][@BLUEPRINT:BP-CANONICAL-UUID@^0.1.16]]
  *
  * Generates deterministic UUIDv5 (SHA-1 based) identifiers for markets
- * Uses Bun.randomUUIDv5() native API with ORCA namespace
+ * Uses Bun.randomUUIDv5() native API with ORCA namespace when available,
+ * falls back to crypto-based implementation for Next.js runtime.
  */
 
-import { randomUUIDv5 } from 'bun';
+import { createHash } from 'crypto';
+
+// Check if running in Bun
+const isBun = typeof globalThis.Bun !== 'undefined';
+
+/**
+ * Generate UUIDv5 using Bun native or crypto fallback
+ * @param name - The name to hash
+ * @param namespace - The namespace UUID
+ * @returns UUIDv5 string
+ */
+function generateUUIDv5(name: string, namespace: string): string {
+  if (isBun) {
+    // Use Bun's native implementation
+    return (globalThis as any).Bun.randomUUIDv5(name, namespace);
+  }
+
+  // Fallback: Generate UUIDv5 using Node.js crypto (SHA-1 based)
+  // Parse namespace UUID to bytes
+  const namespaceBytes = parseUUID(namespace);
+
+  // Create SHA-1 hash of namespace + name
+  const hash = createHash('sha1').update(Buffer.from(namespaceBytes)).update(name).digest();
+
+  // Set version (5) and variant (RFC 4122)
+  hash[6] = (hash[6] & 0x0f) | 0x50; // Version 5
+  hash[8] = (hash[8] & 0x3f) | 0x80; // Variant RFC 4122
+
+  // Format as UUID string
+  return formatUUID(hash);
+}
+
+/**
+ * Parse UUID string to byte array
+ */
+function parseUUID(uuid: string): number[] {
+  const hex = uuid.replace(/-/g, '');
+  const bytes: number[] = [];
+  for (let i = 0; i < 32; i += 2) {
+    bytes.push(parseInt(hex.slice(i, i + 2), 16));
+  }
+  return bytes;
+}
+
+/**
+ * Format bytes as UUID string
+ */
+function formatUUID(bytes: Buffer): string {
+  const hex = bytes.subarray(0, 16).toString('hex');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
+}
 
 // Global ORCA namespace for all market canonicalization (RFC 4122 compliant)
 export const ORCA_NAMESPACE = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
@@ -55,11 +106,13 @@ export interface CanonicalMarket {
 }
 
 /**
- * Hash helper using Bun native APIs
+ * Hash helper using Bun native or crypto fallback
  */
 function sha256Hex(data: string): string {
-  const hash = new Bun.CryptoHasher('sha256').update(data).digest('hex');
-  return hash;
+  if (isBun) {
+    return new (globalThis as any).Bun.CryptoHasher('sha256').update(data).digest('hex');
+  }
+  return createHash('sha256').update(data).digest('hex');
 }
 
 /**
@@ -81,8 +134,8 @@ export class MarketCanonicalizer {
     // Create name string: exchange:nativeId:type:salt
     const nameString = `${exchange}:${market.nativeId}:${market.type}:${salt}`;
 
-    // Use Bun's native UUIDv5 generation
-    const uuid = randomUUIDv5(nameString, namespace);
+    // Use UUIDv5 generation (Bun native or crypto fallback)
+    const uuid = generateUUIDv5(nameString, namespace);
 
     // Generate cache key from canonical UUID
     const cacheKey = this.generateCacheKey(uuid, exchange);
@@ -275,10 +328,10 @@ export class MarketCanonicalizer {
   }
 
   /**
-   * Generate raw UUIDv5 using Bun native API
+   * Generate raw UUIDv5 (Bun native or crypto fallback)
    */
   rawUUIDv5(name: string, namespace: string = ORCA_NAMESPACE): string {
-    return randomUUIDv5(name, namespace);
+    return generateUUIDv5(name, namespace);
   }
 }
 

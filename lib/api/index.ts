@@ -17,5 +17,19 @@ export {
   apiCacheManager,
 } from './cache-manager';
 
+export {
+  // Types
+  type ExchangeHeaderConfig,
+  type CanonicalHeaderOptions,
+  // Functions
+  buildCanonicalHeaders,
+  createCanonicalResponse,
+  createCanonicalErrorResponse,
+  // Class
+  HeaderManager,
+  // Singleton
+  headerManager,
+} from './header-manager';
+
 // Default export
 export { default } from './cache-manager';
