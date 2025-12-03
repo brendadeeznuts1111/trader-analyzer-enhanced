@@ -117,7 +117,36 @@ function StatCard({
   );
 }
 
-export function StatsOverview({ stats, account }: StatsOverviewProps) {
+// Default stats to prevent undefined errors
+const defaultStats: TradingStats = {
+  totalTrades: 0,
+  totalOrders: 0,
+  filledOrders: 0,
+  canceledOrders: 0,
+  fillRate: 0,
+  cancelRate: 0,
+  limitOrders: 0,
+  marketOrders: 0,
+  limitOrderPercent: 0,
+  totalRealizedPnl: 0,
+  totalFunding: 0,
+  totalFees: 0,
+  netPnl: 0,
+  winningTrades: 0,
+  losingTrades: 0,
+  winRate: 0,
+  avgWin: 0,
+  avgLoss: 0,
+  profitFactor: 0,
+  fundingPaid: 0,
+  fundingReceived: 0,
+  tradingDays: 0,
+  avgTradesPerDay: 0,
+};
+
+export function StatsOverview({ stats: rawStats, account }: StatsOverviewProps) {
+  // Merge with defaults to prevent undefined errors
+  const stats = { ...defaultStats, ...rawStats };
   const currentPosition = account?.positions?.[0];
 
   return (
