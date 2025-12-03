@@ -15,10 +15,10 @@ export async function GET() {
         // Transform to frontend expected format
         const profile = {
             basic_info: {
-                trading_style: rawData.trading_frequency?.frequency_level?.includes('高频') ? 'day_trader' :
-                    rawData.trading_frequency?.frequency_level?.includes('低频') ? 'swing_trader' : 'day_trader',
-                risk_preference: rawData.risk_preference?.risk_level?.includes('高风险') ? 'aggressive' :
-                    rawData.risk_preference?.risk_level?.includes('低风险') ? 'conservative' : 'moderate',
+                trading_style: rawData.trading_frequency?.frequency_level?.includes('High') ? 'day_trader' :
+                    rawData.trading_frequency?.frequency_level?.includes('Low') ? 'swing_trader' : 'day_trader',
+                risk_preference: rawData.risk_preference?.risk_level?.includes('High') ? 'aggressive' :
+                    rawData.risk_preference?.risk_level?.includes('Low') ? 'conservative' : 'moderate',
                 difficulty_level: rawData.summary?.overall_score >= 7 ? 'advanced' :
                     rawData.summary?.overall_score >= 4 ? 'intermediate' : 'beginner'
             },
@@ -30,7 +30,7 @@ export async function GET() {
             },
             trading_behavior: {
                 avg_holding_time: rawData.trading_frequency ?
-                    `${Math.round(rawData.trading_frequency.avg_trade_interval_minutes)} 分钟` : 'N/A',
+                    `${Math.round(rawData.trading_frequency.avg_trade_interval_minutes)} mins` : 'N/A',
                 trades_per_week: rawData.trading_frequency ?
                     `${Math.round(rawData.trading_frequency.daily_avg_trades * 7)}` : 'N/A',
                 discipline_score: rawData.discipline_scores ?
@@ -67,76 +67,76 @@ export async function GET() {
 }
 
 function generateSummary(data: any): string {
-    const style = data.summary?.trader_type || '交易者';
+    const style = data.summary?.trader_type || 'Trader';
     const winRate = data.pnl_analysis?.win_rate || 0;
     const pf = data.pnl_analysis?.profit_factor || 0;
     const discipline = data.discipline_scores?.discipline_score || 0;
     const totalPnl = data.pnl_analysis?.total_pnl_btc || 0;
 
-    return `${style}，胜率${winRate}%，盈亏比${pf}，纪律评分${discipline * 10}/100，` +
-        `总交易${data.basic_stats?.total_orders || 0}笔订单，累计盈亏${totalPnl.toFixed(2)} BTC。`;
+    return `${style}, Win Rate ${winRate}%, Profit Factor ${pf}, Discipline Score ${discipline * 10}/100, ` +
+        `Total ${data.basic_stats?.total_orders || 0} orders, Total PnL ${totalPnl.toFixed(2)} BTC.`;
 }
 
 function generateStrengths(data: any): string[] {
     const strengths: string[] = [];
 
     if (data.discipline_scores?.limit_order_ratio > 70) {
-        strengths.push(`高限价单使用率 (${data.discipline_scores.limit_order_ratio}%)`);
+        strengths.push(`High Limit Order Usage (${data.discipline_scores.limit_order_ratio}%)`);
     }
     if (data.pnl_analysis?.profit_factor > 1.5) {
-        strengths.push(`优秀的盈亏比 (${data.pnl_analysis.profit_factor})`);
+        strengths.push(`Excellent Profit Factor (${data.pnl_analysis.profit_factor})`);
     }
     if (data.discipline_scores?.discipline_score >= 7) {
-        strengths.push(`高度自律 (评分: ${data.discipline_scores.discipline_score * 10}/100)`);
+        strengths.push(`Highly Disciplined (Score: ${data.discipline_scores.discipline_score * 10}/100)`);
     }
     if (data.basic_stats?.fill_rate > 70) {
-        strengths.push(`高成交率 (${data.basic_stats.fill_rate}%)`);
+        strengths.push(`High Fill Rate (${data.basic_stats.fill_rate}%)`);
     }
     if (data.pnl_analysis?.total_pnl_btc > 0) {
-        strengths.push(`累计盈利 (+${data.pnl_analysis.total_pnl_btc.toFixed(2)} BTC)`);
+        strengths.push(`Profitable (+${data.pnl_analysis.total_pnl_btc.toFixed(2)} BTC)`);
     }
 
-    return strengths.length > 0 ? strengths : ['数据分析中...'];
+    return strengths.length > 0 ? strengths : ['Analyzing...'];
 }
 
 function generateWeaknesses(data: any): string[] {
     const weaknesses: string[] = [];
 
     if (data.pnl_analysis?.win_rate < 50) {
-        weaknesses.push(`胜率偏低 (${data.pnl_analysis.win_rate}%)`);
+        weaknesses.push(`Low Win Rate (${data.pnl_analysis.win_rate}%)`);
     }
     if (data.discipline_scores?.patience_score < 5) {
-        weaknesses.push(`耐心不足 (评分: ${data.discipline_scores.patience_score * 10}/100)`);
+        weaknesses.push(`Lack of Patience (Score: ${data.discipline_scores.patience_score * 10}/100)`);
     }
     if (data.discipline_scores?.cancel_ratio > 25) {
-        weaknesses.push(`取消订单比例较高 (${data.discipline_scores.cancel_ratio}%)`);
+        weaknesses.push(`High Cancellation Ratio (${data.discipline_scores.cancel_ratio}%)`);
     }
     if (data.risk_preference?.risk_score >= 8) {
-        weaknesses.push(`风险偏好过高 (评分: ${data.risk_preference.risk_score}/10)`);
+        weaknesses.push(`High Risk Preference (Score: ${data.risk_preference.risk_score}/10)`);
     }
 
-    return weaknesses.length > 0 ? weaknesses : ['暂无明显不足'];
+    return weaknesses.length > 0 ? weaknesses : ['No significant weaknesses'];
 }
 
 function generateSuitableFor(data: any): string[] {
     const suitable: string[] = [];
 
-    if (data.summary?.trader_type?.includes('波段')) {
-        suitable.push('波段交易学习者');
+    if (data.summary?.trader_type?.includes('Swing')) {
+        suitable.push('Swing Trading Learners');
     }
-    if (data.summary?.trader_type?.includes('日内')) {
-        suitable.push('日内交易学习者');
+    if (data.summary?.trader_type?.includes('Day')) {
+        suitable.push('Day Trading Learners');
     }
     if (data.discipline_scores?.discipline_score >= 7) {
-        suitable.push('追求纪律性的交易者');
+        suitable.push('Disciplined Traders');
     }
     if (data.pnl_analysis?.profit_factor > 2) {
-        suitable.push('追求高盈亏比的交易者');
+        suitable.push('High Profit Factor Seekers');
     }
-    if (data.risk_preference?.risk_level?.includes('高风险')) {
-        suitable.push('风险承受能力强的投资者');
+    if (data.risk_preference?.risk_level?.includes('High')) {
+        suitable.push('High Risk Tolerance Investors');
     }
-    suitable.push('希望学习实战交易的人');
+    suitable.push('Those wanting to learn real trading');
 
     return suitable;
 }

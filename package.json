@@ -2,7 +2,7 @@
   "name": "trader-roleplay-analyzer",
   "version": "1.0.0",
   "private": true,
-  "description": "交易员扮演法分析工具 - 通过扮演优秀交易员来学习交易",
+  "description": "Trader Role-Play Analyzer - Learn trading strategies by role-playing as top traders",
   "scripts": {
     "dev": "next dev --port 3000",
     "build": "next build",
@@ -10,6 +10,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@types/uuid": "10.0.0",
     "ccxt": "^4.5.20",
     "csv-parse": "^6.1.0",
     "lightweight-charts": "^4.2.1",
@@ -17,7 +18,8 @@
     "next": "16.0.3",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "recharts": "^3.5.0"
+    "recharts": "^3.5.0",
+    "uuid": "13.0.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

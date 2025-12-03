@@ -12,6 +12,7 @@ import { TVChart } from './TVChart';
 import { TraderRolePlay } from './TraderRolePlay';
 import { AIPrediction } from './AIPrediction';
 import { TraderProfile } from './TraderProfile';
+import { DataPipelineVisualization } from './DataPipelineVisualization';
 import {
     Loader2,
     ChevronLeft,
@@ -28,10 +29,11 @@ import {
     Key,
     X,
     Check,
-    Sparkles
+    Sparkles,
+    Network
 } from 'lucide-react';
 
-type ViewMode = 'overview' | 'positions' | 'trades' | 'roleplay' | 'prediction' | 'profile';
+type ViewMode = 'overview' | 'positions' | 'trades' | 'roleplay' | 'prediction' | 'profile' | 'pipeline';
 
 interface APIConfig {
     exchange: string;
@@ -402,15 +404,15 @@ export function Dashboard() {
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-6 border-b border-border">
                     <div>
                         <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent">
-                            交易员扮演法分析器
+                            Trader Role-Play Analyzer
                         </h1>
                         <p className="text-muted-foreground mt-1 font-medium flex items-center gap-2">
                             <Sparkles className="w-4 h-4 text-yellow-500" />
-                            通过扮演优秀交易员来学习交易策略
+                            Learn trading strategies by role-playing top traders
                         </p>
                     </div>
                     <div className="flex items-center gap-4 flex-wrap">
-                        {/* API Config Button */}
+                        {/* Exchange Selector Button */}
                         <button
                             onClick={() => setShowApiConfig(!showApiConfig)}
                             className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
@@ -420,7 +422,7 @@ export function Dashboard() {
                             }`}
                         >
                             {isConnected ? <Check className="w-4 h-4" /> : <Key className="w-4 h-4" />}
-                            {isConnected ? 'API已连接' : '配置API'}
+                            {isConnected ? 'Exchange Connected' : 'Select Exchange'}
                         </button>
 
                         {/* Symbol Selector */}
@@ -449,7 +451,7 @@ export function Dashboard() {
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-lg font-semibold flex items-center gap-2">
                                 <Settings className="w-5 h-5 text-primary" />
-                                API 配置
+                                API Configuration
                             </h3>
                             <button onClick={() => setShowApiConfig(false)} className="p-1 hover:bg-white/10 rounded">
                                 <X className="w-5 h-5" />
@@ -457,19 +459,22 @@ export function Dashboard() {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm text-muted-foreground mb-1">交易所</label>
+                                <label className="block text-sm text-muted-foreground mb-1">Exchange</label>
                                 <select
                                     value={apiConfig.exchange}
                                     onChange={(e) => setApiConfig({ ...apiConfig, exchange: e.target.value })}
                                     className="w-full px-4 py-2 bg-secondary/30 border border-white/10 rounded-lg"
                                 >
-                                    <option value="bitmex">Bitmex</option>
-                                    <option value="hyperliquid" disabled>HyperLiquid (即将支持)</option>
-                                    <option value="binance" disabled>币安 (即将支持)</option>
+                                    <option value="bitmex">Bitmex (Crypto Futures)</option>
+                                    <option value="polymarket">Polymarket (Prediction Markets)</option>
+                                    <option value="kalishi">Kalishi (P2P Trading)</option>
+                                    <option value="sports">Sports Trading (NFL, NBA, Soccer)</option>
+                                    <option value="hyperliquid" disabled>HyperLiquid (Coming Soon)</option>
+                                    <option value="binance" disabled>Binance (Coming Soon)</option>
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm text-muted-foreground mb-1">交易对</label>
+                                <label className="block text-sm text-muted-foreground mb-1">Symbol</label>
                                 <input
                                     type="text"
                                     value={apiConfig.symbol}
@@ -479,13 +484,13 @@ export function Dashboard() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm text-muted-foreground mb-1">API Key (只读)</label>
+                                <label className="block text-sm text-muted-foreground mb-1">API Key (Read-Only)</label>
                                 <input
                                     type="text"
                                     value={apiConfig.apiKey}
                                     onChange={(e) => setApiConfig({ ...apiConfig, apiKey: e.target.value })}
                                     className="w-full px-4 py-2 bg-secondary/30 border border-white/10 rounded-lg"
-                                    placeholder="输入只读API Key"
+                                    placeholder="Enter Read-Only API Key"
                                 />
                             </div>
                             <div>
@@ -495,7 +500,7 @@ export function Dashboard() {
                                     value={apiConfig.apiSecret}
                                     onChange={(e) => setApiConfig({ ...apiConfig, apiSecret: e.target.value })}
                                     className="w-full px-4 py-2 bg-secondary/30 border border-white/10 rounded-lg"
-                                    placeholder="输入API Secret"
+                                    placeholder="Enter API Secret"
                                 />
                             </div>
                         </div>
@@ -504,10 +509,10 @@ export function Dashboard() {
                                 onClick={testConnection}
                                 className="px-6 py-2 bg-primary/20 text-primary hover:bg-primary/30 rounded-lg transition-colors"
                             >
-                                测试连接
+                                Test Connection
                             </button>
                             <p className="text-sm text-muted-foreground flex items-center">
-                                仅使用只读API，无法进行交易操作
+                                Using read-only API, no trading operations allowed
                             </p>
                         </div>
                     </div>
@@ -522,7 +527,7 @@ export function Dashboard() {
                             : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                         }`}
                     >
-                        <BarChart3 size={16} className="mr-2" /> 数据概览
+                        <BarChart3 size={16} className="mr-2" /> Overview
                     </button>
                     <button
                         onClick={() => { setViewMode('roleplay'); setPage(1); }}
@@ -531,7 +536,7 @@ export function Dashboard() {
                             : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                         }`}
                     >
-                        <Gamepad2 size={16} className="mr-2" /> 扮演学习
+                        <Gamepad2 size={16} className="mr-2" /> Role-Play
                     </button>
                     <button
                         onClick={() => { setViewMode('prediction'); setPage(1); }}
@@ -540,7 +545,7 @@ export function Dashboard() {
                             : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                         }`}
                     >
-                        <Brain size={16} className="mr-2" /> AI预测
+                        <Brain size={16} className="mr-2" /> AI Prediction
                     </button>
                     <button
                         onClick={() => { setViewMode('profile'); setPage(1); }}
@@ -549,7 +554,7 @@ export function Dashboard() {
                             : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                         }`}
                     >
-                        <User size={16} className="mr-2" /> 交易员画像
+                        <User size={16} className="mr-2" /> Trader Profile
                     </button>
                     <button
                         onClick={() => { setViewMode('positions'); setPage(1); }}
@@ -558,7 +563,7 @@ export function Dashboard() {
                             : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                         }`}
                     >
-                        <History size={16} className="mr-2" /> 仓位历史
+                        <History size={16} className="mr-2" /> Positions
                     </button>
                     <button
                         onClick={() => { setViewMode('trades'); setPage(1); }}
@@ -567,7 +572,16 @@ export function Dashboard() {
                             : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                         }`}
                     >
-                        <LayoutList size={16} className="mr-2" /> 交易记录
+                        <LayoutList size={16} className="mr-2" /> Trades
+                    </button>
+                    <button
+                        onClick={() => { setViewMode('pipeline'); setPage(1); }}
+                        className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${viewMode === 'pipeline'
+                            ? 'bg-orange-500/10 text-orange-400 shadow-[0_0_10px_rgba(251,146,60,0.2)] ring-1 ring-orange-500/20'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
+                        }`}
+                    >
+                        <Network size={16} className="mr-2" /> Pipeline
                     </button>
                 </div>
 
@@ -620,14 +634,14 @@ export function Dashboard() {
                     </div>
                 )}
 
-                {/* Role Play Mode - 独家功能 */}
+                {/* Role Play Mode - Exclusive Feature */}
                 {viewMode === 'roleplay' && (
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <TraderRolePlay sessions={sessions} />
                     </div>
                 )}
 
-                {/* AI Prediction Mode - 独家功能 */}
+                {/* AI Prediction Mode - Exclusive Feature */}
                 {viewMode === 'prediction' && (
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <AIPrediction
@@ -642,10 +656,17 @@ export function Dashboard() {
                     </div>
                 )}
 
-                {/* Trader Profile Mode - 独家功能 */}
+                {/* Trader Profile Mode - Exclusive Feature */}
                 {viewMode === 'profile' && (
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <TraderProfile data={traderProfileData} />
+                    </div>
+                )}
+
+                {/* Data Pipeline Mode */}
+                {viewMode === 'pipeline' && (
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <DataPipelineVisualization />
                     </div>
                 )}
 

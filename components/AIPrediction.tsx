@@ -73,7 +73,7 @@ export function AIPrediction({
 
     const fetchPrediction = async () => {
         if (!credentials?.api_key) {
-            setError('请先配置API密钥');
+            setError('Please configure API key first');
             return;
         }
 
@@ -94,7 +94,7 @@ export function AIPrediction({
             });
 
             if (!response.ok) {
-                throw new Error('预测请求失败');
+                throw new Error('Prediction request failed');
             }
 
             const data = await response.json();
@@ -103,7 +103,7 @@ export function AIPrediction({
             setPatternStats(data.pattern_stats || null);
             setLastUpdated(new Date());
         } catch (err) {
-            setError(err instanceof Error ? err.message : '预测失败');
+            setError(err instanceof Error ? err.message : 'Prediction failed');
         } finally {
             setLoading(false);
         }
@@ -134,11 +134,11 @@ export function AIPrediction({
     const getActionLabel = (action: string) => {
         switch (action?.toLowerCase()) {
             case 'buy':
-                return '买入';
+                return 'Buy';
             case 'sell':
-                return '卖出';
+                return 'Sell';
             default:
-                return '观望';
+                return 'Hold';
         }
     };
 
@@ -148,11 +148,11 @@ export function AIPrediction({
             action: 'buy',
             confidence: '72.5%',
             reasoning: [
-                'RSI处于超卖区域 (28.5)',
-                '24小时价格下跌 -3.25%',
-                '在10个相似历史情况中，7次采取了buy操作',
-                '平均相似度: 85.2%',
-                '历史相似操作盈利率: 71.4%'
+                'RSI is in oversold territory (28.5)',
+                '24h Price Change -3.25%',
+                'In 10 similar historical situations, \'buy\' action was taken 7 times',
+                'Average Similarity: 85.2%',
+                'Historical Similar Action Win Rate: 71.4%'
             ]
         });
         setSimilarSituations([
@@ -192,7 +192,7 @@ export function AIPrediction({
 
     return (
         <div className="space-y-6">
-            {/* 标题和刷新按钮 */}
+            {/* Title and Refresh Button */}
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -200,9 +200,9 @@ export function AIPrediction({
                             <Brain className="w-7 h-7 text-violet-400" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-white">AI 操作预测</h3>
+                            <h3 className="text-xl font-bold text-white">AI Action Prediction</h3>
                             <p className="text-sm text-slate-400">
-                                基于交易员历史模式的智能预测
+                                Intelligent prediction based on trader's historical patterns
                             </p>
                         </div>
                     </div>
@@ -211,7 +211,7 @@ export function AIPrediction({
                             onClick={loadDemoPrediction}
                             className="px-4 py-2 text-sm bg-slate-700/50 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl transition-colors border border-slate-600/50"
                         >
-                            演示模式
+                            Demo Mode
                         </button>
                         <button
                             onClick={fetchPrediction}
@@ -219,13 +219,13 @@ export function AIPrediction({
                             className="flex items-center gap-2 px-5 py-2 bg-violet-500/20 hover:bg-violet-500/30 text-violet-400 rounded-xl transition-colors disabled:opacity-50 border border-violet-500/30"
                         >
                             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                            {loading ? '分析中...' : '获取预测'}
+                            {loading ? 'Analyzing...' : 'Get Prediction'}
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* 错误提示 */}
+            {/* Error Alert */}
             {error && (
                 <div className="flex items-center gap-3 p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl backdrop-blur-sm">
                     <AlertCircle className="w-5 h-5 text-rose-400 flex-shrink-0" />
@@ -233,16 +233,16 @@ export function AIPrediction({
                 </div>
             )}
 
-            {/* 预测结果 */}
+            {/* Prediction Result */}
             {prediction && (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* 主要预测 */}
+                    {/* Main Prediction */}
                     <div className="lg:col-span-2 bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
                         <div className="flex items-start justify-between mb-6">
                             <div>
                                 <div className="text-sm text-slate-400 mb-2 flex items-center gap-2">
                                     <Activity className="w-4 h-4" />
-                                    预测操作
+                                    Predicted Action
                                 </div>
                                 <div className={`inline-flex items-center gap-3 px-5 py-3 rounded-xl border ${getActionColor(prediction.action)}`}>
                                     {getActionIcon(prediction.action)}
@@ -252,7 +252,7 @@ export function AIPrediction({
                             <div className="text-right">
                                 <div className="text-sm text-slate-400 mb-2 flex items-center gap-2 justify-end">
                                     <Percent className="w-4 h-4" />
-                                    置信度
+                                    Confidence
                                 </div>
                                 <div className="text-4xl font-bold text-sky-400">{prediction.confidence}</div>
                             </div>
@@ -261,7 +261,7 @@ export function AIPrediction({
                         <div className="space-y-4">
                             <div className="text-sm font-medium text-slate-400 flex items-center gap-2">
                                 <Sparkles className="w-4 h-4 text-amber-400" />
-                                预测理由
+                                Reasoning
                             </div>
                             <ul className="space-y-3 bg-slate-900/30 rounded-xl p-4">
                                 {prediction.reasoning.map((reason, index) => (
@@ -276,27 +276,27 @@ export function AIPrediction({
                         {lastUpdated && (
                             <div className="mt-4 pt-4 border-t border-slate-700/50 flex items-center gap-2 text-xs text-slate-500">
                                 <Clock className="w-3 h-3" />
-                                更新于 {lastUpdated.toLocaleTimeString('zh-CN')}
+                                Updated at {lastUpdated.toLocaleTimeString('en-US')}
                             </div>
                         )}
                     </div>
 
-                    {/* 模式统计 */}
+                    {/* Pattern Stats */}
                     {patternStats && (
                         <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
                             <div className="flex items-center gap-2 mb-5">
                                 <BarChart2 className="w-5 h-5 text-teal-400" />
-                                <span className="font-semibold text-white">模式统计</span>
+                                <span className="font-semibold text-white">Pattern Stats</span>
                             </div>
 
                             <div className="space-y-5">
                                 <div className="bg-slate-900/30 rounded-xl p-4">
-                                    <div className="text-sm text-slate-400 mb-1">学习模式数</div>
+                                    <div className="text-sm text-slate-400 mb-1">Patterns Learned</div>
                                     <div className="text-3xl font-bold text-white">{patternStats.total_patterns}</div>
                                 </div>
 
                                 <div>
-                                    <div className="text-sm text-slate-400 mb-3">操作分布</div>
+                                    <div className="text-sm text-slate-400 mb-3">Action Distribution</div>
                                     <div className="space-y-3">
                                         {Object.entries(patternStats.action_distribution).map(([action, count]) => (
                                             <div key={action} className="flex items-center justify-between">
@@ -326,7 +326,7 @@ export function AIPrediction({
                                 </div>
 
                                 <div>
-                                    <div className="text-sm text-slate-400 mb-3">平均盈亏</div>
+                                    <div className="text-sm text-slate-400 mb-3">Avg PnL</div>
                                     <div className="space-y-2 bg-slate-900/30 rounded-xl p-3">
                                         {Object.entries(patternStats.avg_pnl_by_action).map(([action, pnl]) => (
                                             <div key={action} className="flex items-center justify-between text-sm">
@@ -340,7 +340,7 @@ export function AIPrediction({
                                 </div>
 
                                 <div className="text-xs text-slate-500 pt-3 border-t border-slate-700/50">
-                                    数据范围: {patternStats.date_range.start} ~ {patternStats.date_range.end}
+                                    Data Range: {patternStats.date_range.start} ~ {patternStats.date_range.end}
                                 </div>
                             </div>
                         </div>
@@ -348,14 +348,14 @@ export function AIPrediction({
                 </div>
             )}
 
-            {/* 相似历史情况 */}
+            {/* Similar Historical Situations */}
             {similarSituations.length > 0 && (
                 <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
                     <div className="flex items-center gap-3 mb-5">
                         <History className="w-5 h-5 text-sky-400" />
-                        <span className="font-semibold text-white">相似历史情况</span>
+                        <span className="font-semibold text-white">Similar Historical Situations</span>
                         <span className="text-sm text-slate-400 bg-slate-700/50 px-2 py-0.5 rounded-lg">
-                            共 {similarSituations.length} 个
+                            Total {similarSituations.length}
                         </span>
                     </div>
 
@@ -363,13 +363,13 @@ export function AIPrediction({
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="border-b border-slate-700/50">
-                                    <th className="text-left py-3 px-3 text-slate-400 font-medium">时间</th>
-                                    <th className="text-left py-3 px-3 text-slate-400 font-medium">操作</th>
-                                    <th className="text-right py-3 px-3 text-slate-400 font-medium">价格</th>
-                                    <th className="text-right py-3 px-3 text-slate-400 font-medium">盈亏</th>
-                                    <th className="text-right py-3 px-3 text-slate-400 font-medium">相似度</th>
+                                    <th className="text-left py-3 px-3 text-slate-400 font-medium">Time</th>
+                                    <th className="text-left py-3 px-3 text-slate-400 font-medium">Action</th>
+                                    <th className="text-right py-3 px-3 text-slate-400 font-medium">Price</th>
+                                    <th className="text-right py-3 px-3 text-slate-400 font-medium">PnL</th>
+                                    <th className="text-right py-3 px-3 text-slate-400 font-medium">Similarity</th>
                                     <th className="text-right py-3 px-3 text-slate-400 font-medium">RSI</th>
-                                    <th className="text-right py-3 px-3 text-slate-400 font-medium">24h变化</th>
+                                    <th className="text-right py-3 px-3 text-slate-400 font-medium">24h Change</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -419,19 +419,19 @@ export function AIPrediction({
                 </div>
             )}
 
-            {/* 空状态 */}
+            {/* Empty State */}
             {!prediction && !loading && !error && (
                 <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-12 text-center border border-slate-700/50">
                     <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-violet-500/20 to-sky-500/20 flex items-center justify-center border border-violet-500/20">
                         <Brain className="w-10 h-10 text-violet-400" />
                     </div>
-                    <h4 className="text-xl font-bold text-white mb-3">准备就绪</h4>
+                    <h4 className="text-xl font-bold text-white mb-3">Ready</h4>
                     <p className="text-slate-400 mb-6 max-w-md mx-auto">
-                        点击"获取预测"按钮，AI将分析交易员历史模式并预测下一步操作
+                        Click "Get Prediction" button, AI will analyze trader's historical patterns and predict next action
                     </p>
                     <div className="flex items-center justify-center gap-2 text-sm text-slate-500 bg-slate-900/30 rounded-xl py-3 px-5 w-fit mx-auto">
                         <Target className="w-4 h-4 text-sky-400" />
-                        <span>基于 <span className="text-sky-400 font-medium">{symbol}</span> 的历史交易数据</span>
+                        <span>Based on <span className="text-sky-400 font-medium">{symbol}</span> historical trading data</span>
                     </div>
                 </div>
             )}

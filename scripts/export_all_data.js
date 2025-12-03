@@ -1,10 +1,10 @@
 /**
  * BitMEX Complete Data Exporter
- * 
+ *
  * Exports:
- * 1. Trade History (Executions) - 成交記錄
- * 2. Order History - 訂單歷史（包括未成交、取消的訂單）
- * 3. Wallet History - 錢包歷史（資金費率 Funding、存取款）
+ * 1. Trade History (Executions)
+ * 2. Order History (including unfilled and canceled orders)
+ * 3. Wallet History (funding, deposits, withdrawals)
  */
 
 const ccxt = require('ccxt');
@@ -461,4 +461,3 @@ async function exportAll() {
 }
 
 exportAll().catch(console.error);
-

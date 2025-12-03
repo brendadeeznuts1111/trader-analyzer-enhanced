@@ -17,22 +17,22 @@
     "min_order_size": 1.0,
     "large_order_ratio": 63.46,
     "risk_score": 10,
-    "risk_level": "高风险"
+    "risk_level": "High Risk"
   },
   "trading_frequency": {
     "total_trading_days": 2032,
     "daily_avg_trades": 15.28,
     "avg_trade_interval_minutes": 94.37,
     "frequency_score": 3,
-    "frequency_level": "低频交易者"
+    "frequency_level": "Low Frequency Trader"
   },
   "discipline_scores": {
     "limit_order_ratio": 81.6,
     "cancel_ratio": 27.35,
     "discipline_score": 8,
     "patience_score": 4,
-    "discipline_level": "高度自律",
-    "patience_level": "中等耐心"
+    "discipline_level": "Highly Disciplined",
+    "patience_level": "Moderate Patience"
   },
   "trading_patterns": {
     "hour_distribution": {
@@ -74,15 +74,15 @@
     "most_active_day": "Fri"
   },
   "summary": {
-    "trader_type": "大胆型波段交易者",
-    "risk_level": "高风险",
-    "frequency_level": "低频交易者",
-    "discipline_level": "高度自律",
+    "trader_type": "Aggressive Swing Trader",
+    "risk_level": "High Risk",
+    "frequency_level": "Low Frequency Trader",
+    "discipline_level": "Highly Disciplined",
     "overall_score": 6.2,
     "advice": [
-      "继续保持限价单交易习惯，提高执行效率",
-      "交易节奏稳定，保持当前策略",
-      "注意控制仓位大小，分散风险"
+      "Continue using limit orders to improve execution efficiency",
+      "Stable trading rhythm, maintain current strategy",
+      "Control position size to diversify risk"
     ]
   },
   "pnl_analysis": {

@@ -55,11 +55,20 @@ const DEMO_SESSIONS: PositionSession[] = [
         realizedPnl: 0.0256,
         tradeCount: 4,
         trades: [
-            { id: 't1', datetime: '2024-10-15T09:30:00Z', side: 'buy', price: 62500, amount: 20000, fee: 0.0001 },
-            { id: 't2', datetime: '2024-10-15T10:15:00Z', side: 'buy', price: 62200, amount: 15000, fee: 0.0001 },
-            { id: 't3', datetime: '2024-10-15T11:00:00Z', side: 'buy', price: 62100, amount: 15000, fee: 0.0001 },
-            { id: 't4', datetime: '2024-10-15T14:45:00Z', side: 'sell', price: 63200, amount: 50000, fee: 0.0001 },
-        ]
+            { id: 't1', datetime: '2024-10-15T09:30:00Z', side: 'buy', price: 62500, amount: 20000, fee: { cost: 0.0001, currency: 'XBt' }, symbol: 'XBTUSD', displaySymbol: 'XBT/USD', cost: 0.32, orderID: 'ord-1', execType: 'Trade' },
+            { id: 't2', datetime: '2024-10-15T10:15:00Z', side: 'buy', price: 62200, amount: 15000, fee: { cost: 0.0001, currency: 'XBt' }, symbol: 'XBTUSD', displaySymbol: 'XBT/USD', cost: 0.24, orderID: 'ord-2', execType: 'Trade' },
+            { id: 't3', datetime: '2024-10-15T11:00:00Z', side: 'buy', price: 62100, amount: 15000, fee: { cost: 0.0001, currency: 'XBt' }, symbol: 'XBTUSD', displaySymbol: 'XBT/USD', cost: 0.24, orderID: 'ord-3', execType: 'Trade' },
+            { id: 't4', datetime: '2024-10-15T14:45:00Z', side: 'sell', price: 63200, amount: 50000, fee: { cost: 0.0001, currency: 'XBt' }, symbol: 'XBTUSD', displaySymbol: 'XBT/USD', cost: 0.79, orderID: 'ord-4', execType: 'Trade' },
+        ],
+        displaySymbol: 'XBT/USD',
+        durationMs: 18900000,
+        totalBought: 50000,
+        totalSold: 50000,
+        avgEntryPrice: 62300,
+        avgExitPrice: 63200,
+        totalFees: 0.0004,
+        netPnl: 0.0252,
+        status: 'closed',
     },
     {
         id: 'demo-session-2',
@@ -71,10 +80,19 @@ const DEMO_SESSIONS: PositionSession[] = [
         realizedPnl: 0.0189,
         tradeCount: 3,
         trades: [
-            { id: 't5', datetime: '2024-10-16T08:00:00Z', side: 'sell', price: 64500, amount: 30000, fee: 0.0001 },
-            { id: 't6', datetime: '2024-10-16T12:00:00Z', side: 'buy', price: 63800, amount: 15000, fee: 0.0001 },
-            { id: 't7', datetime: '2024-10-16T16:30:00Z', side: 'buy', price: 63200, amount: 15000, fee: 0.0001 },
-        ]
+            { id: 't5', datetime: '2024-10-16T08:00:00Z', side: 'sell', price: 64500, amount: 30000, fee: { cost: 0.0001, currency: 'XBt' }, symbol: 'XBTUSD', displaySymbol: 'XBT/USD', cost: 0.46, orderID: 'ord-5', execType: 'Trade' },
+            { id: 't6', datetime: '2024-10-16T12:00:00Z', side: 'buy', price: 63800, amount: 15000, fee: { cost: 0.0001, currency: 'XBt' }, symbol: 'XBTUSD', displaySymbol: 'XBT/USD', cost: 0.23, orderID: 'ord-6', execType: 'Trade' },
+            { id: 't7', datetime: '2024-10-16T16:30:00Z', side: 'buy', price: 63200, amount: 15000, fee: { cost: 0.0001, currency: 'XBt' }, symbol: 'XBTUSD', displaySymbol: 'XBT/USD', cost: 0.23, orderID: 'ord-7', execType: 'Trade' },
+        ],
+        displaySymbol: 'XBT/USD',
+        durationMs: 30600000,
+        totalBought: 30000,
+        totalSold: 30000,
+        avgEntryPrice: 64500,
+        avgExitPrice: 63500,
+        totalFees: 0.0003,
+        netPnl: 0.0186,
+        status: 'closed',
     },
     {
         id: 'demo-session-3',
@@ -86,10 +104,19 @@ const DEMO_SESSIONS: PositionSession[] = [
         realizedPnl: -0.0085,
         tradeCount: 3,
         trades: [
-            { id: 't8', datetime: '2024-10-17T10:00:00Z', side: 'buy', price: 63000, amount: 25000, fee: 0.0001 },
-            { id: 't9', datetime: '2024-10-17T13:30:00Z', side: 'sell', price: 62500, amount: 10000, fee: 0.0001 },
-            { id: 't10', datetime: '2024-10-17T15:00:00Z', side: 'sell', price: 62200, amount: 15000, fee: 0.0001 },
-        ]
+            { id: 't8', datetime: '2024-10-17T10:00:00Z', side: 'buy', price: 63000, amount: 25000, fee: { cost: 0.0001, currency: 'XBt' }, symbol: 'XBTUSD', displaySymbol: 'XBT/USD', cost: 0.39, orderID: 'ord-8', execType: 'Trade' },
+            { id: 't9', datetime: '2024-10-17T13:30:00Z', side: 'sell', price: 62500, amount: 10000, fee: { cost: 0.0001, currency: 'XBt' }, symbol: 'XBTUSD', displaySymbol: 'XBT/USD', cost: 0.16, orderID: 'ord-9', execType: 'Trade' },
+            { id: 't10', datetime: '2024-10-17T15:00:00Z', side: 'sell', price: 62200, amount: 15000, fee: { cost: 0.0001, currency: 'XBt' }, symbol: 'XBTUSD', displaySymbol: 'XBT/USD', cost: 0.24, orderID: 'ord-10', execType: 'Trade' },
+        ],
+        displaySymbol: 'XBT/USD',
+        durationMs: 18000000,
+        totalBought: 25000,
+        totalSold: 25000,
+        avgEntryPrice: 63000,
+        avgExitPrice: 62320,
+        totalFees: 0.0003,
+        netPnl: -0.0088,
+        status: 'closed',
     }
 ];
 
@@ -152,7 +179,7 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
         }));
     };
 
-    // 自动播放逻辑
+    // Auto-play logic
     useEffect(() => {
         if (!state.isPlaying || !currentSession) return;
 
@@ -186,7 +213,7 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
             const trades = currentSession.trades || [];
 
             if (nextTradeIndex >= trades.length) {
-                // 移动到下一个session
+                // Move to next session
                 const nextSessionIndex = prev.currentSessionIndex + 1;
                 if (nextSessionIndex >= activeSessions.length) {
                     return { ...prev, isPlaying: false };
@@ -246,7 +273,7 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
 
         return {
             price: currentTrade.price,
-            time: tradeTime.toLocaleString('zh-CN'),
+            time: tradeTime.toLocaleString('en-US'),
             isNewPosition,
             positionSide: currentSession.side,
             currentSize: currentSession.trades
@@ -263,16 +290,16 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                 <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-teal-500/20 to-sky-500/20 flex items-center justify-center border border-teal-500/20">
                     <Brain className="w-10 h-10 text-teal-400" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">暂无交易数据</h3>
+                <h3 className="text-xl font-bold text-white mb-3">No Trading Data Available</h3>
                 <p className="text-slate-400 mb-6 max-w-md mx-auto">
-                    请先连接API获取交易历史，或使用演示模式体验交易员扮演学习
+                    Please connect API to fetch trading history, or use Demo Mode to experience trader role-play learning.
                 </p>
                 <button
                     onClick={startDemoMode}
                     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-500 to-sky-500 text-white font-medium rounded-xl hover:opacity-90 transition-opacity"
                 >
                     <Sparkles className="w-5 h-5" />
-                    启动演示模式
+                    Start Demo Mode
                 </button>
             </div>
         );
@@ -280,24 +307,24 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
 
     return (
         <div className="space-y-6">
-            {/* 演示模式提示条 */}
+            {/* Demo Mode Banner */}
             {state.isDemoMode && (
                 <div className="bg-gradient-to-r from-teal-500/20 to-sky-500/20 backdrop-blur-sm rounded-2xl p-4 border border-teal-500/30 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <Sparkles className="w-5 h-5 text-teal-400" />
-                        <span className="text-teal-300 font-medium">演示模式</span>
-                        <span className="text-slate-400 text-sm">使用示例数据展示交易员扮演学习功能</span>
+                        <span className="text-teal-300 font-medium">Demo Mode</span>
+                        <span className="text-slate-400 text-sm">Using sample data to demonstrate the trader role-play learning feature</span>
                     </div>
                     <button
                         onClick={exitDemoMode}
                         className="px-4 py-1.5 text-sm bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors"
                     >
-                        退出演示
+                        Exit Demo
                     </button>
                 </div>
             )}
 
-            {/* 顶部状态栏 */}
+            {/* Top Status Bar */}
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-5 border border-slate-700/50">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-5">
@@ -315,27 +342,27 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                         <div className="h-8 w-px bg-slate-700" />
                         <div className="flex items-center gap-3 text-slate-400">
                             <Clock className="w-4 h-4 text-sky-400" />
-                            <span>仓位 <span className="text-white font-medium">{state.currentSessionIndex + 1}/{activeSessions.length}</span></span>
+                            <span>Position <span className="text-white font-medium">{state.currentSessionIndex + 1}/{activeSessions.length}</span></span>
                             <span className="text-slate-600">·</span>
-                            <span>交易 <span className="text-white font-medium">{state.currentTradeIndex + 1}/{currentSession?.trades?.length || 0}</span></span>
+                            <span>Trade <span className="text-white font-medium">{state.currentTradeIndex + 1}/{currentSession?.trades?.length || 0}</span></span>
                         </div>
                         <button
                             onClick={resetProgress}
                             className="p-2 rounded-lg hover:bg-slate-700/50 transition-colors text-slate-400 hover:text-white"
-                            title="重置进度"
+                            title="Reset Progress"
                         >
                             <RotateCcw className="w-4 h-4" />
                         </button>
                     </div>
 
-                    {/* 播放控制 */}
+                    {/* Playback Controls */}
                     <div className="flex items-center gap-3">
                         {!state.isDemoMode && sessions.length > 0 && (
                             <button
                                 onClick={startDemoMode}
                                 className="px-3 py-1.5 text-sm bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors border border-slate-600/50"
                             >
-                                演示模式
+                                Demo Mode
                             </button>
                         )}
                         <select
@@ -377,38 +404,38 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                 </div>
             </div>
 
-            {/* 主要内容区 */}
+            {/* Main Content Area */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* 市场情境 */}
+                {/* Market Context */}
                 <div className="lg:col-span-2 bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
                     <h3 className="text-lg font-bold text-white mb-5 flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-sky-500/20 border border-sky-500/30">
                             <Target className="w-5 h-5 text-sky-400" />
                         </div>
-                        市场情境
+                        Market Context
                     </h3>
 
                     {context && (
                         <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                                    <div className="text-sm text-slate-400 mb-2">当前价格</div>
+                                    <div className="text-sm text-slate-400 mb-2">Current Price</div>
                                     <div className="text-3xl font-bold text-white">
                                         ${context.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                                     </div>
                                 </div>
                                 <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                                    <div className="text-sm text-slate-400 mb-2">时间</div>
+                                    <div className="text-sm text-slate-400 mb-2">Time</div>
                                     <div className="text-lg font-medium text-white">{context.time}</div>
                                 </div>
                             </div>
 
                             <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                                <div className="text-sm text-slate-400 mb-3">当前状态</div>
+                                <div className="text-sm text-slate-400 mb-3">Current Status</div>
                                 <div className="flex items-center gap-4">
                                     {context.isNewPosition ? (
                                         <span className="px-4 py-2 bg-sky-500/20 text-sky-400 rounded-xl text-sm font-medium border border-sky-500/30">
-                                            空仓状态
+                                            No Position
                                         </span>
                                     ) : (
                                         <span className={`px-4 py-2 rounded-xl text-sm font-medium border ${
@@ -416,21 +443,21 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                                                 ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
                                                 : 'bg-rose-500/20 text-rose-400 border-rose-500/30'
                                         }`}>
-                                            {context.positionSide === 'long' ? '持有多仓' : '持有空仓'}:
+                                            {context.positionSide === 'long' ? 'Long Position' : 'Short Position'}:
                                             {Math.abs(context.currentSize).toLocaleString()}
                                         </span>
                                     )}
                                 </div>
                             </div>
 
-                            {/* 提示区域 */}
+                            {/* Hint Area */}
                             <div className="flex items-center justify-between">
                                 <button
                                     onClick={() => setShowHint(!showHint)}
                                     className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
                                 >
                                     {showHint ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                    {showHint ? '隐藏提示' : '显示提示'}
+                                    {showHint ? 'Hide Hint' : 'Show Hint'}
                                 </button>
                             </div>
 
@@ -439,13 +466,13 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                                     <div className="flex items-start gap-3">
                                         <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
                                         <div className="text-sm">
-                                            <p className="font-medium text-amber-400 mb-1">交易员思路提示</p>
+                                            <p className="font-medium text-amber-400 mb-1">Trader's Thought Process</p>
                                             <p className="text-slate-400">
                                                 {context.isNewPosition
-                                                    ? '这是一个新仓位的开始，交易员正在寻找入场机会。观察当前价格位置和市场趋势。'
+                                                    ? 'This is the start of a new position. The trader is looking for an entry opportunity. Observe the current price action and market trend.'
                                                     : context.positionSide === 'long'
-                                                        ? '交易员持有多仓，可能考虑加仓、减仓或持有观望。'
-                                                        : '交易员持有空仓，可能考虑加仓、减仓或持有观望。'
+                                                        ? 'The trader holds a LONG position. They might consider adding, reducing, or holding.'
+                                                        : 'The trader holds a SHORT position. They might consider adding, reducing, or holding.'
                                                 }
                                             </p>
                                         </div>
@@ -456,13 +483,13 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                     )}
                 </div>
 
-                {/* 操作面板 */}
+                {/* Action Panel */}
                 <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
                     <h3 className="text-lg font-bold text-white mb-5 flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-violet-500/20 border border-violet-500/30">
                             <Zap className="w-5 h-5 text-violet-400" />
                         </div>
-                        你的判断
+                        Your Decision
                     </h3>
 
                     <div className="space-y-3">
@@ -482,7 +509,7 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                             }`}
                         >
                             <TrendingUp className="w-6 h-6 text-emerald-400" />
-                            <span className="font-semibold text-lg text-white">买入 / 做多</span>
+                            <span className="font-semibold text-lg text-white">Buy / Long</span>
                         </button>
 
                         <button
@@ -501,7 +528,7 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                             }`}
                         >
                             <TrendingDown className="w-6 h-6 text-rose-400" />
-                            <span className="font-semibold text-lg text-white">卖出 / 做空</span>
+                            <span className="font-semibold text-lg text-white">Sell / Short</span>
                         </button>
 
                         <button
@@ -516,11 +543,11 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                             }`}
                         >
                             <Clock className="w-6 h-6 text-amber-400" />
-                            <span className="font-semibold text-lg text-white">观望 / 持有</span>
+                            <span className="font-semibold text-lg text-white">Hold / Wait</span>
                         </button>
                     </div>
 
-                    {/* 结果显示 */}
+                    {/* Result Display */}
                     {state.showAnswer && currentTrade && (
                         <div className={`mt-4 p-4 rounded-xl ${
                             state.userGuess === currentTrade.side
@@ -531,20 +558,20 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                                 {state.userGuess === currentTrade.side ? (
                                     <>
                                         <CheckCircle className="w-5 h-5 text-emerald-400" />
-                                        <span className="font-semibold text-emerald-400">判断正确!</span>
+                                        <span className="font-semibold text-emerald-400">Correct!</span>
                                     </>
                                 ) : (
                                     <>
                                         <XCircle className="w-5 h-5 text-rose-400" />
-                                        <span className="font-semibold text-rose-400">判断错误</span>
+                                        <span className="font-semibold text-rose-400">Incorrect</span>
                                     </>
                                 )}
                             </div>
                             <div className="text-sm text-slate-400">
-                                交易员选择: <span className={`font-medium ${
+                                Trader's Choice: <span className={`font-medium ${
                                     currentTrade.side === 'buy' ? 'text-emerald-400' : 'text-rose-400'
                                 }`}>
-                                    {currentTrade.side === 'buy' ? '买入' : '卖出'}
+                                    {currentTrade.side === 'buy' ? 'Buy' : 'Sell'}
                                 </span>
                                 {' '}{currentTrade.amount.toLocaleString()} @ ${currentTrade.price.toLocaleString()}
                             </div>
@@ -553,25 +580,25 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                 </div>
             </div>
 
-            {/* 仓位详情 */}
+            {/* Position Details */}
             {currentSession && (
                 <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
-                    <h3 className="text-lg font-bold text-white mb-5">当前仓位信息</h3>
+                    <h3 className="text-lg font-bold text-white mb-5">Current Position Details</h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                            <div className="text-sm text-slate-400 mb-1">方向</div>
+                            <div className="text-sm text-slate-400 mb-1">Side</div>
                             <div className={`font-bold text-xl ${
                                 currentSession.side === 'long' ? 'text-emerald-400' : 'text-rose-400'
                             }`}>
-                                {currentSession.side === 'long' ? '多头' : '空头'}
+                                {currentSession.side === 'long' ? 'Long' : 'Short'}
                             </div>
                         </div>
                         <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                            <div className="text-sm text-slate-400 mb-1">最大仓位</div>
+                            <div className="text-sm text-slate-400 mb-1">Max Size</div>
                             <div className="font-bold text-xl text-white">{currentSession.maxSize.toLocaleString()}</div>
                         </div>
                         <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                            <div className="text-sm text-slate-400 mb-1">已实现盈亏</div>
+                            <div className="text-sm text-slate-400 mb-1">Realized PnL</div>
                             <div className={`font-bold text-xl ${
                                 currentSession.realizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'
                             }`}>
@@ -579,7 +606,7 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                             </div>
                         </div>
                         <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                            <div className="text-sm text-slate-400 mb-1">交易次数</div>
+                            <div className="text-sm text-slate-400 mb-1">Trade Count</div>
                             <div className="font-bold text-xl text-sky-400">{currentSession.tradeCount}</div>
                         </div>
                     </div>

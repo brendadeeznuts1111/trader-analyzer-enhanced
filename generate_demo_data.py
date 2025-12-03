@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-生成演示用的交易数据
+Generate demo trading data
 """
 import csv
 import json
@@ -8,14 +8,14 @@ import random
 from datetime import datetime, timedelta
 import os
 
-# 设置随机种子以保证可重复性
+# Set random seed for reproducibility
 random.seed(42)
 
 def generate_ohlcv_data(symbol, timeframe, days=365):
-    """生成K线数据"""
+    """Generate OHLCV data"""
     data = []
 
-    # 根据时间周期确定K线数量
+    # Determine number of bars based on timeframe
     if timeframe == '1m':
         bars_per_day = 1440
     elif timeframe == '5m':
@@ -29,7 +29,7 @@ def generate_ohlcv_data(symbol, timeframe, days=365):
 
     total_bars = days * bars_per_day
 
-    # 起始价格
+    # Start price
     if 'BTC' in symbol or 'XBT' in symbol:
         price = 30000
     else:
@@ -49,7 +49,7 @@ def generate_ohlcv_data(symbol, timeframe, days=365):
         else:
             timestamp = start_time + timedelta(hours=i)
 
-        # 生成价格波动
+        # Generate price fluctuation
         change = random.gauss(0, 0.002) * price
         price = max(price + change, price * 0.5)
 
@@ -73,7 +73,7 @@ def generate_ohlcv_data(symbol, timeframe, days=365):
     return data
 
 def generate_executions(days=180):
-    """生成成交记录"""
+    """Generate execution records"""
     executions = []
 
     start_time = datetime.now() - timedelta(days=days)
@@ -83,7 +83,7 @@ def generate_executions(days=180):
     price = 45000
 
     for day in range(days):
-        # 每天生成随机数量的交易
+        # Generate random number of trades per day
         trades_today = random.randint(0, 8)
 
         for _ in range(trades_today):
@@ -92,12 +92,12 @@ def generate_executions(days=180):
             side = random.choice(['Buy', 'Sell'])
             qty = random.choice([100, 500, 1000, 2000, 5000, 10000])
 
-            # 价格随机波动
+            # Random price fluctuation
             price = price * (1 + random.gauss(0, 0.02))
             exec_price = round(price, 1)
 
-            exec_cost = qty * exec_price / 100000000  # 转换为BTC
-            exec_comm = exec_cost * 0.00075  # 0.075% 手续费
+            exec_cost = qty * exec_price / 100000000  # Convert to BTC
+            exec_comm = exec_cost * 0.00075  # 0.075% fee
 
             executions.append({
                 'execID': f'exec-{exec_id}',
@@ -122,16 +122,16 @@ def generate_executions(days=180):
     return executions
 
 def generate_wallet_history(days=180):
-    """生成钱包历史"""
+    """Generate wallet history"""
     history = []
 
     start_time = datetime.now() - timedelta(days=days)
-    balance = 1.0  # 起始1 BTC
+    balance = 1.0  # Start with 1 BTC
 
     for day in range(days):
         timestamp = start_time + timedelta(days=day)
 
-        # 随机盈亏
+        # Random PnL
         pnl = random.gauss(0.001, 0.005)
         balance += pnl
 
@@ -151,7 +151,7 @@ def generate_wallet_history(days=180):
             'marginBalance': round(balance * 100000000)
         })
 
-        # 偶尔添加资金费率
+        # Occasionally add funding rate
         if random.random() > 0.7:
             funding = random.gauss(0, 0.0001) * balance
             history.append({
@@ -173,7 +173,7 @@ def generate_wallet_history(days=180):
     return history
 
 def generate_account_summary():
-    """生成账户摘要"""
+    """Generate account summary"""
     return {
         'exportDate': datetime.now().isoformat(),
         'user': {
@@ -192,21 +192,21 @@ def generate_account_summary():
     }
 
 def save_csv(data, filename, fieldnames):
-    """保存CSV文件"""
+    """Save CSV file"""
     with open(filename, 'w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(data)
-    print(f'✓ 已生成: {filename} ({len(data)} 条记录)')
+    print(f'✓ Generated: {filename} ({len(data)} records)')
 
 def main():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     ohlcv_dir = os.path.join(base_dir, 'data', 'ohlcv')
     os.makedirs(ohlcv_dir, exist_ok=True)
 
-    print('正在生成演示数据...\n')
+    print('Generating demo data...\n')
 
-    # 生成K线数据
+    # Generate OHLCV data
     for symbol in ['XBTUSD', 'ETHUSD']:
         for tf in ['1d', '1h', '5m']:
             days = 365 if tf == '1d' else (90 if tf == '1h' else 30)
@@ -214,25 +214,25 @@ def main():
             filename = os.path.join(ohlcv_dir, f'{symbol}_{tf}.csv')
             save_csv(data, filename, ['timestamp', 'open', 'high', 'low', 'close', 'volume'])
 
-    # 生成成交记录
+    # Generate execution records
     executions = generate_executions(180)
     save_csv(executions, os.path.join(base_dir, 'bitmex_executions.csv'),
              ['execID', 'orderID', 'symbol', 'side', 'lastQty', 'lastPx', 'execType',
               'ordType', 'ordStatus', 'execCost', 'execComm', 'timestamp', 'text'])
 
-    # 生成钱包历史
+    # Generate wallet history
     wallet_history = generate_wallet_history(180)
     save_csv(wallet_history, os.path.join(base_dir, 'bitmex_wallet_history.csv'),
              ['transactID', 'account', 'currency', 'transactType', 'amount', 'fee',
               'transactStatus', 'address', 'tx', 'text', 'timestamp', 'walletBalance', 'marginBalance'])
 
-    # 生成账户摘要
+    # Generate account summary
     account = generate_account_summary()
     with open(os.path.join(base_dir, 'bitmex_account_summary.json'), 'w') as f:
         json.dump(account, f, indent=2)
-    print(f'✓ 已生成: bitmex_account_summary.json')
+    print(f'✓ Generated: bitmex_account_summary.json')
 
-    print('\n✅ 所有演示数据已生成完成!')
+    print('\n✅ All demo data generated successfully!')
 
 if __name__ == '__main__':
     main()

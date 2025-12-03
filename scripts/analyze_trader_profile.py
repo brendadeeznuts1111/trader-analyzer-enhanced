@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """
-交易员画像分析 - 基于真实 BitMEX 交易数据
 Trader Profile Analysis - Based on Real BitMEX Trading Data
 """
 
@@ -40,7 +39,7 @@ def load_executions(filepath):
 def analyze_trader_profile(orders, wallet_history, executions):
     """
     Analyze trader profile based on trading data
-    返回交易员画像分析结果
+    Returns comprehensive trader profile analysis results
     """
 
     profile = {
@@ -52,12 +51,12 @@ def analyze_trader_profile(orders, wallet_history, executions):
         "summary": {}
     }
 
-    # ========== 基础统计 ==========
+    # ========== Basic Statistics ==========
     total_orders = len(orders)
     filled_orders = [o for o in orders if o.get('ordStatus') == 'Filled']
     canceled_orders = [o for o in orders if o.get('ordStatus') == 'Canceled']
 
-    # 订单类型统计
+    # Order type statistics
     order_types = defaultdict(int)
     for o in orders:
         order_types[o.get('ordType', 'Unknown')] += 1
@@ -70,7 +69,7 @@ def analyze_trader_profile(orders, wallet_history, executions):
         "order_types": dict(order_types)
     }
 
-    # ========== 交易时间分析 ==========
+    # ========== Trading Time Analysis ==========
     if filled_orders:
         timestamps = []
         for o in filled_orders:
@@ -81,17 +80,17 @@ def analyze_trader_profile(orders, wallet_history, executions):
                 pass
 
         if timestamps:
-            # 按小时分布
+            # Hourly distribution
             hour_distribution = defaultdict(int)
             for ts in timestamps:
                 hour_distribution[ts.hour] += 1
 
-            # 按星期分布
+            # Weekly distribution
             weekday_distribution = defaultdict(int)
             for ts in timestamps:
                 weekday_distribution[ts.weekday()] += 1
 
-            # 找出最活跃时段
+            # Find most active periods
             most_active_hour = max(hour_distribution, key=hour_distribution.get)
             most_active_day = max(weekday_distribution, key=weekday_distribution.get)
 
@@ -100,8 +99,8 @@ def analyze_trader_profile(orders, wallet_history, executions):
             profile["trading_patterns"]["most_active_hour"] = most_active_hour
             profile["trading_patterns"]["most_active_day"] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][most_active_day]
 
-    # ========== 风险偏好分析 ==========
-    # 分析订单大小
+    # ========== Risk Preference Analysis ==========
+    # Analyze order sizes
     order_sizes = []
     for o in filled_orders:
         try:
@@ -116,12 +115,12 @@ def analyze_trader_profile(orders, wallet_history, executions):
         max_order_size = max(order_sizes)
         min_order_size = min(order_sizes)
 
-        # 大单比例 (>10000)
+        # Large order ratio (>10000)
         large_orders = [s for s in order_sizes if s > 10000]
         large_order_ratio = len(large_orders) / len(order_sizes) * 100
 
-        # 风险评分 (1-10)
-        # 基于大单比例和订单大小波动
+        # Risk score (1-10)
+        # Based on large order ratio and order size volatility
         risk_score = min(10, max(1, int(large_order_ratio / 5 + 3)))
 
         profile["risk_preference"] = {
@@ -130,30 +129,30 @@ def analyze_trader_profile(orders, wallet_history, executions):
             "min_order_size": min_order_size,
             "large_order_ratio": round(large_order_ratio, 2),
             "risk_score": risk_score,
-            "risk_level": "高风险" if risk_score >= 7 else "中等风险" if risk_score >= 4 else "低风险"
+            "risk_level": "High Risk" if risk_score >= 7 else "Medium Risk" if risk_score >= 4 else "Low Risk"
         }
 
-    # ========== 交易频率分析 ==========
+    # ========== Trading Frequency Analysis ==========
     if timestamps and len(timestamps) >= 2:
-        # 计算交易跨度
+        # Calculate trading span
         first_trade = min(timestamps)
         last_trade = max(timestamps)
         trading_days = (last_trade - first_trade).days or 1
 
-        # 日均交易次数
+        # Daily average trades
         daily_trades = len(filled_orders) / trading_days
 
-        # 计算交易间隔
+        # Calculate trade intervals
         sorted_ts = sorted(timestamps)
         intervals = []
         for i in range(1, len(sorted_ts)):
-            interval = (sorted_ts[i] - sorted_ts[i-1]).total_seconds() / 60  # 分钟
-            if interval > 0 and interval < 60 * 24 * 7:  # 排除异常值
+            interval = (sorted_ts[i] - sorted_ts[i-1]).total_seconds() / 60  # minutes
+            if interval > 0 and interval < 60 * 24 * 7:  # exclude outliers
                 intervals.append(interval)
 
         avg_interval = sum(intervals) / len(intervals) if intervals else 0
 
-        # 频率评分
+        # Frequency score
         frequency_score = min(10, max(1, int(daily_trades / 5)))
 
         profile["trading_frequency"] = {
@@ -161,21 +160,21 @@ def analyze_trader_profile(orders, wallet_history, executions):
             "daily_avg_trades": round(daily_trades, 2),
             "avg_trade_interval_minutes": round(avg_interval, 2),
             "frequency_score": frequency_score,
-            "frequency_level": "高频交易者" if frequency_score >= 7 else "中频交易者" if frequency_score >= 4 else "低频交易者"
+            "frequency_level": "High Frequency" if frequency_score >= 7 else "Medium Frequency" if frequency_score >= 4 else "Low Frequency"
         }
 
-    # ========== 纪律性评分 ==========
-    # 基于限价单/市价单比例
+    # ========== Discipline Score ==========
+    # Based on limit/market order ratio
     limit_orders = order_types.get('Limit', 0)
     market_orders = order_types.get('Market', 0)
     total_lm = limit_orders + market_orders
 
     limit_ratio = limit_orders / total_lm * 100 if total_lm > 0 else 0
 
-    # 纪律性评分 - 限价单比例越高越有纪律
+    # Discipline score - higher limit order ratio = more disciplined
     discipline_score = min(10, max(1, int(limit_ratio / 10)))
 
-    # 耐心分数 - 基于取消订单比例 (取消少=更有耐心)
+    # Patience score - based on cancel order ratio (fewer cancels = more patient)
     cancel_ratio = len(canceled_orders) / total_orders * 100 if total_orders > 0 else 0
     patience_score = min(10, max(1, int(10 - cancel_ratio / 5)))
 
@@ -184,11 +183,11 @@ def analyze_trader_profile(orders, wallet_history, executions):
         "cancel_ratio": round(cancel_ratio, 2),
         "discipline_score": discipline_score,
         "patience_score": patience_score,
-        "discipline_level": "高度自律" if discipline_score >= 7 else "中等自律" if discipline_score >= 4 else "需要改进",
-        "patience_level": "非常耐心" if patience_score >= 7 else "中等耐心" if patience_score >= 4 else "较为冲动"
+        "discipline_level": "Highly Disciplined" if discipline_score >= 7 else "Moderately Disciplined" if discipline_score >= 4 else "Needs Improvement",
+        "patience_level": "Very Patient" if patience_score >= 7 else "Moderately Patient" if patience_score >= 4 else "Impulsive"
     }
 
-    # ========== 盈亏分析 (从钱包历史) ==========
+    # ========== PnL Analysis (from wallet history) ==========
     pnl_entries = [w for w in wallet_history if w.get('transactType') == 'RealisedPNL']
 
     if pnl_entries:
@@ -209,7 +208,7 @@ def analyze_trader_profile(orders, wallet_history, executions):
             avg_win = sum(winning_trades) / len(winning_trades) if winning_trades else 0
             avg_loss = abs(sum(losing_trades) / len(losing_trades)) if losing_trades else 0
 
-            # 盈亏比
+            # Profit factor
             profit_factor = avg_win / avg_loss if avg_loss > 0 else float('inf')
 
             profile["pnl_analysis"] = {
@@ -223,24 +222,24 @@ def analyze_trader_profile(orders, wallet_history, executions):
                 "profit_factor": round(profit_factor, 2) if profit_factor != float('inf') else "∞"
             }
 
-    # ========== 总结 ==========
-    risk_level = profile.get("risk_preference", {}).get("risk_level", "未知")
-    freq_level = profile.get("trading_frequency", {}).get("frequency_level", "未知")
-    discipline_level = profile.get("discipline_scores", {}).get("discipline_level", "未知")
+    # ========== Summary ==========
+    risk_level = profile.get("risk_preference", {}).get("risk_level", "Unknown")
+    freq_level = profile.get("trading_frequency", {}).get("frequency_level", "Unknown")
+    discipline_level = profile.get("discipline_scores", {}).get("discipline_level", "Unknown")
 
-    trader_type = "未知"
-    if "高频" in freq_level and "高风险" in risk_level:
-        trader_type = "激进型日内交易者"
-    elif "高频" in freq_level and "低风险" in risk_level:
-        trader_type = "稳健型日内交易者"
-    elif "低频" in freq_level and "高风险" in risk_level:
-        trader_type = "大胆型波段交易者"
-    elif "低频" in freq_level and "低风险" in risk_level:
-        trader_type = "保守型价值投资者"
-    elif "中频" in freq_level:
-        trader_type = "均衡型短线交易者"
+    trader_type = "Unknown"
+    if "High" in freq_level and "High" in risk_level:
+        trader_type = "Aggressive Day Trader"
+    elif "High" in freq_level and "Low" in risk_level:
+        trader_type = "Conservative Day Trader"
+    elif "Low" in freq_level and "High" in risk_level:
+        trader_type = "Bold Swing Trader"
+    elif "Low" in freq_level and "Low" in risk_level:
+        trader_type = "Conservative Value Investor"
+    elif "Medium" in freq_level:
+        trader_type = "Balanced Short-term Trader"
     else:
-        trader_type = "综合型交易者"
+        trader_type = "Comprehensive Trader"
 
     profile["summary"] = {
         "trader_type": trader_type,
@@ -255,20 +254,19 @@ def analyze_trader_profile(orders, wallet_history, executions):
             1
         ),
         "advice": [
-            "继续保持限价单交易习惯，提高执行效率" if limit_ratio > 70 else "建议增加限价单使用，降低滑点成本",
-            "交易节奏稳定，保持当前策略" if daily_trades < 50 else "考虑降低交易频率，提高每笔交易质量",
-            "风险控制良好" if profile.get("risk_preference", {}).get("risk_score", 5) < 5 else "注意控制仓位大小，分散风险"
+            "Continue maintaining limit order trading habits to improve execution efficiency" if limit_ratio > 70 else "Consider increasing limit order usage to reduce slippage costs",
+            "Trading rhythm is stable, maintain current strategy" if daily_trades < 50 else "Consider reducing trading frequency to improve quality per trade",
+            "Risk control is good" if profile.get("risk_preference", {}).get("risk_score", 5) < 5 else "Pay attention to controlling position sizes and diversifying risk"
         ]
     }
 
     return profile
 
-
 def main():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     print("═" * 60)
-    print("        交易员画像分析 / Trader Profile Analysis")
+    print("        Trader Profile Analysis")
     print("═" * 60)
     print()
 
@@ -294,75 +292,75 @@ def main():
     # Print results
     print()
     print("═" * 60)
-    print("                 分析结果 / Analysis Results")
+    print("                 Analysis Results")
     print("═" * 60)
 
-    print("\n📊 基础统计 / Basic Statistics")
+    print("\n📊 Basic Statistics")
     print("─" * 40)
     bs = profile["basic_stats"]
-    print(f"  总订单数: {bs['total_orders']}")
-    print(f"  成交订单: {bs['filled_orders']}")
-    print(f"  取消订单: {bs['canceled_orders']}")
-    print(f"  成交率: {bs['fill_rate']}%")
-    print(f"  订单类型: {bs['order_types']}")
+    print(f"  Total Orders: {bs['total_orders']}")
+    print(f"  Filled Orders: {bs['filled_orders']}")
+    print(f"  Canceled Orders: {bs['canceled_orders']}")
+    print(f"  Fill Rate: {bs['fill_rate']}%")
+    print(f"  Order Types: {bs['order_types']}")
 
-    print("\n🎯 风险偏好 / Risk Preference")
+    print("\n🎯 Risk Preference")
     print("─" * 40)
     rp = profile.get("risk_preference", {})
-    print(f"  平均订单大小: {rp.get('avg_order_size', 'N/A')} USD")
-    print(f"  最大订单: {rp.get('max_order_size', 'N/A')} USD")
-    print(f"  大单比例: {rp.get('large_order_ratio', 'N/A')}%")
-    print(f"  风险评分: {rp.get('risk_score', 'N/A')}/10")
-    print(f"  风险级别: {rp.get('risk_level', 'N/A')}")
+    print(f"  Average Order Size: {rp.get('avg_order_size', 'N/A')} USD")
+    print(f"  Maximum Order: {rp.get('max_order_size', 'N/A')} USD")
+    print(f"  Large Order Ratio: {rp.get('large_order_ratio', 'N/A')}%")
+    print(f"  Risk Score: {rp.get('risk_score', 'N/A')}/10")
+    print(f"  Risk Level: {rp.get('risk_level', 'N/A')}")
 
-    print("\n⏱️ 交易频率 / Trading Frequency")
+    print("\n⏱️ Trading Frequency")
     print("─" * 40)
     tf = profile.get("trading_frequency", {})
-    print(f"  交易天数: {tf.get('total_trading_days', 'N/A')} 天")
-    print(f"  日均交易: {tf.get('daily_avg_trades', 'N/A')} 笔")
-    print(f"  平均间隔: {tf.get('avg_trade_interval_minutes', 'N/A')} 分钟")
-    print(f"  频率评分: {tf.get('frequency_score', 'N/A')}/10")
-    print(f"  频率级别: {tf.get('frequency_level', 'N/A')}")
+    print(f"  Trading Days: {tf.get('total_trading_days', 'N/A')} days")
+    print(f"  Daily Average Trades: {tf.get('daily_avg_trades', 'N/A')}")
+    print(f"  Average Interval: {tf.get('avg_trade_interval_minutes', 'N/A')} minutes")
+    print(f"  Frequency Score: {tf.get('frequency_score', 'N/A')}/10")
+    print(f"  Frequency Level: {tf.get('frequency_level', 'N/A')}")
 
-    print("\n🧠 纪律性评估 / Discipline Assessment")
+    print("\n🧠 Discipline Assessment")
     print("─" * 40)
     ds = profile.get("discipline_scores", {})
-    print(f"  限价单比例: {ds.get('limit_order_ratio', 'N/A')}%")
-    print(f"  取消比例: {ds.get('cancel_ratio', 'N/A')}%")
-    print(f"  纪律评分: {ds.get('discipline_score', 'N/A')}/10")
-    print(f"  耐心评分: {ds.get('patience_score', 'N/A')}/10")
-    print(f"  纪律级别: {ds.get('discipline_level', 'N/A')}")
-    print(f"  耐心级别: {ds.get('patience_level', 'N/A')}")
+    print(f"  Limit Order Ratio: {ds.get('limit_order_ratio', 'N/A')}%")
+    print(f"  Cancel Ratio: {ds.get('cancel_ratio', 'N/A')}%")
+    print(f"  Discipline Score: {ds.get('discipline_score', 'N/A')}/10")
+    print(f"  Patience Score: {ds.get('patience_score', 'N/A')}/10")
+    print(f"  Discipline Level: {ds.get('discipline_level', 'N/A')}")
+    print(f"  Patience Level: {ds.get('patience_level', 'N/A')}")
 
     if "pnl_analysis" in profile:
-        print("\n💰 盈亏分析 / PnL Analysis")
+        print("\n💰 PnL Analysis")
         print("─" * 40)
         pnl = profile["pnl_analysis"]
-        print(f"  总盈亏: {pnl['total_pnl_btc']} BTC")
-        print(f"  总交易次数: {pnl['total_trades']}")
-        print(f"  盈利次数: {pnl['winning_trades']}")
-        print(f"  亏损次数: {pnl['losing_trades']}")
-        print(f"  胜率: {pnl['win_rate']}%")
-        print(f"  平均盈利: {pnl['avg_win_btc']} BTC")
-        print(f"  平均亏损: {pnl['avg_loss_btc']} BTC")
-        print(f"  盈亏比: {pnl['profit_factor']}")
+        print(f"  Total PnL: {pnl['total_pnl_btc']} BTC")
+        print(f"  Total Trades: {pnl['total_trades']}")
+        print(f"  Winning Trades: {pnl['winning_trades']}")
+        print(f"  Losing Trades: {pnl['losing_trades']}")
+        print(f"  Win Rate: {pnl['win_rate']}%")
+        print(f"  Average Win: {pnl['avg_win_btc']} BTC")
+        print(f"  Average Loss: {pnl['avg_loss_btc']} BTC")
+        print(f"  Profit Factor: {pnl['profit_factor']}")
 
-    print("\n📋 交易模式 / Trading Patterns")
+    print("\n📋 Trading Patterns")
     print("─" * 40)
     tp = profile.get("trading_patterns", {})
-    print(f"  最活跃时段: {tp.get('most_active_hour', 'N/A')}:00 UTC")
-    print(f"  最活跃日: {tp.get('most_active_day', 'N/A')}")
+    print(f"  Most Active Hour: {tp.get('most_active_hour', 'N/A')}:00 UTC")
+    print(f"  Most Active Day: {tp.get('most_active_day', 'N/A')}")
 
-    print("\n🏆 综合评价 / Summary")
+    print("\n🏆 Summary")
     print("─" * 40)
     summary = profile["summary"]
-    print(f"  交易者类型: {summary['trader_type']}")
-    print(f"  综合评分: {summary['overall_score']}/10")
-    print(f"  风险级别: {summary['risk_level']}")
-    print(f"  频率级别: {summary['frequency_level']}")
-    print(f"  纪律级别: {summary['discipline_level']}")
+    print(f"  Trader Type: {summary['trader_type']}")
+    print(f"  Overall Score: {summary['overall_score']}/10")
+    print(f"  Risk Level: {summary['risk_level']}")
+    print(f"  Frequency Level: {summary['frequency_level']}")
+    print(f"  Discipline Level: {summary['discipline_level']}")
 
-    print("\n💡 建议 / Advice")
+    print("\n💡 Advice")
     print("─" * 40)
     for i, advice in enumerate(summary['advice'], 1):
         print(f"  {i}. {advice}")
@@ -374,8 +372,7 @@ def main():
     output_file = os.path.join(base_dir, 'trader_profile_analysis.json')
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(profile, f, ensure_ascii=False, indent=2)
-    print(f"\n✅ 分析结果已保存至: {output_file}")
-
+    print(f"\n✅ Analysis results saved to: {output_file}")
 
 if __name__ == '__main__':
     main()

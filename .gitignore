@@ -19,18 +19,18 @@ package-lock.json
 # ============ Testing ============
 /coverage
 
-# ============ Data Files (需另外下載) ============
-# 交易數據 (根目錄)
+# ============ Data Files (download separately) ============
+# Trading data (root directory)
 bitmex_executions.csv
 bitmex_trades.csv
 bitmex_orders.csv
 bitmex_wallet_history.csv
 bitmex_account_summary.json
 
-# K 線數據 (data/ohlcv/)
+# OHLCV data (data/ohlcv/)
 /data/ohlcv/*.csv
 
-# 壓縮檔
+# Compressed files
 *.zip
 
 # ============ Environment ============
@@ -70,6 +70,6 @@ yarn-error.log*
 next-env.d.ts
 .vercel
 
-# ============ Test Scripts (可選保留) ============
+# ============ Test Scripts (optional) ============
 # test_*.js
 # verify_exchange.js

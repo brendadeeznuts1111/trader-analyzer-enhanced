@@ -1,4 +1,8 @@
 // ============ Symbol Mapping ============
+/**
+ * Maps exchange symbols to standardized format
+ * XBT -> BTC conversion for BitMEX compatibility
+ */
 const SYMBOL_MAP: Record<string, string> = {
     'XBTUSD': 'BTCUSD',
     'XBTUSDT': 'BTCUSDT',
@@ -6,16 +10,105 @@ const SYMBOL_MAP: Record<string, string> = {
     'ETHUSDT': 'ETHUSDT',
 };
 
+// ============ Exchange Types ============
+
+/**
+ * Exchange Type enum
+ */
+export type ExchangeType = 'crypto' | 'sports' | 'p2p' | 'prediction' | 'trading_desk';
+
+/**
+ * Exchange Configuration Interface
+ */
+export interface ExchangeConfiguration {
+    name: string;
+    type: ExchangeType;
+    supportsTestnet: boolean;
+    rateLimits: {
+        requestsPerSecond: number;
+        ordersPerMinute: number;
+    };
+    precision: {
+        price: number;
+        amount: number;
+    };
+    features: {
+        marginTrading: boolean;
+        futuresTrading: boolean;
+        spotTrading: boolean;
+        optionsTrading: boolean;
+        sportsTrading: boolean;
+        p2pTrading: boolean;
+    };
+}
+
+/**
+ * Sports Market Interface
+ */
+export interface SportsMarket {
+    symbol: string;
+    displayName: string;
+    sport: string;
+    event: string;
+    year: string;
+    region: string;
+    marketType: string;
+    odds: number;
+    volume: number;
+    tradingDesk: string;
+}
+
+/**
+ * P2P Market Interface
+ */
+export interface P2PMarket {
+    symbol: string;
+    baseCurrency: string;
+    quoteCurrency: string;
+    paymentMethods: string[];
+    escrowEnabled: boolean;
+    traderRating: number;
+    minAmount: number;
+    maxAmount: number;
+}
+
+/**
+ * Prediction Market Interface
+ */
+export interface PredictionMarket {
+    symbol: string;
+    displayName: string;
+    resolutionDate: string;
+    marketType: 'binary' | 'scalar';
+    creator: string;
+    resolutionSource: string;
+    currentProbability: number;
+    volume: number;
+}
+
+/**
+ * Converts exchange symbols to display format (XBT -> BTC)
+ * @param symbol - Exchange symbol (e.g., XBTUSD)
+ * @returns Display symbol (e.g., BTCUSD)
+ */
 export function formatSymbol(symbol: string): string {
     return SYMBOL_MAP[symbol] || symbol.replace('XBT', 'BTC');
 }
 
+/**
+ * Converts display symbols to exchange format (BTC -> XBT)
+ * @param displaySymbol - Display symbol (e.g., BTCUSD)
+ * @returns Exchange symbol (e.g., XBTUSD)
+ */
 export function toInternalSymbol(displaySymbol: string): string {
     return displaySymbol.replace('BTC', 'XBT');
 }
 
-// ============ Types ============
+// ============ Core Data Types ============
 
+/**
+ * Execution record from exchange
+ */
 export interface Execution {
     execID: string;
     orderID: string;
@@ -33,6 +126,9 @@ export interface Execution {
     text: string;
 }
 
+/**
+ * Trade record with fee information
+ */
 export interface Trade {
     id: string;
     datetime: string;
@@ -51,6 +147,9 @@ export interface Trade {
     executionCount?: number; // Number of partial fills for this order
 }
 
+/**
+ * Order record with status and pricing
+ */
 export interface Order {
     orderID: string;
     symbol: string;
@@ -67,6 +166,9 @@ export interface Order {
     text: string;
 }
 
+/**
+ * Wallet transaction including PnL, funding, deposits, withdrawals
+ */
 export interface WalletTransaction {
     transactID: string;
     account: number;
@@ -83,6 +185,9 @@ export interface WalletTransaction {
     marginBalance: number | null;
 }
 
+/**
+ * Account summary with wallet and position information
+ */
 export interface AccountSummary {
     exportDate: string;
     user: {
@@ -97,16 +202,19 @@ export interface AccountSummary {
         unrealisedPnl: number;
         realisedPnl: number;
     };
-    positions: {
+    positions: Array<{
         symbol: string;
         displaySymbol: string;
         currentQty: number;
         avgEntryPrice: number;
         unrealisedPnl: number;
         liquidationPrice: number;
-    }[];
+    }>;
 }
 
+/**
+ * Comprehensive trading statistics
+ */
 export interface TradingStats {
     totalTrades: number;
     totalOrders: number;
@@ -133,11 +241,19 @@ export interface TradingStats {
     fundingReceived: number;
     tradingDays: number;
     avgTradesPerDay: number;
-    monthlyPnl: { month: string; pnl: number; funding: number; trades: number }[];
+    monthlyPnl: Array<{
+        month: string;
+        pnl: number;
+        funding: number;
+        trades: number;
+    }>;
 }
 
 // ============ Position Session Types ============
 
+/**
+ * Position session representing a complete trading position
+ */
 export interface PositionSession {
     id: string;
     symbol: string;
@@ -159,8 +275,44 @@ export interface PositionSession {
     status: 'open' | 'closed';
 }
 
+// ============ AI Prediction Types ============
+
+/**
+ * AI Prediction result structure
+ */
+export interface AIPredictionResult {
+    action: 'buy' | 'sell' | 'hold';
+    confidence: string;
+    reasoning: string[];
+    similar_situations?: Array<{
+        timestamp: string;
+        action: 'buy' | 'sell' | 'hold';
+        price: number;
+        pnl: number;
+        similarity: string;
+        market_context: {
+            rsi: string;
+            price_change_24h: string;
+        };
+    }>;
+    pattern_stats?: {
+        total_patterns: number;
+        action_distribution: Record<string, number>;
+        avg_pnl_by_action: Record<string, number>;
+        date_range: {
+            start: string;
+            end: string;
+        };
+    };
+}
+
 // ============ Utility Functions ============
 
+/**
+ * Formats duration in milliseconds to human-readable format
+ * @param ms - Duration in milliseconds
+ * @returns Formatted duration string (e.g., "2d 3h", "45m", "30s")
+ */
 export function formatDuration(ms: number): string {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -179,3 +331,32 @@ export function formatDuration(ms: number): string {
     return `${seconds}s`;
 }
 
+// ============ Data Validation ============
+
+/**
+ * Validates trade data structure
+ * @param data - Data to validate
+ * @returns Validation result
+ */
+export function validateTradeData(data: any): data is Trade {
+    return data &&
+           typeof data.id === 'string' &&
+           typeof data.datetime === 'string' &&
+           typeof data.symbol === 'string' &&
+           (data.side === 'buy' || data.side === 'sell') &&
+           typeof data.price === 'number' &&
+           typeof data.amount === 'number';
+}
+
+/**
+ * Validates order data structure
+ * @param data - Data to validate
+ * @returns Validation result
+ */
+export function validateOrderData(data: any): data is Order {
+    return data &&
+           typeof data.orderID === 'string' &&
+           typeof data.symbol === 'string' &&
+           ['Buy', 'Sell'].includes(data.side) &&
+           ['Limit', 'Market', 'Stop', 'StopLimit'].includes(data.ordType);
+}
