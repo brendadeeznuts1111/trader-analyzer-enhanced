@@ -13,6 +13,24 @@ import {
 } from 'lucide-react';
 import { WORKERS_URLS } from '@/lib/constants';
 
+// Client-safe logging (browser console with formatting)
+const clientLog = {
+  info: (msg: string, data?: unknown) => {
+    console.log(`%c[INFO] ${msg}`, 'color: #06b6d4', data || '');
+  },
+  warn: (msg: string, data?: unknown) => {
+    console.warn(`%c[WARN] ${msg}`, 'color: #eab308', data || '');
+  },
+  error: (msg: string, data?: unknown) => {
+    console.error(`%c[ERROR] ${msg}`, 'color: #ef4444', data || '');
+  },
+  debug: (msg: string, data?: unknown) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.debug(`%c[DEBUG] ${msg}`, 'color: #6b7280', data || '');
+    }
+  },
+};
+
 // [[TECH][MODULE][INSTANCE][META:{blueprint=BP-INTEGRATION-POLY@0.1.0;instance-id=ORCA-SELECTOR-001;version=0.1.1}]
 // [PROPERTIES:{selector={value:"poly-uuids";@override:true}}][CLASS:MarketSelector]
 // [#REF:v-0.1.1.BP.INTEGRATION.1.0.A.1.1.POLY.1.1]]
@@ -171,7 +189,7 @@ export function CanonicalMarketSelector({
 
       // Handle 304 Not Modified - no data changed
       if (res.status === 304) {
-        console.log('Markets data unchanged, using cached data');
+        clientLog.debug('Markets data unchanged, using cached data');
         setLastFetch(Date.now());
         setLoading(false);
         return;
@@ -216,7 +234,7 @@ export function CanonicalMarketSelector({
       setMarkets(workerMarkets);
       setLastFetch(Date.now());
     } catch (err) {
-      console.error('Failed to fetch markets from Worker:', err);
+      clientLog.error('Failed to fetch markets from Worker', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch markets');
     } finally {
       setLoading(false);

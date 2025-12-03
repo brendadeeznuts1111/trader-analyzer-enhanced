@@ -10,6 +10,7 @@
  */
 
 import { createHash } from 'crypto';
+import { Logger } from '../logger';
 
 // Check if running in Bun
 const isBun = typeof globalThis.Bun !== 'undefined';
@@ -284,15 +285,23 @@ export class MarketCanonicalizer {
   }
 
   /**
-   * Batch canonicalization
+   * Batch canonicalization with logging
    */
   batchCanonicalize(markets: MarketIdentifier[]): Map<string, CanonicalMarket> {
+    Logger.time('batchCanonicalize');
     const canonicalMap = new Map<string, CanonicalMarket>();
 
     for (const market of markets) {
       const canonical = this.canonicalize(market);
       canonicalMap.set(canonical.uuid, canonical);
     }
+
+    const duration = Logger.timeEndSilent('batchCanonicalize');
+    Logger.debug(`Canonicalized ${markets.length} markets`, {
+      count: markets.length,
+      duration: `${duration.toFixed(2)}ms`,
+      exchanges: [...new Set(markets.map(m => m.exchange))],
+    });
 
     return canonicalMap;
   }

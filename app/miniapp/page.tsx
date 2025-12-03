@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
+import { APP_VERSION, APP_NAME } from '@/lib/constants';
 
 // Telegram Mini App SDK types
 declare global {
@@ -110,7 +111,9 @@ export default function MiniAppPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [systemStatus, setSystemStatus] = useState<SystemStatus | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'trades' | 'settings' | 'bot'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'trades' | 'settings' | 'bot'>(
+    'dashboard'
+  );
   const [botStatus, setBotStatus] = useState<BotStatus | null>(null);
   const [botLoading, setBotLoading] = useState(false);
 
@@ -227,7 +230,7 @@ export default function MiniAppPage() {
     >
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Trader Analyzer</h1>
+        <h1 className="text-2xl font-bold">{APP_NAME}</h1>
         {user && (
           <p className="text-sm opacity-70">
             Welcome, {user.first_name}
@@ -370,9 +373,7 @@ export default function MiniAppPage() {
                     {botStatus.running && (
                       <div className="flex items-center justify-between">
                         <span className="text-sm">Uptime:</span>
-                        <span className="text-sm">
-                          {formatUptime(botStatus.uptime)}
-                        </span>
+                        <span className="text-sm">{formatUptime(botStatus.uptime)}</span>
                       </div>
                     )}
                     <div className="flex gap-4 mt-4">
@@ -434,7 +435,9 @@ export default function MiniAppPage() {
 
       {/* Footer */}
       <div className="mt-8 text-center text-xs opacity-50">
-        <p>Trader Analyzer Mini App v{systemStatus?.version || '0.2.0'}</p>
+        <p>
+          {APP_NAME} Mini App v{systemStatus?.version || APP_VERSION}
+        </p>
       </div>
     </div>
   );
@@ -459,7 +462,9 @@ function StatCard({
       style={{ backgroundColor: bgColor || (isDark ? '#2a2a2a' : '#f5f5f5') }}
     >
       <p className="text-xs opacity-70 mb-1">{label}</p>
-      <p className="text-xl font-bold" style={{ color: valueColor }}>{value}</p>
+      <p className="text-xl font-bold" style={{ color: valueColor }}>
+        {value}
+      </p>
     </div>
   );
 }

@@ -1,9 +1,12 @@
 /**
  * Thread Manager - Forum Topic Routing System
+ * [#REF:THREAD-MGR-HEX:0x54485244]
  *
  * Manages topic registration, pinning, and automatic message routing
  * for Telegram forum groups.
  */
+
+import { Logger } from './logger';
 
 // ═══════════════════════════════════════════════════════════════
 // TYPES
@@ -294,7 +297,7 @@ class ThreadManagerClass {
 
       Bun.write(this.persistPath, JSON.stringify(data, null, 2));
     } catch (error) {
-      console.error('Failed to save thread manager state:', error);
+      Logger.error('Failed to save thread manager state', error);
     }
   }
 
@@ -327,9 +330,9 @@ class ThreadManagerClass {
           chat.pinnedPurposes.set(purpose as TopicPurpose, threadId);
         }
       }
-    } catch (error) {
+    } catch {
       // File doesn't exist or is invalid - start fresh
-      console.log('Starting with fresh thread manager state');
+      Logger.debug('Starting with fresh thread manager state');
     }
   }
 
