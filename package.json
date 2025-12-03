@@ -26,6 +26,7 @@
     "dev:debug": "bun --inspect run next dev --port 3002",
     "build": "bun run next build",
     "build:analyze": "ANALYZE=true bun run next build",
+    "build:worker": "bun build ./worker.ts --outdir ./dist-worker --target bun",
     "start": "bun run next start --port 3002",
     "lint": "bunx eslint . --fix",
     "lint:check": "bunx eslint .",
@@ -35,11 +36,16 @@
     "test": "bun test",
     "test:watch": "bun test --watch",
     "test:coverage": "bun test --coverage",
-    "clean": "rm -rf .next build dist node_modules .bun",
+    "clean": "rm -rf .next build dist dist-worker node_modules .bun",
     "clean:cache": "rm -rf .next .bun",
     "validate": "bun run lint:check && bun run type-check && bun test",
     "bundle": "bun build ./app/page.tsx --outdir ./dist",
-    "bundle:analyze": "bun build ./app/page.tsx --outdir ./dist --analyze"
+    "bundle:analyze": "bun build ./app/page.tsx --outdir ./dist --analyze",
+    "deploy:worker": "wrangler deploy",
+    "deploy:markets": "wrangler deploy --config markets-wrangler.toml",
+    "deploy:markets:staging": "wrangler deploy --config markets-wrangler.toml --env staging",
+    "dev:worker": "wrangler dev",
+    "dev:markets": "wrangler dev --config markets-wrangler.toml"
   },
   "dependencies": {
     "@types/uuid": "10.0.0",

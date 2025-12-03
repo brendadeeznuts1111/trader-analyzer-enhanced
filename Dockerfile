@@ -1,5 +1,5 @@
 # EdgeTerminal - Docker Build v0.2.0
-FROM oven/bun:1.1 AS base
+FROM oven/bun:1.3 AS base
 
 # Install dependencies only when needed
 FROM base AS deps

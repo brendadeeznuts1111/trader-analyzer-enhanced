@@ -1,7 +1,16 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { ChevronDown, TrendingUp, Calendar, Trophy, DollarSign, Target, Loader2, RefreshCw } from 'lucide-react';
+import {
+  ChevronDown,
+  TrendingUp,
+  Calendar,
+  Trophy,
+  DollarSign,
+  Target,
+  Loader2,
+  RefreshCw,
+} from 'lucide-react';
 
 // [[TECH][MODULE][INSTANCE][META:{blueprint=BP-INTEGRATION-POLY@0.1.0;instance-id=ORCA-SELECTOR-001;version=0.1.1}]
 // [PROPERTIES:{selector={value:"poly-uuids";@override:true}}][CLASS:MarketSelector]
@@ -28,160 +37,210 @@ interface CanonicalMarketSelectorProps {
 
 const CANONICAL_PRESETS: CanonicalMarket[] = [
   {
-    id: "btc-usd-perp",
-    displayName: "BTC/USD Perpetual",
-    category: "crypto",
-    description: "Bitcoin perpetual futures contract",
+    id: 'btc-usd-perp',
+    displayName: 'BTC/USD Perpetual',
+    category: 'crypto',
+    description: 'Bitcoin perpetual futures contract',
     icon: <DollarSign className="w-4 h-4" />,
-    color: "text-green-400",
-    exchanges: ["Binance", "BitMEX", "Bybit"],
-    source: 'preset'
+    color: 'text-green-400',
+    exchanges: ['Binance', 'BitMEX', 'Bybit'],
+    source: 'preset',
   },
   {
-    id: "eth-usd-perp",
-    displayName: "ETH/USD Perpetual",
-    category: "crypto",
-    description: "Ethereum perpetual futures contract",
+    id: 'eth-usd-perp',
+    displayName: 'ETH/USD Perpetual',
+    category: 'crypto',
+    description: 'Ethereum perpetual futures contract',
     icon: <TrendingUp className="w-4 h-4" />,
-    color: "text-blue-400",
-    exchanges: ["Binance", "BitMEX"],
-    source: 'preset'
+    color: 'text-blue-400',
+    exchanges: ['Binance', 'BitMEX'],
+    source: 'preset',
   },
   {
-    id: "presidential-election-winner-2024",
-    displayName: "2024 US Election Winner",
-    category: "politics",
-    description: "Who will win the 2024 US Presidential Election?",
+    id: 'presidential-election-winner-2024',
+    displayName: '2024 US Election Winner',
+    category: 'politics',
+    description: 'Who will win the 2024 US Presidential Election?',
     icon: <Target className="w-4 h-4" />,
-    color: "text-cyan-400",
-    exchanges: ["Polymarket", "Kalishi"],
-    source: 'preset'
+    color: 'text-cyan-400',
+    exchanges: ['Polymarket', 'Kalishi'],
+    source: 'preset',
   },
   {
-    id: "superbowl-2025",
-    displayName: "Super Bowl LVIII Winner",
-    category: "sports",
-    description: "Which team will win Super Bowl LVIII?",
+    id: 'superbowl-2025',
+    displayName: 'Super Bowl LVIII Winner',
+    category: 'sports',
+    description: 'Which team will win Super Bowl LVIII?',
     icon: <Trophy className="w-4 h-4" />,
-    color: "text-yellow-400",
-    exchanges: ["Polymarket"],
-    source: 'preset'
+    color: 'text-yellow-400',
+    exchanges: ['Polymarket'],
+    source: 'preset',
   },
   {
-    id: "fed-rate-cut-2024",
-    displayName: "Fed Rate Cut in 2024?",
-    category: "prediction",
-    description: "Will the Federal Reserve cut interest rates in 2024?",
+    id: 'fed-rate-cut-2024',
+    displayName: 'Fed Rate Cut in 2024?',
+    category: 'prediction',
+    description: 'Will the Federal Reserve cut interest rates in 2024?',
     icon: <Calendar className="w-4 h-4" />,
-    color: "text-purple-400",
-    exchanges: ["Polymarket"],
-    source: 'preset'
-  }
+    color: 'text-purple-400',
+    exchanges: ['Polymarket'],
+    source: 'preset',
+  },
 ];
 
 // Polymarket market categorization
-const categorizePolyMarket = (question: string): 'crypto' | 'prediction' | 'sports' | 'politics' => {
+const categorizePolyMarket = (
+  question: string
+): 'crypto' | 'prediction' | 'sports' | 'politics' => {
   const q = question.toLowerCase();
-  if (q.includes('bitcoin') || q.includes('btc') || q.includes('ethereum') || q.includes('eth') || q.includes('crypto')) return 'crypto';
-  if (q.includes('election') || q.includes('president') || q.includes('congress') || q.includes('senate') || q.includes('trump') || q.includes('biden')) return 'politics';
-  if (q.includes('super bowl') || q.includes('nfl') || q.includes('nba') || q.includes('world cup') || q.includes('championship')) return 'sports';
+  if (
+    q.includes('bitcoin') ||
+    q.includes('btc') ||
+    q.includes('ethereum') ||
+    q.includes('eth') ||
+    q.includes('crypto')
+  )
+    return 'crypto';
+  if (
+    q.includes('election') ||
+    q.includes('president') ||
+    q.includes('congress') ||
+    q.includes('senate') ||
+    q.includes('trump') ||
+    q.includes('biden')
+  )
+    return 'politics';
+  if (
+    q.includes('super bowl') ||
+    q.includes('nfl') ||
+    q.includes('nba') ||
+    q.includes('world cup') ||
+    q.includes('championship')
+  )
+    return 'sports';
   return 'prediction';
 };
 
 // Icon selector based on category
 const getMarketIcon = (category: string) => {
   switch (category) {
-    case 'crypto': return <DollarSign className="w-4 h-4" />;
-    case 'politics': return <Target className="w-4 h-4" />;
-    case 'sports': return <Trophy className="w-4 h-4" />;
-    default: return <Calendar className="w-4 h-4" />;
+    case 'crypto':
+      return <DollarSign className="w-4 h-4" />;
+    case 'politics':
+      return <Target className="w-4 h-4" />;
+    case 'sports':
+      return <Trophy className="w-4 h-4" />;
+    default:
+      return <Calendar className="w-4 h-4" />;
   }
 };
 
-export function CanonicalMarketSelector({ selectedMarket, onMarketChange, polyEnabled = true }: CanonicalMarketSelectorProps) {
+export function CanonicalMarketSelector({
+  selectedMarket,
+  onMarketChange,
+  polyEnabled = true,
+}: CanonicalMarketSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [markets, setMarkets] = useState<CanonicalMarket[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastFetch, setLastFetch] = useState<number>(0);
+  const [lastETag, setLastETag] = useState<string | null>(null);
 
-  // Fetch Polymarket markets and merge with presets
-  const fetchPolymarketMarkets = useCallback(async () => {
-    if (!polyEnabled) return;
-    
+  // Fetch markets from Cloudflare Worker with ETag caching
+  const fetchMarkets = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      // Fetch from Polymarket Gamma API
-      const res = await fetch('https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=50', {
-        headers: {
-          'Accept': 'application/json',
-        }
-      });
+      // Use staging Worker endpoint for now
+      const workerUrl = 'https://trader-analyzer-markets-staging.utahj4754.workers.dev/api/markets';
+
+      // Include If-None-Match header if we have a cached ETag
+      const headers: Record<string, string> = {
+        Accept: 'application/json',
+      };
+
+      // Add ETag from previous response if available
+      if (lastETag) {
+        headers['If-None-Match'] = lastETag;
+      }
+
+      const res = await fetch(workerUrl, { headers });
+
+      // Handle 304 Not Modified - no data changed
+      if (res.status === 304) {
+        console.log('Markets data unchanged, using cached data');
+        setLastFetch(Date.now());
+        setLoading(false);
+        return;
+      }
 
       if (!res.ok) {
-        throw new Error(`Polymarket API error: ${res.status}`);
+        throw new Error(`Worker API error: ${res.status}`);
+      }
+
+      // Store ETag for future requests
+      const etag = res.headers.get('etag');
+      if (etag) {
+        setLastETag(etag);
       }
 
       const data = await res.json();
-      
-      // Transform Polymarket markets to canonical format
-      const polyMarkets: CanonicalMarket[] = data.map((market: any) => {
-        const category = categorizePolyMarket(market.question || market.title || '');
-        const prices = market.outcomePrices || market.outcome_prices || ['0.5', '0.5'];
-        
+
+      // Transform Worker markets to component format
+      const workerMarkets: CanonicalMarket[] = data.markets.map((market: any) => {
+        const category = market.category as 'crypto' | 'prediction' | 'sports' | 'politics';
+        const exchanges = market.sources?.map((s: any) => s.exchange) || [];
+
         return {
-          id: `poly-${market.condition_id || market.id}`,
-          displayName: (market.question || market.title || 'Unknown Market').slice(0, 60) + ((market.question || market.title || '').length > 60 ? '...' : ''),
+          id: market.id,
+          displayName: market.displayName,
           category,
-          description: market.description?.slice(0, 100) || market.question || 'Polymarket prediction market',
+          description: market.description,
           icon: getMarketIcon(category),
-          color: category === 'crypto' ? 'text-green-400' : category === 'politics' ? 'text-cyan-400' : category === 'sports' ? 'text-yellow-400' : 'text-purple-400',
-          exchanges: ['Polymarket'],
-          odds: {
-            yes: parseFloat(prices[0]) * 100,
-            no: parseFloat(prices[1] || (1 - parseFloat(prices[0])).toString()) * 100
-          },
-          volume: market.volume || market.volumeNum?.toString() || '0',
-          source: 'polymarket' as const
+          color:
+            category === 'crypto'
+              ? 'text-green-400'
+              : category === 'politics'
+                ? 'text-cyan-400'
+                : category === 'sports'
+                  ? 'text-yellow-400'
+                  : 'text-purple-400',
+          exchanges,
+          source: 'preset' as const, // Worker provides canonical presets
         };
       });
 
-      // Merge presets with Polymarket markets (presets first)
-      const mergedMarkets = [...CANONICAL_PRESETS, ...polyMarkets];
-      setMarkets(mergedMarkets);
+      setMarkets(workerMarkets);
       setLastFetch(Date.now());
-      
     } catch (err) {
-      console.error('Failed to fetch Polymarket markets:', err);
+      console.error('Failed to fetch markets from Worker:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch markets');
-      // Fallback to presets only
-      setMarkets(CANONICAL_PRESETS);
     } finally {
       setLoading(false);
     }
-  }, [polyEnabled]);
+  }, [lastETag]);
 
   useEffect(() => {
-    // Initial load with presets
-    setMarkets(CANONICAL_PRESETS);
-    
-    // Fetch Polymarket markets if enabled
-    if (polyEnabled) {
-      fetchPolymarketMarkets();
-    }
-  }, [polyEnabled, fetchPolymarketMarkets]);
+    // Fetch markets from Worker (replaces Polymarket API call)
+    fetchMarkets();
+  }, [fetchMarkets]);
 
   const selectedMarketData = markets.find(m => m.id === selectedMarket) || markets[0];
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'crypto': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'politics': return 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30';
-      case 'sports': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'prediction': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+      case 'crypto':
+        return 'bg-green-500/20 text-green-400 border-green-500/30';
+      case 'politics':
+        return 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30';
+      case 'sports':
+        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+      case 'prediction':
+        return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+      default:
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
     }
   };
 
@@ -201,16 +260,18 @@ export function CanonicalMarketSelector({ selectedMarket, onMarketChange, polyEn
               <div className="font-bold text-white text-lg">
                 {selectedMarketData?.displayName || 'Select Market'}
               </div>
-              <div className="text-sm text-slate-400">
-                {selectedMarketData?.description}
-              </div>
+              <div className="text-sm text-slate-400">{selectedMarketData?.description}</div>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(selectedMarketData?.category || '')}`}>
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(selectedMarketData?.category || '')}`}
+            >
               {selectedMarketData?.category?.toUpperCase()}
             </span>
-            <ChevronDown className={`w-5 h-5 text-cyan-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown
+              className={`w-5 h-5 text-cyan-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            />
           </div>
         </div>
 
@@ -251,16 +312,14 @@ export function CanonicalMarketSelector({ selectedMarket, onMarketChange, polyEn
           {/* Header with refresh */}
           <div className="sticky top-0 bg-slate-900/95 backdrop-blur p-3 border-b border-slate-700/50 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-400">
-                {markets.length} markets
-              </span>
+              <span className="text-sm text-slate-400">{markets.length} markets</span>
               {loading && <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />}
               {error && <span className="text-xs text-red-400">{error}</span>}
             </div>
             <button
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
-                fetchPolymarketMarkets();
+                fetchMarkets();
               }}
               className="p-1.5 rounded-lg hover:bg-slate-700/50 transition-colors"
               title="Refresh markets"
@@ -269,7 +328,7 @@ export function CanonicalMarketSelector({ selectedMarket, onMarketChange, polyEn
             </button>
           </div>
           <div className="p-2">
-            {markets.map((market) => (
+            {markets.map(market => (
               <button
                 key={market.id}
                 onClick={() => {
@@ -285,12 +344,8 @@ export function CanonicalMarketSelector({ selectedMarket, onMarketChange, polyEn
                     {market.icon}
                   </div>
                   <div className="flex-1">
-                    <div className="font-semibold text-white">
-                      {market.displayName}
-                    </div>
-                    <div className="text-sm text-slate-400">
-                      {market.description}
-                    </div>
+                    <div className="font-semibold text-white">{market.displayName}</div>
+                    <div className="text-sm text-slate-400">{market.description}</div>
                     <div className="flex gap-1 mt-1">
                       {market.exchanges.slice(0, 2).map((exchange, index) => (
                         <span
@@ -336,12 +391,7 @@ export function CanonicalMarketSelector({ selectedMarket, onMarketChange, polyEn
       )}
 
       {/* Backdrop */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+      {isOpen && <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />}
     </div>
   );
 }
