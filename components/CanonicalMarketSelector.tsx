@@ -3,13 +3,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   ChevronDown,
-  TrendingUp,
   Calendar,
   Trophy,
   DollarSign,
   Target,
   Loader2,
   RefreshCw,
+  TrendingUp,
 } from 'lucide-react';
 
 // [[TECH][MODULE][INSTANCE][META:{blueprint=BP-INTEGRATION-POLY@0.1.0;instance-id=ORCA-SELECTOR-001;version=0.1.1}]

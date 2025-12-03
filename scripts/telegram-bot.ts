@@ -15,6 +15,8 @@ import {
   type InlineKeyboardButton,
   type TelegramMessage as TgMsg,
 } from '../lib/telegram';
+import { ThreadManager } from '../lib/thread-manager';
+import { Ref, formatSignal, formatError } from '../lib/ref-tagger';
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 
@@ -93,19 +95,152 @@ async function handleStart(msg: IncomingMessage) {
   await reply(
     `<b>Welcome ${name}!</b>\n\n` +
       `I'm your trading assistant bot. Here's what I can do:\n\n` +
-      `<b>Commands:</b>\n` +
+      `<b>📊 Trading:</b>\n` +
       `/status - System status\n` +
       `/trades - Recent trades\n` +
       `/pnl - P&L summary\n` +
-      `/health - API health check\n` +
       `/markets - Active markets\n` +
-      `/app - Open Mini App\n` +
-      `/help - Show this help\n\n` +
+      `/app - Open Mini App\n\n` +
+      `<b>📍 Topics:</b>\n` +
+      `/topics - Show topic mapping\n` +
+      `/pin_alerts - Pin for alerts\n` +
+      `/pin_errors - Pin for errors\n` +
+      `/pin_trades - Pin for trades\n\n` +
+      `<b>🧪 Testing:</b>\n` +
+      `/test_signal - Send test signal\n` +
+      `/test_error - Send test error\n` +
+      `/ref_stats - Show ref counters\n\n` +
       `<i>Built with Bun + Next.js</i>`,
     msg.chat.id,
     msg.message_thread_id
   );
-  console.log(`✓ Responded to /start from ${msg.from?.username || msg.from?.first_name}`);
+  console.log(`✓ /start from ${msg.from?.username || msg.from?.first_name}`);
+}
+
+async function handleTopics(msg: IncomingMessage) {
+  const list = ThreadManager.formatTopicsList(msg.chat.id);
+  await reply(list, msg.chat.id, msg.message_thread_id);
+  console.log(`✓ /topics from ${msg.from?.username || msg.from?.first_name}`);
+}
+
+async function handlePinAlerts(msg: IncomingMessage) {
+  const threadId = msg.message_thread_id ?? null;
+  const topicName = threadId ? `Topic ${threadId}` : 'General';
+
+  ThreadManager.register(msg.chat.id, threadId, topicName, 'alerts');
+  ThreadManager.setPinned(msg.chat.id, threadId, 'alerts');
+
+  await reply(
+    `✅ <b>Alerts pinned!</b>\n\n` +
+      `All trading alerts will now be sent to this topic.\n` +
+      `Thread ID: <code>${threadId ?? 'null'}</code>`,
+    msg.chat.id,
+    msg.message_thread_id
+  );
+  console.log(`✓ /pin_alerts → thread ${threadId} from ${msg.from?.username}`);
+}
+
+async function handlePinErrors(msg: IncomingMessage) {
+  const threadId = msg.message_thread_id ?? null;
+  const topicName = threadId ? `Topic ${threadId}` : 'General';
+
+  ThreadManager.register(msg.chat.id, threadId, topicName, 'errors');
+  ThreadManager.setPinned(msg.chat.id, threadId, 'errors');
+
+  await reply(
+    `✅ <b>Errors pinned!</b>\n\n` +
+      `All error logs will now be sent to this topic.\n` +
+      `Thread ID: <code>${threadId ?? 'null'}</code>`,
+    msg.chat.id,
+    msg.message_thread_id
+  );
+  console.log(`✓ /pin_errors → thread ${threadId} from ${msg.from?.username}`);
+}
+
+async function handlePinTrades(msg: IncomingMessage) {
+  const threadId = msg.message_thread_id ?? null;
+  const topicName = threadId ? `Topic ${threadId}` : 'General';
+
+  ThreadManager.register(msg.chat.id, threadId, topicName, 'trades');
+  ThreadManager.setPinned(msg.chat.id, threadId, 'trades');
+
+  await reply(
+    `✅ <b>Trades pinned!</b>\n\n` +
+      `All trade notifications will now be sent to this topic.\n` +
+      `Thread ID: <code>${threadId ?? 'null'}</code>`,
+    msg.chat.id,
+    msg.message_thread_id
+  );
+  console.log(`✓ /pin_trades → thread ${threadId} from ${msg.from?.username}`);
+}
+
+async function handleTestSignal(msg: IncomingMessage) {
+  const alertsThread = ThreadManager.getAlertsThread(msg.chat.id);
+
+  // Generate a test signal with elite formatting
+  const signalText = formatSignal({
+    percentChange: 26.4,
+    player: 'Jiri Plachy',
+    opponent: 'M. Regner',
+    odds: 3.92,
+    league: 'CZ Liga Pro',
+    isLive: true,
+  });
+
+  const targetThread = alertsThread ?? msg.message_thread_id;
+
+  await reply(signalText, msg.chat.id, targetThread);
+
+  if (alertsThread) {
+    await reply(
+      `✅ Test signal sent to alerts topic (thread ${alertsThread})`,
+      msg.chat.id,
+      msg.message_thread_id
+    );
+  }
+  console.log(`✓ /test_signal → thread ${targetThread} from ${msg.from?.username}`);
+}
+
+async function handleTestError(msg: IncomingMessage) {
+  const errorsThread = ThreadManager.getErrorsThread(msg.chat.id);
+
+  // Generate a test error with elite formatting
+  const errorText = formatError({
+    service: 'Kalshi API',
+    code: 429,
+    message: 'rate limit exceeded',
+    action: 'retry #3 in 5s',
+  });
+
+  const targetThread = errorsThread ?? msg.message_thread_id;
+
+  await reply(errorText, msg.chat.id, targetThread);
+
+  if (errorsThread) {
+    await reply(
+      `✅ Test error sent to errors topic (thread ${errorsThread})`,
+      msg.chat.id,
+      msg.message_thread_id
+    );
+  }
+  console.log(`✓ /test_error → thread ${targetThread} from ${msg.from?.username}`);
+}
+
+async function handleRefStats(msg: IncomingMessage) {
+  const stats = Ref.getStats();
+
+  await reply(
+    `<b>Reference Counters</b>\n\n` +
+      `<b>Year:</b> ${stats.year}\n` +
+      `<b>Signals:</b> ${stats.signal}\n` +
+      `<b>Errors:</b> ${stats.error}\n` +
+      `<b>PRs:</b> ${stats.pr}\n` +
+      `<b>Issues:</b> ${stats.issue}\n` +
+      `<b>RFCs:</b> ${stats.rfc}`,
+    msg.chat.id,
+    msg.message_thread_id
+  );
+  console.log(`✓ /ref_stats from ${msg.from?.username}`);
 }
 
 async function handleStatus(msg: IncomingMessage) {
@@ -126,7 +261,7 @@ async function handleStatus(msg: IncomingMessage) {
   console.log(`✓ Responded to /status from ${msg.from?.username || msg.from?.first_name}`);
 }
 
-async function handleTrades(msg: IncomingMessage) {
+async function handleTradesCmd(msg: IncomingMessage) {
   const keyboard: InlineKeyboardButton[][] = [
     [
       { text: 'View All Trades', callback_data: 'trades_all' },
@@ -144,7 +279,7 @@ async function handleTrades(msg: IncomingMessage) {
     msg.chat.id,
     { threadId: msg.message_thread_id, parseMode: 'HTML' }
   );
-  console.log(`✓ Responded to /trades from ${msg.from?.username || msg.from?.first_name}`);
+  console.log(`✓ /trades from ${msg.from?.username || msg.from?.first_name}`);
 }
 
 async function handlePnL(msg: IncomingMessage) {
@@ -225,11 +360,18 @@ const COMMANDS: Record<string, (msg: IncomingMessage) => Promise<void>> = {
   '/start': handleStart,
   '/help': handleStart,
   '/status': handleStatus,
-  '/trades': handleTrades,
+  '/trades': handleTradesCmd,
   '/pnl': handlePnL,
   '/health': handleHealth,
   '/markets': handleMarkets,
   '/app': handleApp,
+  '/topics': handleTopics,
+  '/pin_alerts': handlePinAlerts,
+  '/pin_errors': handlePinErrors,
+  '/pin_trades': handlePinTrades,
+  '/test_signal': handleTestSignal,
+  '/test_error': handleTestError,
+  '/ref_stats': handleRefStats,
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -321,14 +463,16 @@ async function handleInlineQuery(query: InlineQuery) {
 async function processUpdate(update: Update) {
   try {
     if (update.message?.text) {
-      const command = update.message.text.split(' ')[0].split('@')[0];
+      const msg = update.message;
+      const text = msg.text!;
+
+      // Auto-track topic usage
+      ThreadManager.markUsed(msg.chat.id, msg.message_thread_id ?? null);
+
+      const command = text.split(' ')[0].split('@')[0];
+
       if (COMMANDS[command]) {
-        await COMMANDS[command](update.message);
-      } else {
-        // Echo unknown messages
-        console.log(
-          `? Unknown message: "${update.message.text}" from ${update.message.from?.username}`
-        );
+        await COMMANDS[command](msg);
       }
     } else if (update.callback_query) {
       await handleCallback(update.callback_query);
@@ -354,7 +498,7 @@ async function poll() {
       const response = await getUpdates(offset, 100);
 
       if (response.ok && response.result && response.result.length > 0) {
-        for (const update of response.result) {
+        for (const update of response.result as Update[]) {
           await processUpdate(update);
           offset = update.update_id + 1;
         }
