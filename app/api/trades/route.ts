@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { 
-    loadTradesFromCSV, 
     getPaginatedTrades, 
     getOHLCData,
     loadAccountSummary,

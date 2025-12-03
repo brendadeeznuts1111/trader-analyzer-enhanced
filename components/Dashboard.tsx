@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Trade, PositionSession } from '@/lib/types';
 import { TradeList } from './TradeList';
 import { PositionSessionList } from './PositionSessionList';
@@ -531,8 +531,8 @@ export function Dashboard() {
                     </button>
                     <button
                         onClick={() => { setViewMode('roleplay'); setPage(1); }}
-                        className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${viewMode === 'roleplay'
-                            ? 'bg-purple-500/10 text-purple-400 shadow-[0_0_10px_rgba(168,85,247,0.2)] ring-1 ring-purple-500/20'
+                        className={`flex items-center px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 whitespace-nowrap ${viewMode === 'roleplay'
+                            ? 'tab-roleplay active shadow-lg'
                             : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                         }`}
                     >
@@ -540,8 +540,8 @@ export function Dashboard() {
                     </button>
                     <button
                         onClick={() => { setViewMode('prediction'); setPage(1); }}
-                        className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${viewMode === 'prediction'
-                            ? 'bg-cyan-500/10 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.2)] ring-1 ring-cyan-500/20'
+                        className={`flex items-center px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 whitespace-nowrap ${viewMode === 'prediction'
+                            ? 'tab-prediction active shadow-lg'
                             : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                         }`}
                     >
@@ -549,8 +549,8 @@ export function Dashboard() {
                     </button>
                     <button
                         onClick={() => { setViewMode('profile'); setPage(1); }}
-                        className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${viewMode === 'profile'
-                            ? 'bg-yellow-500/10 text-yellow-400 shadow-[0_0_10px_rgba(234,179,8,0.2)] ring-1 ring-yellow-500/20'
+                        className={`flex items-center px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 whitespace-nowrap ${viewMode === 'profile'
+                            ? 'tab-profile active shadow-lg'
                             : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                         }`}
                     >

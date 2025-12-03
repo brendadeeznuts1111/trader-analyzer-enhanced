@@ -3,11 +3,43 @@
   "version": "1.0.0",
   "private": true,
   "description": "Trader Role-Play Analyzer - Learn trading strategies by role-playing as top traders",
+  "packageManager": "bun@1.0.0",
+  "keywords": [
+    "trading",
+    "roleplay",
+    "learning",
+    "strategies",
+    "trader",
+    "finance",
+    "education",
+    "bun",
+    "nextjs"
+  ],
+  "author": "Anti-Grav Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  },
   "scripts": {
-    "dev": "next dev --port 3000",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "dev": "bun run next dev --port 3002",
+    "dev:debug": "bun --inspect run next dev --port 3002",
+    "build": "bun run next build",
+    "build:analyze": "ANALYZE=true bun run next build",
+    "start": "bun run next start --port 3002",
+    "lint": "bunx eslint . --fix",
+    "lint:check": "bunx eslint .",
+    "type-check": "bun run tsc --noEmit",
+    "format": "bunx prettier --write '**/*.{ts,tsx,css,json}'",
+    "format:check": "bunx prettier --check '**/*.{ts,tsx,css,json}'",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "test:coverage": "bun test --coverage",
+    "clean": "rm -rf .next build dist node_modules .bun",
+    "clean:cache": "rm -rf .next .bun",
+    "validate": "bun run lint:check && bun run type-check && bun test",
+    "bundle": "bun build ./app/page.tsx --outdir ./dist",
+    "bundle:analyze": "bun build ./app/page.tsx --outdir ./dist --analyze"
   },
   "dependencies": {
     "@types/uuid": "10.0.0",
@@ -23,12 +55,41 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bun": "latest",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^7",
+    "@typescript-eslint/parser": "^7",
+    "bunx": "latest",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
+    "prettier": "^3",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anti-grav/trader-analyzer"
+  },
+  "bugs": {
+    "url": "https://github.com/anti-grav/trader-analyzer/issues"
+  },
+  "homepage": "https://github.com/anti-grav/trader-analyzer#readme",
+  "bun": {
+    "preload": [
+      "./app/globals.css"
+    ],
+    "define": {
+      "NEXT_PUBLIC_API_URL": "http://localhost:8000"
+    },
+    "env": {
+      "development": {
+        "NEXT_PUBLIC_API_URL": "http://localhost:8000"
+      },
+      "production": {
+        "NEXT_PUBLIC_API_URL": "https://api.trader-analyzer.com"
+      }
+    }
   }
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Play,
     Pause,
@@ -21,7 +21,7 @@ import {
     Sparkles,
     RotateCcw
 } from 'lucide-react';
-import { Trade, PositionSession } from '@/lib/types';
+import { PositionSession } from '@/lib/types';
 
 interface TraderRolePlayProps {
     sessions: PositionSession[];
@@ -287,8 +287,8 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
     if (!sessions.length && !state.isDemoMode) {
         return (
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-10 text-center border border-slate-700/50">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-teal-500/20 to-sky-500/20 flex items-center justify-center border border-teal-500/20">
-                    <Brain className="w-10 h-10 text-teal-400" />
+                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl gradient-cyan flex items-center justify-center glow-cyan">
+                    <Brain className="w-10 h-10 text-black" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">No Trading Data Available</h3>
                 <p className="text-slate-400 mb-6 max-w-md mx-auto">
@@ -296,7 +296,7 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                 </p>
                 <button
                     onClick={startDemoMode}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-500 to-sky-500 text-white font-medium rounded-xl hover:opacity-90 transition-opacity"
+                    className="inline-flex items-center gap-2 px-6 py-3 gradient-cyan text-black font-bold rounded-xl hover:scale-105 transition-transform glow-cyan"
                 >
                     <Sparkles className="w-5 h-5" />
                     Start Demo Mode
@@ -306,18 +306,18 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6" style={{background: 'linear-gradient(135deg, #0A0E1A, #1A1F2E)'}}>
             {/* Demo Mode Banner */}
             {state.isDemoMode && (
-                <div className="bg-gradient-to-r from-teal-500/20 to-sky-500/20 backdrop-blur-sm rounded-2xl p-4 border border-teal-500/30 flex items-center justify-between">
+                <div className="demo-banner backdrop-blur-sm rounded-2xl p-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <Sparkles className="w-5 h-5 text-teal-400" />
-                        <span className="text-teal-300 font-medium">Demo Mode</span>
-                        <span className="text-slate-400 text-sm">Using sample data to demonstrate the trader role-play learning feature</span>
+                        <Sparkles className="w-5 h-5 text-black" />
+                        <span className="text-black font-bold">Demo Mode</span>
+                        <span className="text-black/70 text-sm font-medium">Using sample data to demonstrate the trader role-play learning feature</span>
                     </div>
                     <button
                         onClick={exitDemoMode}
-                        className="px-4 py-1.5 text-sm bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors"
+                        className="px-4 py-1.5 text-sm bg-black/20 hover:bg-black/30 text-black font-medium rounded-lg transition-colors border border-black/30"
                     >
                         Exit Demo
                     </button>
@@ -325,30 +325,30 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
             )}
 
             {/* Top Status Bar */}
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-5 border border-slate-700/50">
+            <div className="status-bar backdrop-blur-sm rounded-2xl p-5">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-5">
-                        <div className="flex items-center gap-3 bg-amber-500/10 px-4 py-2 rounded-xl border border-amber-500/20">
-                            <Award className="w-5 h-5 text-amber-400" />
-                            <span className="font-bold text-white">
+                        <div className="score-display px-4 py-2 rounded-xl">
+                            <Award className="w-5 h-5 text-black inline mr-2" />
+                            <span className="font-bold text-black">
                                 {state.score.correct}/{state.score.total}
                             </span>
-                            <span className="text-amber-400 font-medium">
+                            <span className="text-black/80 font-medium ml-2">
                                 ({state.score.total > 0
                                     ? Math.round(state.score.correct / state.score.total * 100)
                                     : 0}%)
                             </span>
                         </div>
-                        <div className="h-8 w-px bg-slate-700" />
-                        <div className="flex items-center gap-3 text-slate-400">
-                            <Clock className="w-4 h-4 text-sky-400" />
-                            <span>Position <span className="text-white font-medium">{state.currentSessionIndex + 1}/{activeSessions.length}</span></span>
-                            <span className="text-slate-600">·</span>
-                            <span>Trade <span className="text-white font-medium">{state.currentTradeIndex + 1}/{currentSession?.trades?.length || 0}</span></span>
+                        <div className="h-8 w-px bg-gradient-to-b from-transparent to-black/20" />
+                        <div className="flex items-center gap-3 text-cyan-400">
+                            <Clock className="w-4 h-4" />
+                            <span className="text-white">Position <span className="font-bold text-cyan-400">{state.currentSessionIndex + 1}/{activeSessions.length}</span></span>
+                            <span className="text-black/40">·</span>
+                            <span className="text-white">Trade <span className="font-bold text-cyan-400">{state.currentTradeIndex + 1}/{currentSession?.trades?.length || 0}</span></span>
                         </div>
                         <button
                             onClick={resetProgress}
-                            className="p-2 rounded-lg hover:bg-slate-700/50 transition-colors text-slate-400 hover:text-white"
+                            className="p-2 rounded-lg hover:bg-black/20 transition-colors text-cyan-400 hover:text-white border border-cyan-400/30"
                             title="Reset Progress"
                         >
                             <RotateCcw className="w-4 h-4" />
@@ -360,7 +360,7 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                         {!state.isDemoMode && sessions.length > 0 && (
                             <button
                                 onClick={startDemoMode}
-                                className="px-3 py-1.5 text-sm bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors border border-slate-600/50"
+                                className="px-3 py-1.5 text-sm bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 rounded-lg transition-colors border border-purple-500/50 font-semibold"
                             >
                                 Demo Mode
                             </button>
@@ -368,7 +368,7 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                         <select
                             value={state.playbackSpeed}
                             onChange={(e) => setState(prev => ({ ...prev, playbackSpeed: Number(e.target.value) }))}
-                            className="px-3 py-2 bg-slate-700/50 border border-slate-600/50 rounded-xl text-sm text-white"
+                            className="px-3 py-2 bg-slate-700/50 border border-cyan-500/30 rounded-xl text-sm text-white font-medium"
                         >
                             <option value={0.5}>0.5x</option>
                             <option value={1}>1x</option>
@@ -378,7 +378,7 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
 
                         <button
                             onClick={handlePrev}
-                            className="p-2 rounded-xl bg-slate-700/50 hover:bg-slate-700 transition-colors text-slate-300 hover:text-white"
+                            className="p-2 rounded-xl bg-slate-700/50 hover:bg-slate-700 transition-colors text-cyan-400 hover:text-cyan-300 border border-cyan-500/30"
                         >
                             <SkipBack className="w-5 h-5" />
                         </button>
@@ -396,7 +396,7 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
 
                         <button
                             onClick={handleNext}
-                            className="p-2 rounded-xl bg-slate-700/50 hover:bg-slate-700 transition-colors text-slate-300 hover:text-white"
+                            className="p-2 rounded-xl bg-slate-700/50 hover:bg-slate-700 transition-colors text-cyan-400 hover:text-cyan-300 border border-cyan-500/30"
                         >
                             <SkipForward className="w-5 h-5" />
                         </button>
@@ -409,8 +409,8 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                 {/* Market Context */}
                 <div className="lg:col-span-2 bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
                     <h3 className="text-lg font-bold text-white mb-5 flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-sky-500/20 border border-sky-500/30">
-                            <Target className="w-5 h-5 text-sky-400" />
+                        <div className="p-2 rounded-lg bg-cyan-500/30 border border-cyan-400 glow-cyan">
+                            <Target className="w-5 h-5 text-cyan-300" />
                         </div>
                         Market Context
                     </h3>
@@ -434,17 +434,16 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                                 <div className="text-sm text-slate-400 mb-3">Current Status</div>
                                 <div className="flex items-center gap-4">
                                     {context.isNewPosition ? (
-                                        <span className="px-4 py-2 bg-sky-500/20 text-sky-400 rounded-xl text-sm font-medium border border-sky-500/30">
+                                        <span className="px-4 py-2 bg-cyan-500/20 text-cyan-300 rounded-xl text-sm font-bold border border-cyan-400">
                                             No Position
                                         </span>
                                     ) : (
-                                        <span className={`px-4 py-2 rounded-xl text-sm font-medium border ${
+                                        <span className={`px-4 py-2 rounded-xl text-sm font-bold border ${
                                             context.positionSide === 'long'
-                                                ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-                                                : 'bg-rose-500/20 text-rose-400 border-rose-500/30'
+                                                ? 'bg-green-500/30 text-green-300 border-green-400'
+                                                : 'bg-red-500/30 text-red-300 border-red-400'
                                         }`}>
-                                            {context.positionSide === 'long' ? 'Long Position' : 'Short Position'}:
-                                            {Math.abs(context.currentSize).toLocaleString()}
+                                            {context.positionSide === 'long' ? 'LONG' : 'SHORT'}: {Math.abs(context.currentSize).toLocaleString()}
                                         </span>
                                     )}
                                 </div>
@@ -486,8 +485,8 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                 {/* Action Panel */}
                 <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
                     <h3 className="text-lg font-bold text-white mb-5 flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-violet-500/20 border border-violet-500/30">
-                            <Zap className="w-5 h-5 text-violet-400" />
+                        <div className="p-2 rounded-lg bg-purple-500/30 border border-purple-400 glow-purple">
+                            <Zap className="w-5 h-5 text-purple-300" />
                         </div>
                         Your Decision
                     </h3>
@@ -496,54 +495,54 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                         <button
                             onClick={() => handleGuess('buy')}
                             disabled={state.showAnswer}
-                            className={`w-full p-4 rounded-xl border-2 transition-all flex items-center justify-center gap-3 ${
+                            className={`w-full p-4 rounded-xl border-2 transition-all flex items-center justify-center gap-3 font-bold ${
                                 state.showAnswer
                                     ? state.userGuess === 'buy'
                                         ? currentTrade?.side === 'buy'
-                                            ? 'border-emerald-500 bg-emerald-500/20'
+                                            ? 'result-correct'
                                             : 'border-rose-500 bg-rose-500/20'
                                         : currentTrade?.side === 'buy'
                                             ? 'border-emerald-500/50 bg-emerald-500/10'
                                             : 'border-slate-700'
-                                    : 'border-emerald-500/30 hover:border-emerald-500 hover:bg-emerald-500/10'
+                                    : 'btn-buy hover:scale-105'
                             }`}
                         >
-                            <TrendingUp className="w-6 h-6 text-emerald-400" />
-                            <span className="font-semibold text-lg text-white">Buy / Long</span>
+                            <TrendingUp className="w-6 h-6" />
+                            <span className="text-lg">BUY / LONG</span>
                         </button>
 
                         <button
                             onClick={() => handleGuess('sell')}
                             disabled={state.showAnswer}
-                            className={`w-full p-4 rounded-xl border-2 transition-all flex items-center justify-center gap-3 ${
+                            className={`w-full p-4 rounded-xl border-2 transition-all flex items-center justify-center gap-3 font-bold ${
                                 state.showAnswer
                                     ? state.userGuess === 'sell'
                                         ? currentTrade?.side === 'sell'
-                                            ? 'border-emerald-500 bg-emerald-500/20'
+                                            ? 'result-correct'
                                             : 'border-rose-500 bg-rose-500/20'
                                         : currentTrade?.side === 'sell'
-                                            ? 'border-emerald-500/50 bg-emerald-500/10'
+                                            ? 'border-rose-500/50 bg-rose-500/10'
                                             : 'border-slate-700'
-                                    : 'border-rose-500/30 hover:border-rose-500 hover:bg-rose-500/10'
+                                    : 'btn-sell hover:scale-105'
                             }`}
                         >
-                            <TrendingDown className="w-6 h-6 text-rose-400" />
-                            <span className="font-semibold text-lg text-white">Sell / Short</span>
+                            <TrendingDown className="w-6 h-6" />
+                            <span className="text-lg">SELL / SHORT</span>
                         </button>
 
                         <button
                             onClick={() => handleGuess('hold')}
                             disabled={state.showAnswer}
-                            className={`w-full p-4 rounded-xl border-2 transition-all flex items-center justify-center gap-3 ${
+                            className={`w-full p-4 rounded-xl border-2 transition-all flex items-center justify-center gap-3 font-bold ${
                                 state.showAnswer
                                     ? state.userGuess === 'hold'
-                                        ? 'border-amber-500 bg-amber-500/20'
+                                        ? 'result-correct'
                                         : 'border-slate-700'
-                                    : 'border-amber-500/30 hover:border-amber-500 hover:bg-amber-500/10'
+                                    : 'btn-hold hover:scale-105'
                             }`}
                         >
-                            <Clock className="w-6 h-6 text-amber-400" />
-                            <span className="font-semibold text-lg text-white">Hold / Wait</span>
+                            <Clock className="w-6 h-6" />
+                            <span className="text-lg">HOLD / WAIT</span>
                         </button>
                     </div>
 
@@ -551,27 +550,27 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
                     {state.showAnswer && currentTrade && (
                         <div className={`mt-4 p-4 rounded-xl ${
                             state.userGuess === currentTrade.side
-                                ? 'bg-emerald-500/20 border border-emerald-500/30'
-                                : 'bg-rose-500/20 border border-rose-500/30'
+                                ? 'result-correct'
+                                : 'result-incorrect'
                         }`}>
                             <div className="flex items-center gap-2 mb-2">
                                 {state.userGuess === currentTrade.side ? (
                                     <>
-                                        <CheckCircle className="w-5 h-5 text-emerald-400" />
-                                        <span className="font-semibold text-emerald-400">Correct!</span>
+                                        <CheckCircle className="w-6 h-6" />
+                                        <span className="font-bold text-lg">CORRECT!</span>
                                     </>
                                 ) : (
                                     <>
-                                        <XCircle className="w-5 h-5 text-rose-400" />
-                                        <span className="font-semibold text-rose-400">Incorrect</span>
+                                        <XCircle className="w-6 h-6" />
+                                        <span className="font-bold text-lg">INCORRECT</span>
                                     </>
                                 )}
                             </div>
-                            <div className="text-sm text-slate-400">
-                                Trader's Choice: <span className={`font-medium ${
-                                    currentTrade.side === 'buy' ? 'text-emerald-400' : 'text-rose-400'
+                            <div className="text-sm font-medium">
+                                Trader's Choice: <span className={`font-bold ${
+                                    currentTrade.side === 'buy' ? 'text-black' : 'text-white'
                                 }`}>
-                                    {currentTrade.side === 'buy' ? 'Buy' : 'Sell'}
+                                    {currentTrade.side === 'buy' ? 'BUY' : 'SELL'}
                                 </span>
                                 {' '}{currentTrade.amount.toLocaleString()} @ ${currentTrade.price.toLocaleString()}
                             </div>
@@ -583,33 +582,35 @@ export function TraderRolePlay({ sessions, currentPrice, onSelectSession }: Trad
             {/* Position Details */}
             {currentSession && (
                 <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
-                    <h3 className="text-lg font-bold text-white mb-5">Current Position Details</h3>
+                    <h3 className="text-lg font-bold text-cyan-300 mb-5 flex items-center gap-2">
+                        <span className="text-xl">📊</span> Current Position Details
+                    </h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                            <div className="text-sm text-slate-400 mb-1">Side</div>
-                            <div className={`font-bold text-xl ${
-                                currentSession.side === 'long' ? 'text-emerald-400' : 'text-rose-400'
-                            }`}>
-                                {currentSession.side === 'long' ? 'Long' : 'Short'}
-                            </div>
-                        </div>
-                        <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                            <div className="text-sm text-slate-400 mb-1">Max Size</div>
-                            <div className="font-bold text-xl text-white">{currentSession.maxSize.toLocaleString()}</div>
-                        </div>
-                        <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                            <div className="text-sm text-slate-400 mb-1">Realized PnL</div>
-                            <div className={`font-bold text-xl ${
-                                currentSession.realizedPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'
-                            }`}>
-                                {currentSession.realizedPnl >= 0 ? '+' : ''}{currentSession.realizedPnl.toFixed(4)} BTC
-                            </div>
-                        </div>
-                        <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/30">
-                            <div className="text-sm text-slate-400 mb-1">Trade Count</div>
-                            <div className="font-bold text-xl text-sky-400">{currentSession.tradeCount}</div>
-                        </div>
-                    </div>
+                         <div className="bg-slate-900/50 rounded-xl p-4 border border-cyan-500/30 hover:border-cyan-400 transition-colors">
+                             <div className="text-sm text-slate-400 mb-1">Side</div>
+                             <div className={`font-bold text-xl ${
+                                 currentSession.side === 'long' ? 'text-green-400' : 'text-red-400'
+                             }`}>
+                                 {currentSession.side === 'long' ? 'LONG' : 'SHORT'}
+                             </div>
+                         </div>
+                         <div className="bg-slate-900/50 rounded-xl p-4 border border-cyan-500/30 hover:border-cyan-400 transition-colors">
+                             <div className="text-sm text-slate-400 mb-1">Max Size</div>
+                             <div className="font-bold text-xl text-cyan-300">{currentSession.maxSize.toLocaleString()}</div>
+                         </div>
+                         <div className="bg-slate-900/50 rounded-xl p-4 border border-cyan-500/30 hover:border-cyan-400 transition-colors">
+                             <div className="text-sm text-slate-400 mb-1">Realized PnL</div>
+                             <div className={`font-bold text-xl ${
+                                 currentSession.realizedPnl >= 0 ? 'text-green-400' : 'text-red-400'
+                             }`}>
+                                 {currentSession.realizedPnl >= 0 ? '+' : ''}{currentSession.realizedPnl.toFixed(4)} BTC
+                             </div>
+                         </div>
+                         <div className="bg-slate-900/50 rounded-xl p-4 border border-cyan-500/30 hover:border-cyan-400 transition-colors">
+                             <div className="text-sm text-slate-400 mb-1">Trade Count</div>
+                             <div className="font-bold text-xl text-yellow-400">{currentSession.tradeCount}</div>
+                         </div>
+                     </div>
                 </div>
             )}
         </div>

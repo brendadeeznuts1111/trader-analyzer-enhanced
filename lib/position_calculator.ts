@@ -213,7 +213,6 @@ export function calculatePositionSessionsFromExecutions(executions: Execution[])
                 
                 // Close the previous session at the flip point
                 // We need to split this execution
-                const flipQty = Math.abs(positionBefore);
                 const overflowQty = Math.abs(runningPosition);
                 
                 // Adjust the last session's totals

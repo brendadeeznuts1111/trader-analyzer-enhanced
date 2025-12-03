@@ -1,0 +1,43 @@
+# Bun Configuration File
+# https://bun.sh/docs/runtime/bunfig
+
+[build]
+root = "."
+outdir = ".next"
+target = "browser"
+format = "esm"
+minify = true
+sourcemap = "inline"
+splitting = true
+
+[preload]
+# Preload critical files for faster startup
+"./app/globals.css" = true
+"./lib/types.ts" = true
+
+[install]
+# Use Bun's fast package manager
+cache = true
+frozenLockfile = false
+silent = false
+
+[run]
+# Default environment for bun run
+shell = "system"
+
+[env]
+# Default environment variables
+NEXT_PUBLIC_API_URL = "http://localhost:8000"
+NODE_ENV = "development"
+
+[test]
+# Bun test configuration
+preload = ["./app/globals.css"]
+coverage = true
+coverageDir = "./coverage"
+coverageReporter = ["text"]
+
+[log]
+# Logging configuration
+level = "info"
+color = true

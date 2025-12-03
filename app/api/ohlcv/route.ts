@@ -43,6 +43,15 @@ interface OHLCVCandle {
     volume: number;
 }
 
+interface CSVRecord {
+    timestamp: string;
+    open: string;
+    high: string;
+    low: string;
+    close: string;
+    volume: string;
+}
+
 // Cache for loaded data
 const dataCache = new Map<string, { candles: OHLCVCandle[]; loadedAt: number }>();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes cache
@@ -78,7 +87,7 @@ function loadLocalOHLCV(symbol: string, sourceTimeframe: string): OHLCVCandle[] 
         
         const candles: OHLCVCandle[] = [];
         
-        for (const r of records) {
+        for (const r of records as CSVRecord[]) {
             const time = Math.floor(new Date(r.timestamp).getTime() / 1000);
             const open = parseFloat(r.open);
             const high = parseFloat(r.high);
