@@ -5,61 +5,82 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)
 ![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-orange?logo=cloudflare)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss)
-![Bun](https://img.shields.io/badge/Bun-1.3.2-FFDF37?logo=bun)
+![Bun](https://img.shields.io/badge/Bun-1.3-FFDF37?logo=bun)
 
-Intelligent analysis platform for learning trading strategies by role-playing as top traders. **Now powered by Cloudflare Workers** for global edge deployment and real-time data streaming.
+Intelligent analysis platform for learning trading strategies by role-playing as top traders. **Powered by Cloudflare Workers** for global edge deployment and **UUIDv5 canonical market identifiers** for cross-exchange compatibility.
 
-> **Note**: Built with Bun runtime for lightning-fast development and deployment [#REF:v0.1.15.BUN-RUNTIME]
-> **RSS**: Latest Bun updates at [bun.sh/blog](https://bun.sh/blog) [#REF:BUN-BLOG-RSS]
+> **Runtime**: Bun-native development with Next.js 16 frontend
+> **Architecture**: Multi-environment support (Bun SQLite + Next.js in-memory cache)
 
-## ✨ Core Features
+## Core Features
 
-### 1. Role-Play Learning
+### 1. UUIDv5 Canonical Market System (NEW)
 
-- Guess the trader's next move based on market conditions without knowing their actual operations
+- **Deterministic UUIDs**: Same market input always produces identical UUID across all systems
+- **Cross-Exchange Compatibility**: Unified identifiers for Polymarket, Kalshi, Manifold, BitMEX, Sports
+- **Multi-Environment Cache**: SQLite WAL mode (Bun) with in-memory fallback (Next.js)
+- **Exchange-Aware Headers**: Rate limiting, canonical tracking, debug headers
+
+```typescript
+// Generate canonical UUID for any market
+import { marketCanonicalizer } from './lib/canonical';
+
+const canonical = marketCanonicalizer.canonicalize({
+  exchange: 'polymarket',
+  nativeId: 'btc-100k-2025',
+  type: 'binary',
+});
+
+console.log(canonical.uuid); // "d4551ab8-b0d7-5444-ab99-915c1a29308e"
+// Same input = Same UUID (deterministic)
+```
+
+### 2. Role-Play Learning
+
+- Guess the trader's next move based on market conditions
 - Real-time scoring system to record your judgment accuracy
 - Provide trader's thought process hints to help understand decision logic
 - Auto-play mode with adjustable speed
 
-### 2. AI Action Prediction
+### 3. AI Action Prediction
 
 - Intelligent prediction based on trader's historical patterns
 - Display similar historical situations and their outcomes
 - Pattern statistical analysis, including operation distribution and average PnL
 - Prediction confidence and detailed reasons
 
-### 3. Trader Profile Analysis
+### 4. Trader Profile Analysis
 
 - Risk preference assessment (Aggressive/Steady/Conservative)
 - Trading frequency type (Scalping/Intraday/Swing/Trend)
 - Trading discipline and patience score
-- Matching suitable learning groups
 - Core strengths and areas for improvement
 
-### 4. Complete Data Visualization
+### 5. Complete Data Visualization
 
-- 📊 Multi-period K-line charts (1m ~ 1w) via Cloudflare Workers
-- 🎯 Trade markers displayed in real-time on the chart
-- 📈 Position history tracking with live updates
-- 💰 Equity curve and monthly PnL analysis
-- 🌐 **Global Edge Deployment**: 200+ data centers worldwide
+- Multi-period K-line charts (1m ~ 1w) via Cloudflare Workers
+- Trade markers displayed in real-time on the chart
+- Position history tracking with live updates
+- Equity curve and monthly PnL analysis
+- **Global Edge Deployment**: 200+ data centers worldwide
 
-## 🛠 Tech Stack
+## Tech Stack
 
-- **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS 4
-- **Backend**: Cloudflare Workers (Global Edge Runtime)
-- **Real-time**: WebSocket with Durable Objects
-- **Caching**: Cloudflare KV with ETag support
-- **Charts**: Lightweight Charts, Recharts
-- **Deployment**: Cloudflare Pages + Workers
+| Layer | Technology |
+|-------|------------|
+| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS 4 |
+| Backend | Cloudflare Workers, Bun runtime |
+| Caching | SQLite WAL (Bun) / In-memory Map (Next.js) |
+| Real-time | WebSocket with Durable Objects |
+| Charts | Lightweight Charts, Recharts |
+| Testing | Bun test runner (68 unit tests) |
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
-- [Bun](https://bun.sh/) runtime
+- [Bun](https://bun.sh/) runtime (v1.3+)
 - [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/) for Cloudflare Workers
-- Cloudflare account with Workers enabled
 
 ### 1. Install Dependencies
 
@@ -70,74 +91,149 @@ bun install
 ### 2. Local Development
 
 ```bash
-# Start Next.js frontend
+# Start Next.js frontend (port 3002)
 bun run dev
 
-# In another terminal, start Workers locally
-bunx wrangler dev --config markets-wrangler.toml
+# In another terminal, start Workers locally (optional)
+bunx wrangler dev --config scripts/deploy/markets-wrangler.toml
 ```
 
-### 3. Deploy to Cloudflare
+### 3. Run Tests
 
 ```bash
-# Deploy Workers to staging
-bunx wrangler deploy --config markets-wrangler.toml --env staging
+# Run all unit tests
+bun test
 
-# Deploy frontend to Cloudflare Pages
+# Run specific test suite
+bun test tests/canonical.test.ts
+```
+
+### 4. Build & Deploy
+
+```bash
+# Build for production
 bun run build
-bunx wrangler pages deploy ./out
+
+# Deploy Workers to staging
+bunx wrangler deploy --config scripts/deploy/markets-wrangler.toml --env staging
 ```
 
-### 4. Environment Configuration
+## Project Structure
 
-Create `.env.local` for local development:
-
-```bash
-# Worker API endpoints (staging URLs)
-NEXT_PUBLIC_WORKERS_API=https://trader-analyzer-markets-staging.utahj4754.workers.dev
 ```
-
-## 📁 Project Structure
-
-````
-├── app/                      # Next.js App Router
-│   ├── api/                  # Legacy API routes (deprecated)
-│   ├── components/           # React components
-│   │   ├── Dashboard.tsx     # Main trading dashboard
-│   │   ├── CanonicalMarketSelector.tsx
+trader-analyzer/
+├── app/                          # Next.js App Router
+│   ├── api/                      # API routes
+│   │   ├── markets/
+│   │   │   ├── canonical/        # NEW: Canonical UUID API
+│   │   │   │   └── route.ts
+│   │   │   └── route.ts
+│   │   ├── trades/
+│   │   └── health/
+│   ├── miniapp/                  # Telegram Mini App
+│   └── page.tsx
+├── components/                   # React components
+│   ├── Dashboard.tsx
+│   ├── CanonicalMarketSelector.tsx
+│   ├── CanonicalMarketSelectorUUID.tsx  # NEW: UUID selector
+│   └── ...
+├── lib/                          # Core libraries
+│   ├── canonical/                # NEW: UUIDv5 canonicalization
+│   │   ├── uuidv5.ts            # Bun.randomUUIDv5 + crypto fallback
+│   │   └── index.ts
+│   ├── api/                      # API utilities
+│   │   ├── cache-manager.ts     # SQLite/Memory dual cache
+│   │   ├── header-manager.ts    # Exchange-aware headers
+│   │   └── index.ts
+│   ├── markets/                  # NEW: Market fetcher
+│   │   ├── fetcher.ts           # Canonicalize + cache wrapper
+│   │   └── index.ts
+│   ├── exchanges/                # Exchange adapters
+│   │   ├── polymarket_exchange.ts
+│   │   ├── kalshi_exchange.ts
 │   │   └── ...
-│   └── page.tsx             # Home page
-├── markets-simple.ts        # Cloudflare Workers API
-├── markets-wrangler.toml    # Workers configuration
-├── archive/                 # Archived legacy code
-│   └── v0.1.14/
-│       ├── server.ts        # Old Bun server
-│       ├── worker.ts        # Old worker
-│       └── markets.ts       # Old markets API
-├── public/                  # Static assets
-└── package.json            # Dependencies and scripts
+│   └── telegram.ts              # Telegram bot integration
+├── tests/                        # Test suites
+│   ├── canonical.test.ts        # 29 critical path tests
+│   ├── blueprint.test.ts
+│   └── basic.test.ts
+├── scripts/
+│   ├── deploy/                   # Deployment configs
+│   └── telegram-bot.ts          # Telegram polling bot
+└── docs/
+    └── API_DOCUMENTATION.md
+```
 
-## 📡 API Documentation
+## API Reference
 
-### Cloudflare Workers Endpoints
+### Canonical Markets API (NEW)
 
-All APIs are now served via Cloudflare Workers with global edge distribution and ETag caching.
+```http
+# List canonical markets with UUIDs
+GET /api/markets/canonical?exchange=polymarket&limit=50
 
-> **📖 Complete API Reference**: See [API_DOCUMENTATION.md](API_DOCUMENTATION.md) for detailed technical specifications, URL parameters, algorithms, and code examples.
+# Response includes canonical headers:
+# X-Canonical-UUID: d4551ab8-b0d7-5444-ab99-915c1a29308e
+# X-Cache-Status: HIT
+# X-RateLimit-Remaining: 97
+```
 
-#### Markets API [#REF:v0.1.15.API.MARKETS]
+**Query Parameters:**
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `exchange` | string | polymarket | Exchange: polymarket, kalshi, manifold, bitmex, sports |
+| `limit` | number | 50 | Results per page (max 100) |
+| `offset` | number | 0 | Pagination offset |
+| `type` | string | - | Filter by market type: binary, scalar, categorical |
+| `category` | string | - | Filter: crypto, prediction, sports, politics |
+| `search` | string | - | Search in displayName/description |
+
+**Response:**
+```json
+{
+  "markets": [
+    {
+      "uuid": "904ab02a-c673-5bc3-a5b3-30f24ec5be21",
+      "nativeId": "516706",
+      "exchange": "polymarket",
+      "displayName": "Fed rate hike in 2025?",
+      "category": "prediction",
+      "type": "binary",
+      "tags": ["polymarket", "binary", "v265099557"],
+      "salt": "9b546571766655be",
+      "cacheKey": "polymarket:15b558b432976cb49ff885cab53991b7",
+      "odds": { "yes": 65, "no": 35 },
+      "volume": "941832.52"
+    }
+  ],
+  "pagination": { "total": 100, "offset": 0, "limit": 50, "hasMore": true },
+  "cacheStats": { "hits": 42, "misses": 3, "hitRate": 0.93 },
+  "meta": { "exchange": "polymarket", "responseTimeMs": 4.2 }
+}
+```
+
+### Canonicalize Single Market (POST)
+
+```http
+POST /api/markets/canonical
+Content-Type: application/json
+
+{
+  "exchange": "polymarket",
+  "nativeId": "btc-100k-2025",
+  "type": "binary"
+}
+```
+
+### Markets API
+
 ```http
 GET /api/markets
 GET /api/markets/{id}
-GET /api/markets/{id}/ohlcv?timeframe=1d&limit=100&since=1640995200
+GET /api/markets/{id}/ohlcv?timeframe=1d&limit=100
 ```
 
-**URL Search Parameters:**
-- `timeframe`: `1m|5m|15m|30m|1h|4h|1d|1w` (default: `1d`) [#REF:TIMEFRAME-HEX:0x54464D45]
-- `limit`: `1-1000` (default: `100`) [#REF:LIMIT-HEX:0x4C494D49]
-- `since`: Unix timestamp for incremental data [#REF:SINCE-HEX:0x53494E43]
-
-#### Trading Data API [#REF:v0.1.15.API.TRADES]
+### Trading Data API
 
 ```http
 GET /api/trades?type=stats
@@ -146,312 +242,136 @@ GET /api/trades?type=sessions&page=1&limit=20
 GET /api/trades?sessionId=session-123
 ```
 
-**URL Search Parameters:**
-- `type`: `stats|equity|sessions` (required for multi-type endpoints) [#REF:TYPE-HEX:0x54595045]
-- `days`: `7-730` (equity curve duration, default: `365`) [#REF:DAYS-HEX:0x44415953]
-- `page`: `1-N` (pagination page, default: `1`) [#REF:PAGE-HEX:0x50414745]
-- `limit`: `1-100` (items per page, default: `20`) [#REF:LIMIT-HEX:0x4C494D49]
-- `sessionId`: Session identifier (UUID format) [#REF:SESSION-HEX:0x53455353]
-
-#### Real-time WebSocket [#REF:v0.1.15.WS.DO]
-
-```javascript
-// Connect to WebSocket with Durable Objects
-const ws = new WebSocket('wss://your-worker.workers.dev/ws?key=user123');
-
-// Subscribe to real-time feed
-ws.send(JSON.stringify({ type: 'subscribe', key: 'user123' }));
-
-// Handle incoming messages
-ws.onmessage = event => {
-  const data = JSON.parse(event.data);
-  switch (data.type) {
-    case 'subscribed':
-      console.log('Connected to DO FeedHub:', data.message);
-      break;
-    case 'delta':
-      // Surgical delta updates [#REF:DELTA-HEX:0x44454C54]
-      handleMarketUpdate(data.changes, data.checksum);
-      break;
-    case 'pong':
-      // Keepalive response
-      break;
-  }
-};
-
-// Send ping for connection health
-setInterval(() => ws.send(JSON.stringify({ type: 'ping' })), 30000);
-```
-
-**WebSocket URL Parameters:**
-- `key`: Client identifier (recommended: UUID or session ID) [#REF:WS-KEY-HEX:0x574B4559]
-
-#### Polling Fallback [#REF:v0.1.15.POLLING.ETAG]
+### Health Check
 
 ```http
-GET /v1/feed?key=user123&since=1640995200
-# Returns 304 Not Modified if no changes (ETag caching)
-# Response includes checksum for data integrity validation
+GET /api/health
+GET /api/health/blueprint
 ```
 
-**URL Search Parameters:**
-- `key`: Client identifier [#REF:POLL-KEY-HEX:0x504B4559]
-- `since`: Unix timestamp for incremental updates [#REF:POLL-SINCE-HEX:0x5053494E]
+## Architecture
 
-**ETag Response Headers:**
 ```
-ETag: "v1deee103"
-Cache-Control: public, max-age=30
+┌─────────────────────────────────────────────────────────────────┐
+│                        Next.js Frontend                          │
+│                     (React 19 + TypeScript)                      │
+└─────────────────────────────────────────────────────────────────┘
+                                │
+                    ┌───────────┼───────────┐
+                    │           │           │
+            ┌───────▼───┐ ┌─────▼─────┐ ┌───▼────────┐
+            │ /api/     │ │ /api/     │ │ /api/      │
+            │ markets/  │ │ trades    │ │ markets/   │
+            │ canonical │ │           │ │ canonical  │
+            └───────────┘ └───────────┘ └────────────┘
+                    │           │           │
+            ┌───────▼───────────▼───────────▼───────┐
+            │           lib/canonical/               │
+            │    UUIDv5 Canonicalizer (Bun native)  │
+            │    + crypto fallback for Next.js      │
+            └───────────────────────────────────────┘
+                                │
+            ┌───────────────────▼───────────────────┐
+            │           lib/api/cache-manager       │
+            │   SQLite WAL (Bun) │ Map (Next.js)   │
+            └───────────────────────────────────────┘
+                                │
+            ┌───────────────────▼───────────────────┐
+            │           lib/exchanges/              │
+            │  Polymarket │ Kalshi │ BitMEX │ Sports │
+            └───────────────────────────────────────┘
+                                │
+            ┌───────────────────▼───────────────────┐
+            │         Cloudflare Workers            │
+            │      (Global Edge - 200+ DCs)         │
+            └───────────────────────────────────────┘
 ```
 
-> **Note**: ETag checksums use CRC32 algorithm for data integrity [#REF:CRC32-HEX:0x43524333]
-> **RSS**: Cloudflare Workers updates at [blog.cloudflare.com/rss](https://blog.cloudflare.com/rss/) [#REF:CF-BLOG-RSS]
+## Testing
 
-#### Real-time WebSocket
+### Test Coverage
 
-```javascript
-// Connect to WebSocket
-const ws = new WebSocket('wss://your-worker.workers.dev/ws?key=user123');
+| Module | Tests | Coverage |
+|--------|-------|----------|
+| canonical/uuidv5 | 15 | 72% |
+| api/cache-manager | 8 | 94% |
+| markets/fetcher | 6 | 25% |
+| **Total** | **68** | **53%** |
 
-// Subscribe to feed
-ws.send(JSON.stringify({ type: 'subscribe', key: 'user123' }));
-
-// Receive real-time updates
-ws.onmessage = event => {
-  const data = JSON.parse(event.data);
-  if (data.type === 'delta') {
-    // Handle market data updates
-    console.log('Market update:', data.changes);
-  }
-};
-```
-
-#### Polling Fallback
-
-```http
-GET /v1/feed?key=user123&since=1640995200
-# Returns 304 Not Modified if no changes
-```
-
-## 🔄 Migration Notes
-
-### From Bun Server to Cloudflare Workers
-
-**Phase 1 (✅ Complete)**: Markets API migration
-
-- Moved from `/api/markets` proxy to direct Workers endpoint
-- Added ETag caching for 304 responses
-- Reduced latency from ~50ms to ~15ms globally
-
-**Phase 2 (✅ Complete)**: OHLCV API migration
-
-- Complex timeframe aggregation (1m→1h, etc.)
-- Pagination support with `?limit=N&since=T`
-- Mock data generation for testing
-
-**Phase 3 (✅ Complete)**: Trades API migration
-
-- 4 core endpoints: stats, equity, sessions, session details
-- P&L calculations with fees and slippage
-- Session grouping and pagination
-
-**Phase 4 (✅ Complete)**: WebSocket DO foundation
-
-- Durable Objects for connection management
-- Surgical delta broadcasting framework
-- ETag polling fallback for reliability
-
-### Performance Improvements
-
-| Metric           | Before (Bun)      | After (Workers)   | Improvement   |
-| ---------------- | ----------------- | ----------------- | ------------- |
-| Global Latency   | ~150ms            | ~25ms             | 83% faster    |
-| Cold Start       | ~2s               | ~50ms             | 97% faster    |
-| Concurrent Users | ~100              | Unlimited         | ∞ scaling     |
-| Bandwidth        | High (no caching) | Optimized (ETags) | 90% reduction |
-
-### Breaking Changes
-
-- API endpoints now served from Cloudflare Workers URLs
-- Frontend updated to use Worker endpoints directly
-- WebSocket support added for real-time updates
-- ETag headers required for efficient caching
-
-## 🚀 Development
-
-### Local Development
+### Running Tests
 
 ```bash
-# Install dependencies
-bun install
-
-# Start Next.js frontend
-bun run dev
-
-# Start Workers locally (separate terminal)
-bunx wrangler dev --config markets-wrangler.toml
-
-# Test APIs
-curl http://localhost:8788/api/markets
-curl http://localhost:8788/api/trades?type=stats
-```
-
-### Testing
-
-```bash
-# Run all tests
+# All unit tests
 bun test
 
-# Run with coverage
-bun run test:coverage
+# Specific test file
+bun test tests/canonical.test.ts
 
-# Test API endpoints
-bunx wrangler dev --config markets-wrangler.toml &
-curl http://localhost:8788/api/markets | jq '.total'
+# Watch mode
+bun test --watch
 ```
 
-## 📦 Deployment
+### Critical Path Tests
 
-### Cloudflare Workers
+The canonical system has comprehensive tests for:
+- UUID determinism (same input = same output)
+- UUID uniqueness across exchanges/types
+- RFC 4122 UUID format validation
+- Cache operations (set/get/invalidate)
+- Hit count tracking
+- End-to-end pipeline validation
 
-```bash
-# Deploy to staging
-bunx wrangler deploy --config markets-wrangler.toml --env staging
+## Performance
 
-# Deploy to production
-bunx wrangler deploy --config markets-wrangler.toml --env production
+| Metric | Value |
+|--------|-------|
+| UUID Generation | <0.1ms |
+| Cache Hit | <1ms |
+| Cache Miss (Polymarket) | ~500ms |
+| API Response (cached) | ~4ms |
+| Build Time | ~8s |
 
-# Check deployment status
-bunx wrangler tail --config markets-wrangler.toml
-```
-
-### Cloudflare Pages (Frontend)
-
-```bash
-# Build frontend
-bun run build
-
-# Deploy to Pages
-bunx wrangler pages deploy ./out
-
-# Or use Git integration for automatic deployments
-```
-
-## 🔧 Configuration
-
-### Wrangler Configuration
-
-```toml
-# markets-wrangler.toml
-name = "trader-analyzer-markets"
-main = "markets-simple.ts"
-
-# KV for caching
-[[kv_namespaces]]
-binding = "ORCA_MOCK_CACHE"
-id = "your-kv-namespace-id"
-
-# Durable Objects for WebSocket
-[[durable_objects.bindings]]
-name = "ORCA_FEED_HUB"
-class_name = "FeedHub"
-```
-
-### Environment Variables
+## Environment Variables
 
 ```bash
 # .env.local
+BUN_BACKEND_URL=http://localhost:8000
 NEXT_PUBLIC_WORKERS_API=https://your-worker.workers.dev
+POLY_ENABLED=true
+DEV=true  # Uses in-memory cache instead of SQLite
 ```
 
-## 📊 Monitoring
+## Version History
 
-### Cloudflare Dashboard
+- **v0.1.16** (Current): UUIDv5 Canonical Market System
+  - Bun.randomUUIDv5() with crypto fallback
+  - Multi-environment cache (SQLite + Memory)
+  - Exchange-aware header manager
+  - 29 critical path tests
+  - `/api/markets/canonical` endpoint
 
-- **Workers Analytics**: Request volume, latency, errors
-- **KV Analytics**: Cache hit rates, storage usage
-- **Durable Objects**: Connection counts, execution time
+- **v0.1.15**: Cloudflare Workers migration
+  - WebSocket DO foundation
+  - Full API suite migrated
+  - ETag caching
 
-### Key Metrics
-
-- **API Latency**: <200ms p95 globally
-- **Cache Hit Rate**: >85% for repeated requests
-- **WebSocket Connections**: Active connection tracking
-- **Error Rate**: <0.1% for all endpoints
-
-## 🏗 Architecture
-
-### Cloudflare Workers Architecture
-
-```
-┌─────────────────┐    ┌──────────────────┐
-│   Next.js App   │────│  Cloudflare      │
-│   (Frontend)    │    │  Workers API     │
-└─────────────────┘    └──────────────────┘
-                              │
-                    ┌─────────┼─────────┐
-                    │         │         │
-            ┌───────▼───┐ ┌───▼───┐ ┌───▼───┐
-            │ Markets   │ │ Trades │ │ OHLCV │
-            │ API       │ │ API    │ │ API   │
-            └───────────┘ └───────┘ └───────┘
-                    │
-            ┌───────▼─────────────┐
-            │   Cloudflare KV     │
-            │   (Caching Layer)   │
-            └─────────────────────┘
-                    │
-            ┌───────▼─────────────┐
-            │ Durable Objects     │
-            │ (WebSocket Hub)     │
-            └─────────────────────┘
-```
-
-### Data Flow
-
-1. **Frontend** → Cloudflare Workers (200+ edge locations)
-2. **Workers** → Check KV cache → Generate/compute data
-3. **Real-time** → WebSocket via Durable Objects
-4. **Fallback** → ETag polling when WebSocket unavailable
-
-## 📈 Version History
-
-- **v0.1.15** (Current): Complete Cloudflare Workers migration
-  - WebSocket DO foundation with broadcasting
-  - Full API suite migrated (Markets, OHLCV, Trades)
-  - ETag caching and global edge deployment
-
-- **v0.1.14**: Trades API migration with P&L calculations
-- **v0.1.13**: OHLCV aggregation and timeframe support
+- **v0.1.14**: Trades API with P&L calculations
+- **v0.1.13**: OHLCV aggregation
 - **v0.1.12**: Markets API with ETag caching
-- **v0.1.0**: Initial Bun server implementation
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit changes: `git commit -m 'Add your feature'`
-4. Push to branch: `git push origin feature/your-feature`
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-**Built with ❤️ using Cloudflare Workers for global edge deployment**
-├── XBTUSD_1m.csv # BTC 1-minute K-line
-├── XBTUSD_5m.csv # BTC 5-minute K-line
-├── XBTUSD_1h.csv # BTC 1-hour K-line
-├── XBTUSD_1d.csv # BTC Daily K-line
-├── ETHUSD_1m.csv # ETH 1-minute K-line
-└── ...
-
-```
+2. Create a feature branch: `git checkout -b feat/your-feature`
+3. Run tests: `bun test`
+4. Commit changes: `git commit -m 'feat: add your feature'`
+5. Push to branch: `git push origin feat/your-feature`
+6. Open a Pull Request
 
 ## License
 
-MIT License
-```
-````
+MIT License - see [LICENSE](LICENSE) for details.
+
+---
+
+**Built with Bun + Next.js + Cloudflare Workers**
