@@ -1,10 +1,10 @@
 name = "trader-analyzer-markets"
-main = "markets.ts"
+main = "markets-simple.ts"
 compatibility_date = "2024-01-01"
 compatibility_flags = ["nodejs_compat"]
 
 [build]
-command = "bun build ./markets.ts --outdir ./dist-worker --target bun"
+command = "bun build ./markets-simple.ts --outdir ./dist-worker --target bun"
 
 # Environment variables
 [vars]

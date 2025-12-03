@@ -256,12 +256,15 @@ export function Dashboard() {
     return markers.sort((a, b) => a.time - b.time);
   }, [selectedSession, allTrades, timeframe, chartData.candles]);
 
-  // Load Stats and Account Data
+  // Load Stats and Account Data from Worker
   useEffect(() => {
     async function loadStats() {
       try {
-        const res = await fetch('/api/trades?type=stats');
-        if (!res.ok) throw new Error('Failed to fetch stats');
+        // Use staging Worker endpoint
+        const workerUrl =
+          'https://trader-analyzer-markets-staging.utahj4754.workers.dev/api/trades?type=stats';
+        const res = await fetch(workerUrl);
+        if (!res.ok) throw new Error('Failed to fetch stats from Worker');
         const data = await res.json();
         setStats(data.stats);
         setAccount(data.account);
@@ -272,12 +275,15 @@ export function Dashboard() {
     loadStats();
   }, []);
 
-  // Load Equity Curve
+  // Load Equity Curve from Worker
   useEffect(() => {
     async function loadEquity() {
       try {
-        const res = await fetch('/api/trades?type=equity');
-        if (!res.ok) throw new Error('Failed to fetch equity');
+        // Use staging Worker endpoint with days parameter
+        const workerUrl =
+          'https://trader-analyzer-markets-staging.utahj4754.workers.dev/api/trades?type=equity&days=30';
+        const res = await fetch(workerUrl);
+        if (!res.ok) throw new Error('Failed to fetch equity from Worker');
         const data = await res.json();
         setEquityCurve(data.equityCurve);
       } catch (err) {
@@ -379,10 +385,10 @@ export function Dashboard() {
       try {
         setLoading(true);
         const typeParam = viewMode === 'positions' ? '&type=sessions' : '';
-        const res = await fetch(
-          `/api/trades?page=${page}&limit=${limit}&symbol=${encodeURIComponent(selectedSymbol)}${typeParam}`
-        );
-        if (!res.ok) throw new Error('Failed to fetch data');
+        // Use staging Worker endpoint
+        const workerUrl = `https://trader-analyzer-markets-staging.utahj4754.workers.dev/api/trades?page=${page}&limit=${limit}&symbol=${encodeURIComponent(selectedSymbol)}${typeParam}`;
+        const res = await fetch(workerUrl);
+        if (!res.ok) throw new Error('Failed to fetch data from Worker');
         const data = await res.json();
 
         if (viewMode === 'positions') {
@@ -406,11 +412,13 @@ export function Dashboard() {
     setSelectedSession(null);
   }, [viewMode, selectedSymbol]);
 
-  // Handler to select a session
+  // Handler to select a session from Worker
   const handleSelectSession = async (session: PositionSession) => {
     try {
-      const res = await fetch(`/api/trades?sessionId=${encodeURIComponent(session.id)}`);
-      if (!res.ok) throw new Error('Failed to fetch session details');
+      // Use staging Worker endpoint
+      const workerUrl = `https://trader-analyzer-markets-staging.utahj4754.workers.dev/api/trades?sessionId=${encodeURIComponent(session.id)}`;
+      const res = await fetch(workerUrl);
+      if (!res.ok) throw new Error('Failed to fetch session details from Worker');
       const data = await res.json();
       setSelectedSession(data.session);
     } catch (err) {
