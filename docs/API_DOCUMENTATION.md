@@ -13,7 +13,7 @@ The Trader Analyzer API is now fully hosted on Cloudflare Workers, providing glo
 ```
 Production: https://trader-analyzer-markets.utahj4754.workers.dev  [#REF:PROD-URL-HEX:0x50524F44]
 Staging:    https://trader-analyzer-markets-staging.utahj4754.workers.dev [#REF:STAGING-URL-HEX:0x53544147]
-Local:      http://localhost:8788 [#REF:LOCAL-URL-HEX:0x4C4F4341]
+Local:      http://localhost:${PORTS.workersLocal} [#REF:LOCAL-URL-HEX:0x4C4F4341]
 ```
 
 ## Authentication

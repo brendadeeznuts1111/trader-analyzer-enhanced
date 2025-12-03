@@ -3,8 +3,8 @@
  * [#REF:TEST-API-HEX:0x54455354]
  *
  * These tests require running servers:
- * - Workers: localhost:8788 (bunx wrangler dev)
- * - Next.js: localhost:3002 (bun run dev)
+ * - Workers: localhost:${PORTS.workersLocal} (bunx wrangler dev)
+ * - Next.js: localhost:${PORTS.nextjs} (bun run dev)
  *
  * Tests are automatically skipped if servers are unavailable.
  */
@@ -80,7 +80,7 @@ beforeAll(async () => {
 });
 
 // =============================================================================
-// WORKERS API TESTS (localhost:8788)
+// WORKERS API TESTS (localhost:${PORTS.workersLocal})
 // =============================================================================
 
 describe('API Endpoints', () => {
@@ -251,7 +251,7 @@ describe('API Endpoints', () => {
 });
 
 // =============================================================================
-// NEXT.JS API TESTS (localhost:3002)
+// NEXT.JS API TESTS (localhost:${PORTS.nextjs})
 // =============================================================================
 
 describe('Enhanced Headers', () => {

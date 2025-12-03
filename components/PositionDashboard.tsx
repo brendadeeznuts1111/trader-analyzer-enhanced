@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { PositionSessionList } from './PositionSessionList';
 import { TVChart } from './TVChart';
 import { PositionDetail } from './PositionDetail';
 import { PositionSession } from '@/lib/types';
-import { Loader2, Activity, History, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useDataFetch } from '@/lib/hooks/useDataFetch';
+import { BACKEND_URLS } from '@/lib/constants';
+import { Loader2, Activity, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PositionDashboardProps {
   selectedSymbol: string;
@@ -27,38 +29,21 @@ export function PositionDashboard({
   selectedSession,
   onSelectSession,
 }: PositionDashboardProps) {
-  const [sessions, setSessions] = useState<PositionSession[]>([]);
   const [chartData, setChartData] = useState<ChartData>({ candles: [], markers: [] });
   const [chartLoading, setChartLoading] = useState(true);
-  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
 
   const limit = 20;
 
-  // Load sessions data
-  useEffect(() => {
-    const loadSessions = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `/api/trades?page=${page}&limit=${limit}&symbol=${encodeURIComponent(selectedSymbol)}&type=sessions`
-        );
+  // Load sessions data with useDataFetch
+  const sessionsUrl = `/api/trades?page=${page}&limit=${limit}&symbol=${encodeURIComponent(selectedSymbol)}&type=sessions`;
+  const { data: sessionsData, loading: sessionsLoading } = useDataFetch<{
+    sessions: PositionSession[];
+    total: number;
+  }>(sessionsUrl, { enabled: !!selectedSymbol });
 
-        if (response.ok) {
-          const data = await response.json();
-          setSessions(data.sessions || []);
-          setTotalPages(Math.ceil(data.total / limit));
-        }
-      } catch (error) {
-        console.error('Error loading sessions:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadSessions();
-  }, [page, selectedSymbol]);
+  const sessions = sessionsData?.sessions || [];
+  const totalPages = sessionsData ? Math.ceil(sessionsData.total / limit) : 0;
 
   // Load chart data
   useEffect(() => {
@@ -75,7 +60,7 @@ export function PositionDashboard({
           symbolToMarketId[selectedSymbol as keyof typeof symbolToMarketId] || 'btc-usd-perp';
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/markets/${marketId}/ohlcv?timeframe=${timeframe}&limit=100`
+          `${process.env.NEXT_PUBLIC_API_URL || BACKEND_URLS.development}/api/markets/${marketId}/ohlcv?timeframe=${timeframe}&limit=100`
         );
 
         if (response.ok) {
@@ -227,7 +212,7 @@ export function PositionDashboard({
     }
   };
 
-  if (loading) {
+  if (sessionsLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] bg-background">
         <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />

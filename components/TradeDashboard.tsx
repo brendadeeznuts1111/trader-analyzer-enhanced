@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { TradeList } from './TradeList';
 import { TVChart } from './TVChart';
 import { PositionDetail } from './PositionDetail';
 import { Trade, PositionSession } from '@/lib/types';
-import { Loader2, Activity, History, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useDataFetch } from '@/lib/hooks/useDataFetch';
+import { BACKEND_URLS } from '@/lib/constants';
+import { Loader2, Activity, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface TradeDashboardProps {
   selectedSymbol: string;
@@ -27,59 +29,29 @@ export function TradeDashboard({
   selectedSession,
   onSelectSession,
 }: TradeDashboardProps) {
-  const [trades, setTrades] = useState<Trade[]>([]);
   const [chartData, setChartData] = useState<ChartData>({ candles: [], markers: [] });
   const [chartLoading, setChartLoading] = useState(true);
-  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [allTrades, setAllTrades] = useState<Trade[]>([]);
 
   const limit = 20;
 
-  // Load trades data
-  useEffect(() => {
-    const loadTrades = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `/api/trades?page=${page}&limit=${limit}&symbol=${encodeURIComponent(selectedSymbol)}`
-        );
+  // Load trades data with useDataFetch
+  const tradesUrl = `/api/trades?page=${page}&limit=${limit}&symbol=${encodeURIComponent(selectedSymbol)}`;
+  const { data: tradesData, loading: tradesLoading } = useDataFetch<{
+    trades: Trade[];
+    total: number;
+  }>(tradesUrl, { enabled: !!selectedSymbol });
 
-        if (response.ok) {
-          const data = await response.json();
-          setTrades(data.trades || []);
-          setTotalPages(Math.ceil(data.total / limit));
-        }
-      } catch (error) {
-        console.error('Error loading trades:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const trades = tradesData?.trades || [];
+  const totalPages = tradesData ? Math.ceil(tradesData.total / limit) : 0;
 
-    loadTrades();
-  }, [page, selectedSymbol]);
+  // Load all trades for markers with useDataFetch
+  const allTradesUrl = `/api/trades?symbol=${encodeURIComponent(selectedSymbol)}&limit=1000`;
+  const { data: allTradesData } = useDataFetch<{
+    trades: Trade[];
+  }>(allTradesUrl, { enabled: !!selectedSymbol });
 
-  // Load all trades for markers (limit to recent trades for performance)
-  useEffect(() => {
-    const loadAllTrades = async () => {
-      try {
-        const response = await fetch(
-          `/api/trades?symbol=${encodeURIComponent(selectedSymbol)}&limit=1000`
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setAllTrades(data.trades || []);
-        }
-      } catch (error) {
-        console.error('Error loading all trades for markers:', error);
-      }
-    };
-
-    loadAllTrades();
-  }, [selectedSymbol]);
+  const allTrades = allTradesData?.trades || [];
 
   // Load chart data
   useEffect(() => {
@@ -96,7 +68,7 @@ export function TradeDashboard({
           symbolToMarketId[selectedSymbol as keyof typeof symbolToMarketId] || 'btc-usd-perp';
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/markets/${marketId}/ohlcv?timeframe=${timeframe}&limit=100`
+          `${process.env.NEXT_PUBLIC_API_URL || BACKEND_URLS.development}/api/markets/${marketId}/ohlcv?timeframe=${timeframe}&limit=100`
         );
 
         if (response.ok) {
@@ -234,7 +206,7 @@ export function TradeDashboard({
     return markers.sort((a, b) => a.time - b.time);
   }, [selectedSession, allTrades, timeframe, chartData.candles]);
 
-  if (loading) {
+  if (tradesLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] bg-background">
         <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />

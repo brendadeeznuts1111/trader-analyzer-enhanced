@@ -73,7 +73,7 @@ export interface WSMetrics {
   latencyP95: number;
 }
 
-let metrics: WSMetrics = {
+const metrics: WSMetrics = {
   connections: 0,
   messagesPerSec: 0,
   bytesPerSec: 0,

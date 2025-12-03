@@ -61,7 +61,7 @@ interface StatsOverviewProps {
   account: AccountSummary | null;
 }
 
-function StatCard({
+const StatCard = React.memo(function StatCard({
   icon: Icon,
   label,
   value,
@@ -115,7 +115,7 @@ function StatCard({
       </div>
     </div>
   );
-}
+});
 
 // Default stats to prevent undefined errors
 const defaultStats: TradingStats = {
@@ -144,7 +144,10 @@ const defaultStats: TradingStats = {
   avgTradesPerDay: 0,
 };
 
-export function StatsOverview({ stats: rawStats, account }: StatsOverviewProps) {
+export const StatsOverview = React.memo(function StatsOverview({
+  stats: rawStats,
+  account,
+}: StatsOverviewProps) {
   // Merge with defaults to prevent undefined errors
   const stats = { ...defaultStats, ...rawStats };
   const currentPosition = account?.positions?.[0];
@@ -391,4 +394,4 @@ export function StatsOverview({ stats: rawStats, account }: StatsOverviewProps) 
       </div>
     </div>
   );
-}
+});

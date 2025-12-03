@@ -1,23 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
-  Loader2,
-  ChevronLeft,
-  ChevronRight,
+  Sparkles,
+  Check,
+  Key,
+  Settings,
+  X,
   LayoutList,
-  History,
   BarChart3,
-  TrendingUp,
-  Activity,
   Brain,
   Gamepad2,
   User,
-  Settings,
-  Key,
-  X,
-  Check,
-  Sparkles,
+  History as HistoryIcon,
   Network,
   MessageCircle,
 } from 'lucide-react';
@@ -38,7 +33,6 @@ interface DashboardHeaderProps {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
   onPageChange: (page: number) => void;
-  loading?: boolean;
 }
 
 interface APIConfig {
@@ -54,7 +48,6 @@ export function DashboardHeader({
   viewMode,
   onViewModeChange,
   onPageChange,
-  loading = false,
 }: DashboardHeaderProps) {
   const [showApiConfig, setShowApiConfig] = useState(false);
   const [apiConfig, setApiConfig] = useState<APIConfig>({
@@ -287,7 +280,7 @@ export function DashboardHeader({
               : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
           }`}
         >
-          <History size={16} className="mr-2" /> Positions
+          <HistoryIcon size={16} className="mr-2" /> Positions
         </button>
         <button
           onClick={() => {

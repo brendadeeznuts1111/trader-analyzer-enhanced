@@ -66,14 +66,14 @@ console.log(canonical.uuid); // "d4551ab8-b0d7-5444-ab99-915c1a29308e"
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS 4 |
-| Backend | Cloudflare Workers, Bun runtime |
-| Caching | SQLite WAL (Bun) / In-memory Map (Next.js) |
-| Real-time | WebSocket with Durable Objects |
-| Charts | Lightweight Charts, Recharts |
-| Testing | Bun test runner (68 unit tests) |
+| Layer     | Technology                                       |
+| --------- | ------------------------------------------------ |
+| Frontend  | Next.js 16, React 19, TypeScript, Tailwind CSS 4 |
+| Backend   | Cloudflare Workers, Bun runtime                  |
+| Caching   | SQLite WAL (Bun) / In-memory Map (Next.js)       |
+| Real-time | WebSocket with Durable Objects                   |
+| Charts    | Lightweight Charts, Recharts                     |
+| Testing   | Bun test runner (68 unit tests)                  |
 
 ## Quick Start
 
@@ -121,7 +121,7 @@ bun run build
 
 # Build with environment-specific constants (uses --define)
 bun run build:dev      # Development build
-bun run build:staging  # Staging build  
+bun run build:staging  # Staging build
 bun run build:prod     # Production build (minified)
 bun run build:compile  # Compile to standalone executable
 
@@ -202,6 +202,7 @@ GET /api/markets/canonical?exchange=polymarket&limit=50
 | `search` | string | - | Search in displayName/description |
 
 **Response:**
+
 ```json
 {
   "markets": [
@@ -304,12 +305,12 @@ GET /api/health/blueprint
 
 ### Test Coverage
 
-| Module | Tests | Coverage |
-|--------|-------|----------|
-| canonical/uuidv5 | 15 | 72% |
-| api/cache-manager | 8 | 94% |
-| markets/fetcher | 6 | 25% |
-| **Total** | **68** | **53%** |
+| Module            | Tests  | Coverage |
+| ----------------- | ------ | -------- |
+| canonical/uuidv5  | 15     | 72%      |
+| api/cache-manager | 8      | 94%      |
+| markets/fetcher   | 6      | 25%      |
+| **Total**         | **68** | **53%**  |
 
 ### Running Tests
 
@@ -327,6 +328,7 @@ bun test --watch
 ### Critical Path Tests
 
 The canonical system has comprehensive tests for:
+
 - UUID determinism (same input = same output)
 - UUID uniqueness across exchanges/types
 - RFC 4122 UUID format validation
@@ -336,19 +338,19 @@ The canonical system has comprehensive tests for:
 
 ## Performance
 
-| Metric | Value |
-|--------|-------|
-| UUID Generation | <0.1ms |
-| Cache Hit | <1ms |
+| Metric                  | Value  |
+| ----------------------- | ------ |
+| UUID Generation         | <0.1ms |
+| Cache Hit               | <1ms   |
 | Cache Miss (Polymarket) | ~500ms |
-| API Response (cached) | ~4ms |
-| Build Time | ~8s |
+| API Response (cached)   | ~4ms   |
+| Build Time              | ~8s    |
 
 ## Environment Variables
 
 ```bash
 # .env.local
-BUN_BACKEND_URL=http://localhost:8000
+BUN_BACKEND_URL=http://localhost:${PORTS.bunBackend}
 NEXT_PUBLIC_WORKERS_API=https://your-worker.workers.dev
 POLY_ENABLED=true
 DEV=true  # Uses in-memory cache instead of SQLite
