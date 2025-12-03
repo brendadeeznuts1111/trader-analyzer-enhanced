@@ -13,6 +13,7 @@ import { TraderRolePlay } from './TraderRolePlay';
 import { AIPrediction } from './AIPrediction';
 import { TraderProfile } from './TraderProfile';
 import { DataPipelineVisualization } from './DataPipelineVisualization';
+import TelegramTopics from './TelegramTopics';
 import {
   Loader2,
   ChevronLeft,
@@ -31,6 +32,7 @@ import {
   Check,
   Sparkles,
   Network,
+  MessageCircle,
 } from 'lucide-react';
 
 type ViewMode =
@@ -40,7 +42,8 @@ type ViewMode =
   | 'roleplay'
   | 'prediction'
   | 'profile'
-  | 'pipeline';
+  | 'pipeline'
+  | 'telegram';
 
 interface APIConfig {
   exchange: string;
@@ -695,6 +698,19 @@ export function Dashboard() {
           >
             <Network size={16} className="mr-2" /> Pipeline
           </button>
+          <button
+            onClick={() => {
+              setViewMode('telegram');
+              setPage(1);
+            }}
+            className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+              viewMode === 'telegram'
+                ? 'bg-blue-500/10 text-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.2)] ring-1 ring-blue-500/20'
+                : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
+            }`}
+          >
+            <MessageCircle size={16} className="mr-2" /> Telegram
+          </button>
         </div>
 
         {/* Overview Mode */}
@@ -788,6 +804,13 @@ export function Dashboard() {
         {viewMode === 'pipeline' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <DataPipelineVisualization />
+          </div>
+        )}
+
+        {/* Telegram Topics Mode */}
+        {viewMode === 'telegram' && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <TelegramTopics />
           </div>
         )}
 

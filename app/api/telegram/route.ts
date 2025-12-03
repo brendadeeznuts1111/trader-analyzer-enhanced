@@ -69,6 +69,7 @@ import {
   getMyCommands,
   setMyDescription,
 } from '../../../lib/telegram';
+import { ThreadManager } from '../../../lib/thread-manager';
 import { buildApiHeaders, headersToObject, createErrorResponse } from '../../../lib/api-headers';
 
 export async function GET(request: Request) {
@@ -92,13 +93,35 @@ export async function GET(request: Request) {
       case 'updates':
         result = await getUpdates();
         break;
+      case 'topics': {
+        // Get thread manager topics for the configured chat
+        const chatId = parseInt(process.env.TELEGRAM_CHAT_ID || '0');
+        const topics = ThreadManager.getAllTopics(chatId);
+        const pinned = ThreadManager.getPinnedTopics(chatId);
+        const pinnedObj: Record<string, any> = {};
+        Array.from(pinned.entries()).forEach(([purpose, info]) => {
+          pinnedObj[purpose] = info;
+        });
+        result = {
+          ok: true,
+          chatId,
+          topics,
+          pinned: pinnedObj,
+          alertsThread: ThreadManager.getAlertsThread(chatId),
+          errorsThread: ThreadManager.getErrorsThread(chatId),
+          tradesThread: ThreadManager.getTradesThread(chatId),
+        };
+        break;
+      }
       default:
         const botInfo = await getBotInfo();
+        const chatId = parseInt(process.env.TELEGRAM_CHAT_ID || '0');
         result = {
           configured: !!process.env.TELEGRAM_BOT_TOKEN && !!process.env.TELEGRAM_CHAT_ID,
           bot: botInfo.ok ? botInfo.result : null,
           chatId: process.env.TELEGRAM_CHAT_ID ? '***configured***' : null,
           availableColors: TOPIC_COLORS,
+          topics: ThreadManager.getAllTopics(chatId),
         };
     }
 
@@ -502,6 +525,103 @@ export async function POST(request: Request) {
         }
         result = await setMyDescription(body.description, body.languageCode);
         break;
+
+      // ═══════════════════════════════════════════════════════════
+      // THREAD MANAGER (Topic Routing)
+      // ═══════════════════════════════════════════════════════════
+      case 'getTopics': {
+        const chatId = body.chatId || parseInt(process.env.TELEGRAM_CHAT_ID || '0');
+        result = {
+          ok: true,
+          topics: ThreadManager.getAllTopics(chatId),
+          alertsThread: ThreadManager.getAlertsThread(chatId),
+          errorsThread: ThreadManager.getErrorsThread(chatId),
+          tradesThread: ThreadManager.getTradesThread(chatId),
+        };
+        break;
+      }
+
+      case 'registerTopic': {
+        if (body.threadId === undefined || !body.name || !body.purpose) {
+          return errorResponse('Missing required fields: threadId, name, purpose', request);
+        }
+        const chatId = body.chatId || parseInt(process.env.TELEGRAM_CHAT_ID || '0');
+        const info = ThreadManager.register(chatId, body.threadId, body.name, body.purpose);
+        result = { ok: true, topic: info };
+        break;
+      }
+
+      case 'pinTopic': {
+        if (body.threadId === undefined || !body.purpose) {
+          return errorResponse('Missing required fields: threadId, purpose', request);
+        }
+        const chatId = body.chatId || parseInt(process.env.TELEGRAM_CHAT_ID || '0');
+        ThreadManager.setPinned(chatId, body.threadId, body.purpose);
+        result = {
+          ok: true,
+          message: `Topic ${body.threadId ?? 'General'} pinned for ${body.purpose}`,
+          topics: ThreadManager.getAllTopics(chatId),
+        };
+        break;
+      }
+
+      case 'unpinTopic': {
+        if (body.threadId === undefined) {
+          return errorResponse('Missing required field: threadId', request);
+        }
+        const chatId = body.chatId || parseInt(process.env.TELEGRAM_CHAT_ID || '0');
+        ThreadManager.unpin(chatId, body.threadId);
+        result = {
+          ok: true,
+          message: `Topic ${body.threadId ?? 'General'} unpinned`,
+          topics: ThreadManager.getAllTopics(chatId),
+        };
+        break;
+      }
+
+      case 'testAlert': {
+        // Send a test alert to the pinned alerts topic
+        const chatId = body.chatId || parseInt(process.env.TELEGRAM_CHAT_ID || '0');
+        const alertsThread = ThreadManager.getAlertsThread(chatId);
+        const testResult = await sendMessage(
+          {
+            text: `🧪 <b>Test Alert</b>\n\nThis is a test alert sent to the pinned alerts topic.\n\nThread ID: <code>${alertsThread ?? 'null'}</code>\nTime: ${new Date().toISOString()}`,
+            parse_mode: 'HTML',
+            message_thread_id: alertsThread,
+          },
+          chatId
+        );
+        result = {
+          ok: testResult.ok,
+          message: testResult.ok ? 'Test alert sent!' : testResult.description,
+          threadId: alertsThread,
+        };
+        break;
+      }
+
+      case 'syncTopicsFromTelegram': {
+        // Fetch actual topics from Telegram and sync them
+        const chatId = body.chatId || parseInt(process.env.TELEGRAM_CHAT_ID || '0');
+        const updates = await getUpdates(undefined, 100);
+        const seenThreads = new Set<number>();
+
+        if (updates.ok && updates.result) {
+          for (const update of updates.result as any[]) {
+            const threadId = update.message?.message_thread_id;
+            if (threadId && !seenThreads.has(threadId)) {
+              seenThreads.add(threadId);
+              ThreadManager.markUsed(chatId, threadId, `Topic ${threadId}`);
+            }
+          }
+        }
+
+        result = {
+          ok: true,
+          message: `Synced ${seenThreads.size} topics from recent messages`,
+          topics: ThreadManager.getAllTopics(chatId),
+        };
+        break;
+      }
 
       default:
         return errorResponse(`Unknown action: ${body.action}`, request);
