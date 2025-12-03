@@ -4,19 +4,19 @@
  * [PROPERTIES:{cache={value:{ttl:300s;hitTrack:true};@root:"ROOT-SQLITE-WAL";@db:"/data/api-cache.db"}}]
  * [CLASS:APICacheManager][#REF:v-0.1.16.CACHE.MANAGER.1.0.A.1.1][@ROOT:ROOT-SQLITE-WAL][@BLUEPRINT:BP-CANONICAL-UUID@^0.1.16]]
  *
- * SQLite-backed caching system with:
- * - TTL-based expiration
- * - Hit tracking and metrics
- * - WAL mode for production
- * - In-memory fallback for development
+ * Multi-environment caching system:
+ * - Bun runtime: SQLite with WAL mode
+ * - Next.js/Node: In-memory Map with TTL
  */
 
-import { Database } from 'bun:sqlite';
+import { createHash } from 'crypto';
 import type { CanonicalMarket } from '../canonical';
+
+// Check if running in Bun
+const isBun = typeof globalThis.Bun !== 'undefined';
 
 // Environment detection
 const IS_DEV = process.env.DEV === 'true' || process.env.NODE_ENV === 'development';
-const DB_PATH = IS_DEV ? ':memory:' : './data/api-cache.db';
 
 export interface CacheEntry {
   canonicalUUID: string;
@@ -52,32 +52,67 @@ export interface CacheStats {
 // Default TTL configs per exchange
 const DEFAULT_CONFIGS: Record<string, CacheConfig> = {
   polymarket: { ttl: 300000, maxSize: 1000, strategy: 'lru', compress: true }, // 5 minutes
-  kalshi: { ttl: 60000, maxSize: 2000, strategy: 'ttl', compress: true }, // 1 minute (frequent updates)
+  kalshi: { ttl: 60000, maxSize: 2000, strategy: 'ttl', compress: true }, // 1 minute
   manifold: { ttl: 1800000, maxSize: 5000, strategy: 'lru', compress: false }, // 30 minutes
-  bitmex: { ttl: 30000, maxSize: 500, strategy: 'ttl', compress: true }, // 30 seconds (real-time)
+  bitmex: { ttl: 30000, maxSize: 500, strategy: 'ttl', compress: true }, // 30 seconds
   sports: { ttl: 120000, maxSize: 3000, strategy: 'lru', compress: true }, // 2 minutes
   default: { ttl: 300000, maxSize: 1000, strategy: 'lru', compress: false },
 };
 
 /**
- * API Cache Manager - SQLite-backed with TTL and metrics
+ * Hash helper using crypto
+ */
+function hashString(data: string): string {
+  return createHash('sha256').update(data).digest('hex').substring(0, 16);
+}
+
+/**
+ * In-memory cache storage for non-Bun environments
+ */
+interface MemoryCacheEntry extends CacheEntry {
+  data: unknown;
+}
+
+const memoryCache = new Map<string, MemoryCacheEntry>();
+const memoryCacheMetrics = { hits: 0, misses: 0 };
+
+/**
+ * API Cache Manager - Works in both Bun (SQLite) and Node/Next.js (Memory)
  */
 export class APICacheManager {
-  private db: Database;
+  private db: any = null;
   private configs: Record<string, CacheConfig>;
-  private initialized = false;
+  private usingSQLite = false;
 
-  constructor(dbPath: string = DB_PATH, configs?: Record<string, CacheConfig>) {
-    this.db = new Database(dbPath);
+  constructor(dbPath?: string, configs?: Record<string, CacheConfig>) {
     this.configs = { ...DEFAULT_CONFIGS, ...configs };
-    this.initSchema();
+
+    if (isBun) {
+      try {
+        // Dynamic require for Bun's SQLite
+        const { Database } = require('bun:sqlite');
+        const path = dbPath || (IS_DEV ? ':memory:' : './data/api-cache.db');
+        this.db = new Database(path);
+        this.initSchema();
+        this.usingSQLite = true;
+        console.log(`Cache Manager initialized (${IS_DEV ? 'memory' : 'WAL'} mode)`);
+      } catch (e) {
+        console.warn('SQLite not available, using in-memory cache');
+        this.usingSQLite = false;
+      }
+    } else {
+      console.log('Cache Manager initialized (in-memory mode for Next.js)');
+      this.usingSQLite = false;
+    }
   }
 
   /**
-   * Initialize database schema
+   * Initialize SQLite schema (Bun only)
    */
   private initSchema(): void {
-    // Enable WAL mode for production (better concurrent performance)
+    if (!this.db) return;
+
+    // Enable WAL mode for production
     if (!IS_DEV) {
       this.db.run('PRAGMA journal_mode = WAL');
       this.db.run('PRAGMA synchronous = NORMAL');
@@ -104,7 +139,6 @@ export class APICacheManager {
     // Create indexes
     this.db.run('CREATE INDEX IF NOT EXISTS idx_cache_exchange ON api_cache(exchange)');
     this.db.run('CREATE INDEX IF NOT EXISTS idx_cache_expires ON api_cache(expires_at)');
-    this.db.run('CREATE INDEX IF NOT EXISTS idx_cache_tags ON api_cache(tags)');
 
     // Metrics table
     this.db.run(`
@@ -118,9 +152,6 @@ export class APICacheManager {
         latency_ms REAL DEFAULT 0
       )
     `);
-
-    this.initialized = true;
-    console.log(`Cache Manager initialized (${IS_DEV ? 'memory' : 'WAL'} mode)`);
   }
 
   /**
@@ -131,19 +162,18 @@ export class APICacheManager {
   }
 
   /**
-   * Generate hash for headers (to detect changes)
+   * Generate hash for headers
    */
   private hashHeaders(headers: Record<string, string>): string {
     const sorted = Object.entries(headers)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${k}=${v}`)
       .join('&');
-
-    return new Bun.CryptoHasher('sha256').update(sorted).digest('hex').substring(0, 16);
+    return hashString(sorted);
   }
 
   /**
-   * Cache API response with canonical UUID
+   * Cache API response
    */
   async set(
     canonical: CanonicalMarket,
@@ -157,31 +187,50 @@ export class APICacheManager {
     const expiresAt = new Date(now.getTime() + config.ttl);
     const headersHash = this.hashHeaders(canonical.apiMetadata.headers);
 
-    const stmt = this.db.prepare(`
-      INSERT OR REPLACE INTO api_cache 
-      (canonical_uuid, exchange, endpoint, method, headers_hash, response, status, cached_at, expires_at, tags, hit_count, last_accessed)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)
-    `);
+    if (this.usingSQLite && this.db) {
+      const stmt = this.db.prepare(`
+        INSERT OR REPLACE INTO api_cache 
+        (canonical_uuid, exchange, endpoint, method, headers_hash, response, status, cached_at, expires_at, tags, hit_count, last_accessed)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)
+      `);
 
-    stmt.run(
-      canonical.uuid,
-      canonical.exchange,
-      endpoint,
-      method,
-      headersHash,
-      JSON.stringify(response),
-      status,
-      now.toISOString(),
-      expiresAt.toISOString(),
-      JSON.stringify(canonical.tags),
-      now.toISOString()
-    );
+      stmt.run(
+        canonical.uuid,
+        canonical.exchange,
+        endpoint,
+        method,
+        headersHash,
+        JSON.stringify(response),
+        status,
+        now.toISOString(),
+        expiresAt.toISOString(),
+        JSON.stringify(canonical.tags),
+        now.toISOString()
+      );
+    } else {
+      // In-memory cache
+      memoryCache.set(canonical.uuid, {
+        canonicalUUID: canonical.uuid,
+        exchange: canonical.exchange,
+        endpoint,
+        method,
+        headersHash,
+        response: JSON.stringify(response),
+        status,
+        cachedAt: now.toISOString(),
+        expiresAt: expiresAt.toISOString(),
+        tags: JSON.stringify(canonical.tags),
+        hitCount: 0,
+        lastAccessed: now.toISOString(),
+        data: response,
+      });
 
-    // Track metric
-    this.trackMetric(canonical.exchange, 'cache_set', false, 0);
-
-    // Enforce max size
-    await this.enforceMaxSize(canonical.exchange, config.maxSize);
+      // Enforce max size (simple LRU)
+      if (memoryCache.size > config.maxSize) {
+        const oldest = memoryCache.keys().next().value;
+        if (oldest) memoryCache.delete(oldest);
+      }
+    }
   }
 
   /**
@@ -192,130 +241,150 @@ export class APICacheManager {
     endpoint?: string,
     method: string = 'GET'
   ): Promise<{ data: unknown; cachedAt: string; hitCount: number } | null> {
-    const start = performance.now();
+    const now = new Date();
 
-    let cached: CacheEntry | undefined;
+    if (this.usingSQLite && this.db) {
+      let cached: CacheEntry | undefined;
 
-    if (endpoint) {
-      const stmt = this.db.prepare(`
-        SELECT * FROM api_cache 
-        WHERE canonical_uuid = ? 
-          AND expires_at > datetime('now')
-          AND endpoint = ?
-          AND method = ?
-        LIMIT 1
-      `);
-      cached = stmt.get(canonicalUUID, endpoint, method) as CacheEntry | undefined;
+      if (endpoint) {
+        const stmt = this.db.prepare(`
+          SELECT * FROM api_cache 
+          WHERE canonical_uuid = ? 
+            AND expires_at > datetime('now')
+            AND endpoint = ?
+            AND method = ?
+          LIMIT 1
+        `);
+        cached = stmt.get(canonicalUUID, endpoint, method) as CacheEntry | undefined;
+      } else {
+        const stmt = this.db.prepare(`
+          SELECT * FROM api_cache 
+          WHERE canonical_uuid = ? 
+            AND expires_at > datetime('now')
+            AND method = ?
+          LIMIT 1
+        `);
+        cached = stmt.get(canonicalUUID, method) as CacheEntry | undefined;
+      }
+
+      if (!cached) {
+        memoryCacheMetrics.misses++;
+        return null;
+      }
+
+      // Update hit count
+      const updateStmt = this.db.prepare(
+        `UPDATE api_cache SET hit_count = hit_count + 1, last_accessed = datetime('now') WHERE canonical_uuid = ?`
+      );
+      updateStmt.run(canonicalUUID);
+
+      memoryCacheMetrics.hits++;
+
+      return {
+        data: JSON.parse((cached as CacheEntry).response),
+        cachedAt: (cached as CacheEntry).cachedAt,
+        hitCount: ((cached as CacheEntry).hitCount || 0) + 1,
+      };
     } else {
-      const stmt = this.db.prepare(`
-        SELECT * FROM api_cache 
-        WHERE canonical_uuid = ? 
-          AND expires_at > datetime('now')
-          AND method = ?
-        LIMIT 1
-      `);
-      cached = stmt.get(canonicalUUID, method) as CacheEntry | undefined;
+      // In-memory cache
+      const cached = memoryCache.get(canonicalUUID);
+
+      if (!cached || new Date(cached.expiresAt) < now) {
+        if (cached) memoryCache.delete(canonicalUUID);
+        memoryCacheMetrics.misses++;
+        return null;
+      }
+
+      if (endpoint && cached.endpoint !== endpoint) {
+        memoryCacheMetrics.misses++;
+        return null;
+      }
+
+      // Update stats
+      cached.hitCount++;
+      cached.lastAccessed = now.toISOString();
+      memoryCacheMetrics.hits++;
+
+      return {
+        data: cached.data,
+        cachedAt: cached.cachedAt,
+        hitCount: cached.hitCount,
+      };
     }
-
-    const latency = performance.now() - start;
-
-    if (!cached) {
-      this.trackMetric('unknown', 'cache_miss', false, latency);
-      return null;
-    }
-
-    // Update hit count and last accessed
-    const updateStmt = this.db.prepare(
-      `UPDATE api_cache SET hit_count = hit_count + 1, last_accessed = datetime('now') WHERE canonical_uuid = ?`
-    );
-    updateStmt.run(canonicalUUID);
-
-    this.trackMetric(cached.exchange, 'cache_hit', true, latency);
-
-    return {
-      data: JSON.parse(cached.response),
-      cachedAt: cached.cachedAt,
-      hitCount: (cached.hitCount || 0) + 1,
-    };
   }
 
   /**
    * Check if entry exists and is valid
    */
   has(canonicalUUID: string): boolean {
-    const stmt = this.db.prepare(`
-      SELECT 1 as found FROM api_cache 
-      WHERE canonical_uuid = ? AND expires_at > datetime('now')
-      LIMIT 1
-    `);
-    const result = stmt.get(canonicalUUID) as { found: number } | null;
-    return result !== null;
+    if (this.usingSQLite && this.db) {
+      const stmt = this.db.prepare(`
+        SELECT 1 as found FROM api_cache 
+        WHERE canonical_uuid = ? AND expires_at > datetime('now')
+        LIMIT 1
+      `);
+      const result = stmt.get(canonicalUUID);
+      return result !== null;
+    } else {
+      const cached = memoryCache.get(canonicalUUID);
+      if (!cached) return false;
+      return new Date(cached.expiresAt) > new Date();
+    }
   }
 
   /**
    * Invalidate cache entries
    */
   invalidate(options: { uuid?: string; exchange?: string; tag?: string; all?: boolean }): number {
-    let deleted = 0;
-
-    if (options.all) {
-      deleted = this.db.run('DELETE FROM api_cache').changes;
-    } else if (options.uuid) {
-      const stmt = this.db.prepare('DELETE FROM api_cache WHERE canonical_uuid = ?');
-      deleted = stmt.run(options.uuid).changes;
-    } else if (options.exchange) {
-      const stmt = this.db.prepare('DELETE FROM api_cache WHERE exchange = ?');
-      deleted = stmt.run(options.exchange).changes;
-    } else if (options.tag) {
-      const stmt = this.db.prepare('DELETE FROM api_cache WHERE tags LIKE ?');
-      deleted = stmt.run(`%${options.tag}%`).changes;
+    if (this.usingSQLite && this.db) {
+      if (options.all) {
+        return this.db.run('DELETE FROM api_cache').changes;
+      } else if (options.uuid) {
+        const stmt = this.db.prepare('DELETE FROM api_cache WHERE canonical_uuid = ?');
+        return stmt.run(options.uuid).changes;
+      } else if (options.exchange) {
+        const stmt = this.db.prepare('DELETE FROM api_cache WHERE exchange = ?');
+        return stmt.run(options.exchange).changes;
+      }
+      return 0;
+    } else {
+      // In-memory cache
+      if (options.all) {
+        const size = memoryCache.size;
+        memoryCache.clear();
+        return size;
+      } else if (options.uuid) {
+        return memoryCache.delete(options.uuid) ? 1 : 0;
+      } else if (options.exchange) {
+        let deleted = 0;
+        for (const [key, entry] of memoryCache) {
+          if (entry.exchange === options.exchange) {
+            memoryCache.delete(key);
+            deleted++;
+          }
+        }
+        return deleted;
+      }
+      return 0;
     }
-
-    if (deleted > 0) {
-      this.trackMetric(options.exchange || 'all', 'cache_invalidate', false, 0);
-    }
-
-    return deleted;
   }
 
   /**
-   * Clean up expired cache entries
+   * Clean up expired entries
    */
   cleanup(): number {
-    const deleted = this.db.run(
-      `DELETE FROM api_cache WHERE expires_at <= datetime('now')`
-    ).changes;
-
-    if (deleted > 0) {
-      console.log(`Cache cleanup: removed ${deleted} expired entries`);
-      this.trackMetric('system', 'cache_cleanup', false, 0);
-    }
-
-    return deleted;
-  }
-
-  /**
-   * Enforce max size for exchange
-   */
-  private async enforceMaxSize(exchange: string, maxSize: number): Promise<void> {
-    const countStmt = this.db.prepare('SELECT COUNT(*) as count FROM api_cache WHERE exchange = ?');
-    const { count } = countStmt.get(exchange) as { count: number };
-
-    if (count > maxSize) {
-      const toDelete = count - maxSize;
-
-      // Delete oldest entries (LRU)
-      const deleteStmt = this.db.prepare(`
-        DELETE FROM api_cache WHERE canonical_uuid IN (
-          SELECT canonical_uuid FROM api_cache 
-          WHERE exchange = ? 
-          ORDER BY last_accessed ASC 
-          LIMIT ?
-        )
-      `);
-      deleteStmt.run(exchange, toDelete);
-
-      console.log(`Cache eviction: removed ${toDelete} entries for ${exchange}`);
+    if (this.usingSQLite && this.db) {
+      return this.db.run(`DELETE FROM api_cache WHERE expires_at <= datetime('now')`).changes;
+    } else {
+      const now = new Date();
+      let deleted = 0;
+      for (const [key, entry] of memoryCache) {
+        if (new Date(entry.expiresAt) <= now) {
+          memoryCache.delete(key);
+          deleted++;
+        }
+      }
+      return deleted;
     }
   }
 
@@ -323,115 +392,72 @@ export class APICacheManager {
    * Get cache statistics
    */
   getStats(exchange?: string): CacheStats {
-    const where = exchange ? `WHERE exchange = '${exchange}'` : '';
+    if (this.usingSQLite && this.db) {
+      const where = exchange ? `WHERE exchange = '${exchange}'` : '';
 
-    // Total entries
-    const totalStmt = this.db.prepare(`SELECT COUNT(*) as count FROM api_cache ${where}`);
-    const total = (totalStmt.get() as { count: number }).count || 0;
+      const totalStmt = this.db.prepare(`SELECT COUNT(*) as count FROM api_cache ${where}`);
+      const total = (totalStmt.get() as { count: number }).count || 0;
 
-    // Total hits
-    const hitsStmt = this.db.prepare(`SELECT SUM(hit_count) as hits FROM api_cache ${where}`);
-    const hits = (hitsStmt.get() as { hits: number | null }).hits || 0;
+      const hitsStmt = this.db.prepare(`SELECT SUM(hit_count) as hits FROM api_cache ${where}`);
+      const hits = (hitsStmt.get() as { hits: number | null }).hits || 0;
 
-    // Misses from metrics
-    const missesStmt = this.db.prepare(`
-      SELECT COUNT(*) as misses FROM cache_metrics 
-      WHERE operation = 'cache_miss' ${exchange ? `AND exchange = '${exchange}'` : ''}
-    `);
-    const misses = (missesStmt.get() as { misses: number }).misses || 0;
+      const misses = memoryCacheMetrics.misses;
+      const hitRate = hits + misses > 0 ? hits / (hits + misses) : 0;
 
-    // Hit rate
-    const hitRate = hits + misses > 0 ? hits / (hits + misses) : 0;
+      const sizeStmt = this.db.prepare(
+        `SELECT SUM(LENGTH(response)) as bytes FROM api_cache ${where}`
+      );
+      const sizeBytes = (sizeStmt.get() as { bytes: number | null }).bytes || 0;
 
-    // Size estimate
-    const sizeStmt = this.db.prepare(
-      `SELECT SUM(LENGTH(response)) as bytes FROM api_cache ${where}`
-    );
-    const sizeBytes = (sizeStmt.get() as { bytes: number | null }).bytes || 0;
+      const byExchangeStmt = this.db.prepare(`
+        SELECT exchange, COUNT(*) as count, SUM(LENGTH(response)) as bytes 
+        FROM api_cache GROUP BY exchange
+      `);
+      const byExchangeRows = byExchangeStmt.all() as Array<{
+        exchange: string;
+        count: number;
+        bytes: number;
+      }>;
+      const byExchange: Record<string, { count: number; bytes: number }> = {};
+      for (const row of byExchangeRows) {
+        byExchange[row.exchange] = { count: row.count, bytes: row.bytes || 0 };
+      }
 
-    // By exchange breakdown
-    const byExchangeStmt = this.db.prepare(`
-      SELECT exchange, COUNT(*) as count, SUM(LENGTH(response)) as bytes 
-      FROM api_cache 
-      GROUP BY exchange
-    `);
-    const byExchangeRows = byExchangeStmt.all() as Array<{
-      exchange: string;
-      count: number;
-      bytes: number;
-    }>;
-    const byExchange: Record<string, { count: number; bytes: number }> = {};
-    for (const row of byExchangeRows) {
-      byExchange[row.exchange] = { count: row.count, bytes: row.bytes || 0 };
+      return { total, hits, misses, hitRate, sizeBytes, byExchange };
+    } else {
+      // In-memory stats
+      let total = 0;
+      let sizeBytes = 0;
+      const byExchange: Record<string, { count: number; bytes: number }> = {};
+
+      for (const [, entry] of memoryCache) {
+        if (!exchange || entry.exchange === exchange) {
+          total++;
+          const bytes = entry.response.length;
+          sizeBytes += bytes;
+
+          if (!byExchange[entry.exchange]) {
+            byExchange[entry.exchange] = { count: 0, bytes: 0 };
+          }
+          byExchange[entry.exchange].count++;
+          byExchange[entry.exchange].bytes += bytes;
+        }
+      }
+
+      const { hits, misses } = memoryCacheMetrics;
+      const hitRate = hits + misses > 0 ? hits / (hits + misses) : 0;
+
+      return { total, hits, misses, hitRate, sizeBytes, byExchange };
     }
-
-    return { total, hits, misses, hitRate, sizeBytes, byExchange };
   }
 
   /**
-   * Get entries by tag
-   */
-  getByTag(tag: string, exchange?: string): CacheEntry[] {
-    let query = `SELECT * FROM api_cache WHERE tags LIKE ? AND expires_at > datetime('now')`;
-    const params: string[] = [`%${tag}%`];
-
-    if (exchange) {
-      query += ' AND exchange = ?';
-      params.push(exchange);
-    }
-
-    const stmt = this.db.prepare(query);
-    return stmt.all(...params) as CacheEntry[];
-  }
-
-  /**
-   * Track cache metric
-   */
-  private trackMetric(exchange: string, operation: string, isHit: boolean, latency: number): void {
-    const stmt = this.db.prepare(`
-      INSERT INTO cache_metrics (exchange, operation, hit, miss, latency_ms)
-      VALUES (?, ?, ?, ?, ?)
-    `);
-
-    stmt.run(exchange, operation, isHit ? 1 : 0, isHit ? 0 : 1, latency);
-  }
-
-  /**
-   * Get recent metrics
-   */
-  getMetrics(limit: number = 100): Array<{
-    timestamp: string;
-    exchange: string;
-    operation: string;
-    hit: number;
-    miss: number;
-    latency_ms: number;
-  }> {
-    const stmt = this.db.prepare(`
-      SELECT * FROM cache_metrics ORDER BY timestamp DESC LIMIT ?
-    `);
-    return stmt.all(limit) as Array<{
-      timestamp: string;
-      exchange: string;
-      operation: string;
-      hit: number;
-      miss: number;
-      latency_ms: number;
-    }>;
-  }
-
-  /**
-   * Close database connection
+   * Close database connection (Bun only)
    */
   close(): void {
-    this.db.close();
-  }
-
-  /**
-   * Get raw database reference (for advanced queries)
-   */
-  getDatabase(): Database {
-    return this.db;
+    if (this.db) {
+      this.db.close();
+    }
   }
 }
 
