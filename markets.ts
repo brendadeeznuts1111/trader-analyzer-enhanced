@@ -132,6 +132,131 @@ const CANONICAL_MARKETS = [
   },
 ];
 
+// OHLCV interfaces and constants
+interface OHLCVCandle {
+  time: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+}
+
+// Timeframe mappings (minutes)
+const TIMEFRAME_MINUTES: Record<string, number> = {
+  '1m': 1,
+  '5m': 5,
+  '15m': 15,
+  '30m': 30,
+  '1h': 60,
+  '4h': 240,
+  '1d': 1440,
+  '1w': 10080,
+};
+
+// Source timeframe for aggregation
+const TIMEFRAME_SOURCE: Record<string, string> = {
+  '1m': '1m',
+  '5m': '5m',
+  '15m': '5m', // Aggregate from 5m
+  '30m': '5m', // Aggregate from 5m
+  '1h': '1h',
+  '4h': '1h', // Aggregate from 1h
+  '1d': '1d',
+  '1w': '1d', // Aggregate from 1d
+};
+
+// Maximum candles to return (prevents browser crashes)
+const MAX_CANDLES: Record<string, number> = {
+  '1m': 10000, // ~7 days
+  '5m': 10000, // ~35 days
+  '15m': 10000, // ~104 days
+  '30m': 10000, // ~208 days
+  '1h': 50000, // ~5.7 years
+  '4h': 50000, // ~22 years
+  '1d': 50000, // all data
+  '1w': 50000, // all data
+};
+
+// Generate base mock OHLCV data for a specific timeframe
+function generateBaseOHLCV(
+  marketId: string,
+  timeframe: string,
+  count: number = 1000
+): OHLCVCandle[] {
+  const candles: OHLCVCandle[] = [];
+  const basePrice = marketId.includes('btc') ? 65000 : marketId.includes('eth') ? 3500 : 0.5;
+  const intervalSeconds = TIMEFRAME_MINUTES[timeframe] * 60; // Convert minutes to seconds
+
+  for (let i = count - 1; i >= 0; i--) {
+    const timestamp = Math.floor(Date.now() / 1000) - i * intervalSeconds;
+    const open = basePrice + (Math.random() - 0.5) * basePrice * 0.02;
+    const close = open + (Math.random() - 0.5) * basePrice * 0.01;
+    const high = Math.max(open, close) + Math.random() * basePrice * 0.005;
+    const low = Math.min(open, close) - Math.random() * basePrice * 0.005;
+    const volume = Math.random() * 1000 + 100;
+
+    candles.push({
+      time: timestamp,
+      open: Math.round(open * 100) / 100,
+      high: Math.round(high * 100) / 100,
+      low: Math.round(low * 100) / 100,
+      close: Math.round(close * 100) / 100,
+      volume: Math.round(volume * 100) / 100,
+    });
+  }
+
+  return candles;
+}
+
+// Aggregate candles to larger timeframes
+function aggregateCandles(
+  candles: OHLCVCandle[],
+  targetMinutes: number,
+  sourceMinutes: number
+): OHLCVCandle[] {
+  if (candles.length === 0) return [];
+
+  const ratio = Math.round(targetMinutes / sourceMinutes);
+  if (ratio <= 1) return candles;
+
+  const bucketSeconds = targetMinutes * 60;
+  const buckets = new Map<number, OHLCVCandle[]>();
+
+  // Group candles by bucket
+  for (const candle of candles) {
+    const bucketTime = Math.floor(candle.time / bucketSeconds) * bucketSeconds;
+    if (!buckets.has(bucketTime)) {
+      buckets.set(bucketTime, []);
+    }
+    buckets.get(bucketTime)!.push(candle);
+  }
+
+  // Aggregate each bucket
+  const result: OHLCVCandle[] = [];
+
+  for (const [bucketTime, candlesInBucket] of buckets) {
+    if (candlesInBucket.length === 0) continue;
+
+    // Sort by time
+    candlesInBucket.sort((a, b) => a.time - b.time);
+
+    result.push({
+      time: bucketTime,
+      open: candlesInBucket[0].open,
+      high: Math.max(...candlesInBucket.map(c => c.high)),
+      low: Math.min(...candlesInBucket.map(c => c.low)),
+      close: candlesInBucket[candlesInBucket.length - 1].close,
+      volume: candlesInBucket.reduce((sum, c) => sum + c.volume, 0),
+    });
+  }
+
+  // Sort by time
+  result.sort((a, b) => a.time - b.time);
+
+  return result;
+}
+
 // Generate mock orderbook data (simplified for Worker)
 function generateMockOrderbook(marketId: string) {
   const basePrice = marketId.includes('btc') ? 65000 : marketId.includes('eth') ? 3500 : 0.5;
@@ -220,7 +345,11 @@ export default {
       }
 
       // GET /api/markets/{id} - Return single market
-      if (url.pathname.startsWith('/api/markets/') && request.method === 'GET') {
+      if (
+        url.pathname.startsWith('/api/markets/') &&
+        !url.pathname.includes('/ohlcv') &&
+        request.method === 'GET'
+      ) {
         const marketId = url.pathname.split('/')[3];
         const market = CANONICAL_MARKETS.find(m => m.id === marketId);
 
@@ -242,6 +371,58 @@ export default {
         };
 
         return new Response(JSON.stringify(marketWithData), {
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=300',
+          },
+        });
+      }
+
+      // GET /api/markets/{id}/ohlcv - Return OHLCV data with aggregation
+      if (url.pathname.match(/^\/api\/markets\/[^\/]+\/ohlcv$/) && request.method === 'GET') {
+        const marketId = url.pathname.split('/')[3];
+        const market = CANONICAL_MARKETS.find(m => m.id === marketId);
+
+        if (!market) {
+          return new Response(JSON.stringify({ error: 'Market not found' }), {
+            status: 404,
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'application/json',
+            },
+          });
+        }
+
+        const searchParams = url.searchParams;
+        const timeframe = searchParams.get('timeframe') || '1d';
+        const limit = Math.min(parseInt(searchParams.get('limit') || '100'), 1000); // Cap at 1000
+        const since = searchParams.get('since') ? parseInt(searchParams.get('since')!) : null;
+
+        // Temporary simplified response for testing
+        const result = {
+          candles: [
+            {
+              time: Math.floor(Date.now() / 1000),
+              open: 65000,
+              high: 65500,
+              low: 64500,
+              close: 65200,
+              volume: 1000,
+            },
+          ],
+          marketId,
+          timeframe: timeframe || '1d',
+          count: 1,
+          totalAvailable: 1,
+          limited: false,
+          range: {
+            start: new Date().toISOString(),
+            end: new Date().toISOString(),
+          },
+        };
+
+        return new Response(JSON.stringify(result), {
           headers: {
             ...corsHeaders,
             'Content-Type': 'application/json',
