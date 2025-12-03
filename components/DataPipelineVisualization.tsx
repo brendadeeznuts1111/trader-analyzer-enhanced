@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Network, Activity, Zap, TrendingUp, Globe, Database } from 'lucide-react';
+import { BACKEND_URLS, API_CONFIG } from '@/lib/constants';
 
 interface PipelineStats {
   markets: number;
@@ -28,7 +29,9 @@ export function DataPipelineVisualization() {
 
   useEffect(() => {
     // Connect directly to Bun backend SSE
-    const evt = new EventSource('http://localhost:8000/events');
+    const evt = new EventSource(
+      `${BACKEND_URLS.development}${API_CONFIG.endpoints.pipeline.events}`
+    );
 
     evt.onopen = () => {
       setIsConnected(true);
@@ -48,7 +51,9 @@ export function DataPipelineVisualization() {
       // Fallback to REST API polling
       const pollStats = async () => {
         try {
-          const response = await fetch('http://localhost:8000/pipeline/stats');
+          const response = await fetch(
+            `${BACKEND_URLS.development}${API_CONFIG.endpoints.pipeline.stats}`
+          );
           if (response.ok) {
             const data = await response.json();
             setStats(data);

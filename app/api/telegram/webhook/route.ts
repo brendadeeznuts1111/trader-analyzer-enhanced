@@ -15,8 +15,9 @@ import {
   answerInlineQuery,
   type InlineKeyboardButton,
   type TelegramMessage as TgMsg,
-} from '../../../../lib/telegram';
-import { buildApiHeaders, headersToObject } from '../../../../lib/api-headers';
+} from '@/lib/telegram';
+import { buildApiHeaders, headersToObject } from '@/lib/api-headers';
+import { API_CONFIG } from '@/lib/constants';
 
 // ═══════════════════════════════════════════════════════════════
 // TYPES
@@ -186,8 +187,7 @@ async function handlePnL(msg: IncomingMessage) {
 
 async function handleHealth(msg: IncomingMessage) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/health`);
+    const response = await fetch(`${API_CONFIG.baseUrl}/api/health`);
     const data = await response.json();
 
     await reply(

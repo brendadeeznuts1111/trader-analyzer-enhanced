@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { Trade, PositionSession } from '@/lib/types';
+import { WORKERS_URLS } from '@/lib/constants';
 import { TradeList } from './TradeList';
 import { PositionSessionList } from './PositionSessionList';
 import { PositionDetail } from './PositionDetail';
@@ -264,8 +265,7 @@ export function Dashboard() {
     async function loadStats() {
       try {
         // Use staging Worker endpoint
-        const workerUrl =
-          'https://trader-analyzer-markets-staging.utahj4754.workers.dev/api/trades?type=stats';
+        const workerUrl = `${WORKERS_URLS.staging}/api/trades?type=stats`;
         const res = await fetch(workerUrl);
         if (!res.ok) throw new Error('Failed to fetch stats from Worker');
         const data = await res.json();
@@ -283,8 +283,7 @@ export function Dashboard() {
     async function loadEquity() {
       try {
         // Use staging Worker endpoint with days parameter
-        const workerUrl =
-          'https://trader-analyzer-markets-staging.utahj4754.workers.dev/api/trades?type=equity&days=30';
+        const workerUrl = `${WORKERS_URLS.staging}/api/trades?type=equity&days=30`;
         const res = await fetch(workerUrl);
         if (!res.ok) throw new Error('Failed to fetch equity from Worker');
         const data = await res.json();
@@ -357,7 +356,7 @@ export function Dashboard() {
           symbolToMarketId[selectedSymbol as keyof typeof symbolToMarketId] || 'btc-usd-perp';
 
         // Use staging Worker endpoint for now
-        const workerUrl = `https://trader-analyzer-markets-staging.utahj4754.workers.dev/api/markets/${marketId}/ohlcv?timeframe=${timeframe}&limit=100`;
+        const workerUrl = `${WORKERS_URLS.staging}/api/markets/${marketId}/ohlcv?timeframe=${timeframe}&limit=100`;
         const res = await fetch(workerUrl);
         if (!res.ok) throw new Error('Failed to fetch OHLCV data from Worker');
         const data = await res.json();
@@ -389,7 +388,7 @@ export function Dashboard() {
         setLoading(true);
         const typeParam = viewMode === 'positions' ? '&type=sessions' : '';
         // Use staging Worker endpoint
-        const workerUrl = `https://trader-analyzer-markets-staging.utahj4754.workers.dev/api/trades?page=${page}&limit=${limit}&symbol=${encodeURIComponent(selectedSymbol)}${typeParam}`;
+        const workerUrl = `${WORKERS_URLS.staging}/api/trades?page=${page}&limit=${limit}&symbol=${encodeURIComponent(selectedSymbol)}${typeParam}`;
         const res = await fetch(workerUrl);
         if (!res.ok) throw new Error('Failed to fetch data from Worker');
         const data = await res.json();
@@ -419,7 +418,7 @@ export function Dashboard() {
   const handleSelectSession = async (session: PositionSession) => {
     try {
       // Use staging Worker endpoint
-      const workerUrl = `https://trader-analyzer-markets-staging.utahj4754.workers.dev/api/trades?sessionId=${encodeURIComponent(session.id)}`;
+      const workerUrl = `${WORKERS_URLS.staging}/api/trades?sessionId=${encodeURIComponent(session.id)}`;
       const res = await fetch(workerUrl);
       if (!res.ok) throw new Error('Failed to fetch session details from Worker');
       const data = await res.json();

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { buildApiHeaders, headersToObject } from '../../../../lib/api-headers';
+import { buildApiHeaders, headersToObject } from '@/lib/api-headers';
+import { API_CONFIG } from '@/lib/constants';
 
 // REST fallback endpoint for pipeline stats
 export async function GET(request: Request) {
@@ -7,8 +8,7 @@ export async function GET(request: Request) {
 
   try {
     // Fetch from Bun backend
-    const bunUrl = process.env.BUN_BACKEND_URL || 'http://localhost:3000';
-    const response = await fetch(`${bunUrl}/pipeline/stats`);
+    const response = await fetch(`${API_CONFIG.backendUrl}${API_CONFIG.endpoints.pipeline.stats}`);
 
     if (!response.ok) {
       throw new Error('Failed to fetch pipeline stats from backend');
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
       request,
       responseTime: Date.now() - startTime,
       etagContent: data,
-      preconnect: [bunUrl],
+      preconnect: [API_CONFIG.backendUrl],
       custom: {
         'X-Data-Type': 'pipeline-stats',
         'X-Data-Source': 'backend',

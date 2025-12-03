@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { buildApiHeaders, headersToObject, createErrorResponse } from '../../../../lib/api-headers';
-
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
+import { buildApiHeaders, headersToObject, createErrorResponse } from '@/lib/api-headers';
+import { API_CONFIG } from '@/lib/constants';
 
 export async function POST(request: Request) {
   const startTime = Date.now();
@@ -42,7 +41,7 @@ export async function POST(request: Request) {
     }
 
     // Make request to backend service
-    const response = await fetch(`${BACKEND_URL}/api/predict/action`, {
+    const response = await fetch(`${API_CONFIG.backendUrl}/api/predict/action`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -89,7 +88,7 @@ export async function POST(request: Request) {
       cache: 'no-cache',
       request,
       responseTime: Date.now() - startTime,
-      preconnect: [BACKEND_URL],
+      preconnect: [API_CONFIG.backendUrl],
       custom: {
         'X-Operation': 'predict',
         'X-Symbol': body.symbol,

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { buildApiHeaders, headersToObject, createErrorResponse } from '../../../lib/api-headers';
+import { buildApiHeaders, headersToObject, createErrorResponse } from '@/lib/api-headers';
+import { API_CONFIG } from '@/lib/constants';
 
 // Adapter layer: Next.js dashboard ↔ Bun unified pipeline
-const BUN_BACKEND_URL = process.env.BUN_BACKEND_URL || 'http://localhost:8000';
 
 // Map canonical market IDs to symbols for backward compatibility
 const MARKET_TO_SYMBOL_MAP: Record<string, string> = {
@@ -35,7 +35,7 @@ export async function GET(request: Request) {
 
       try {
         const response = await fetch(
-          `${BUN_BACKEND_URL}/markets/${marketId}/ohlcv?timeframe=${timeframe}&limit=500`
+          `${API_CONFIG.backendUrl}/markets/${marketId}/ohlcv?timeframe=${timeframe}&limit=500`
         );
         if (response.ok) {
           const data = await response.json();
@@ -235,7 +235,9 @@ export async function GET(request: Request) {
       let rawTrades: any[] = [];
 
       try {
-        const response = await fetch(`${BUN_BACKEND_URL}/markets/${marketId}/trades?limit=1000`);
+        const response = await fetch(
+          `${API_CONFIG.backendUrl}/markets/${marketId}/trades?limit=1000`
+        );
         if (response.ok) {
           const data = await response.json();
           rawTrades = data.trades || [];
@@ -483,7 +485,9 @@ export async function GET(request: Request) {
     let total = 0;
 
     try {
-      const response = await fetch(`${BUN_BACKEND_URL}/markets/${marketId}/trades?limit=${limit}`);
+      const response = await fetch(
+        `${API_CONFIG.backendUrl}/markets/${marketId}/trades?limit=${limit}`
+      );
       if (response.ok) {
         const data = await response.json();
         trades = data.trades.map((trade: any) => ({

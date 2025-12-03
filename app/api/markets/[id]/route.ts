@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server';
-import { buildApiHeaders, headersToObject, createErrorResponse } from '../../../../lib/api-headers';
+import { buildApiHeaders, headersToObject, createErrorResponse } from '@/lib/api-headers';
+import { API_CONFIG } from '@/lib/constants';
 
 // Adapter layer: Next.js dashboard ↔ Bun unified pipeline
-const BUN_BACKEND_URL = process.env.BUN_BACKEND_URL || 'http://localhost:8000';
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const startTime = Date.now();
 
   try {
     const { id } = await params;
-    const response = await fetch(`${BUN_BACKEND_URL}/markets/${id}`);
+    const response = await fetch(`${API_CONFIG.backendUrl}/markets/${id}`);
 
     if (!response.ok) {
       if (response.status === 404) {
