@@ -1,0 +1,26 @@
+# Code Owners
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/managing-repository-settings/about-code-owners
+
+# Global owners
+* @your-org/maintainers
+
+# API and backend
+markets-simple.ts @your-org/backend-team
+docs/API_DOCUMENTATION.md @your-org/backend-team
+scripts/deploy/ @your-org/devops-team
+
+# Frontend
+app/ @your-org/frontend-team
+components/ @your-org/frontend-team
+
+# Documentation
+docs/ @your-org/docs-team
+.github/ @your-org/docs-team
+
+# Testing
+tests/ @your-org/qa-team
+scripts/test/ @your-org/qa-team
+
+# Infrastructure
+wrangler.toml @your-org/devops-team
+.github/workflows/ @your-org/devops-team
