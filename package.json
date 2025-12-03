@@ -49,7 +49,7 @@
     "test:api": "bunx wrangler dev --config markets-wrangler.toml & sleep 3 && curl -s http://localhost:8788/api/markets | jq '.total' && pkill -f wrangler"
   },
   "dependencies": {
-    "@types/uuid": "10.0.0",
+    "@types/uuid": "11.0.0",
     "ccxt": "^4.5.20",
     "csv-parse": "^6.1.0",
     "lightweight-charts": "^4.2.1",
