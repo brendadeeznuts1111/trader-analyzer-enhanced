@@ -429,13 +429,26 @@ export const URLPattern: new (
 
 /**
  * Create a URLPattern from a pathname pattern string
+ * 
+ * @param pathname - Pathname pattern (e.g., '/users/:id', '/api/products/:id')
+ * @returns URLPattern instance for pathname matching
+ * @example
+ * const pattern = createPathPattern('/users/:id');
+ * pattern.test('https://example.com/users/123'); // true
  */
 export function createPathPattern(pathname: string): IURLPattern {
   return new URLPattern({ pathname });
 }
 
 /**
- * Create a URLPattern for API routes
+ * Create a URLPattern for API routes with base URL
+ * 
+ * @param pathname - API pathname pattern (e.g., '/api/markets/:exchange/:symbol')
+ * @param baseURL - Base URL for the API (defaults to 'http://localhost:3000')
+ * @returns URLPattern instance configured for API routing
+ * @example
+ * const apiPattern = createAPIPattern('/api/markets/:exchange/:symbol', 'https://api.example.com');
+ * apiPattern.test('https://api.example.com/api/markets/binance/BTC-USDT'); // true
  */
 export function createAPIPattern(pathname: string, baseURL = 'http://localhost:3000'): IURLPattern {
   return new URLPattern({ pathname, baseURL });
@@ -443,6 +456,19 @@ export function createAPIPattern(pathname: string, baseURL = 'http://localhost:3
 
 /**
  * Match a URL against multiple patterns and return the first match
+ * 
+ * Useful for finding which route handler should process a URL.
+ * 
+ * @param url - URL to test
+ * @param patterns - Array of patterns to test in order
+ * @returns First matching pattern and its exec result, or null if no match
+ * @example
+ * const patterns = [
+ *   createPathPattern('/users/:id'),
+ *   createPathPattern('/products/:id'),
+ * ];
+ * const match = matchPatterns('/users/123', patterns);
+ * if (match) console.log(match.result.pathname.groups.id); // '123'
  */
 export function matchPatterns(
   url: string,
@@ -458,7 +484,19 @@ export function matchPatterns(
 }
 
 /**
- * Create a router using URLPattern
+ * Create an Express-like router using URLPattern
+ * 
+ * Returns a function that routes URLs to handlers based on pattern matching.
+ * 
+ * @param routes - Array of route definitions with patterns and handlers
+ * @returns Router function that takes a URL and returns matched handler and params
+ * @example
+ * const router = createPatternRouter([
+ *   { pattern: createPathPattern('/users/:id'), handler: handleUser },
+ *   { pattern: createPathPattern('/posts/:id'), handler: handlePost },
+ * ]);
+ * const route = router('/users/123');
+ * if (route) route.handler(route.params);
  */
 export function createPatternRouter<T>(
   routes: Array<{ pattern: IURLPattern; handler: T }>
