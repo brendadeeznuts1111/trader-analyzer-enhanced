@@ -7,9 +7,14 @@
 
 import { spawn } from 'bun';
 import { PORTS } from '../lib/constants';
+import { secrets } from 'bun';
 
 const DEFAULT_PORT = PORTS.nextjs;
 const MAX_PORT_ATTEMPTS = 10;
+
+// Security configuration
+const SERVICE_NAME = 'trader-analyzer';
+const SECURITY_FLAGS = ['--disable-eval', '--disable-wasm', '--use-system-ca'];
 
 async function isPortAvailable(port: number): Promise<boolean> {
   try {
@@ -48,9 +53,80 @@ async function findAvailablePort(startPort: number): Promise<number> {
   throw new Error(errorMsg);
 }
 
+interface SecretsHealthStatus {
+  healthy: boolean;
+  service: string;
+  secretsFound: number;
+  issues: string[];
+}
+
+async function checkSecretsHealth(): Promise<SecretsHealthStatus> {
+  const status: SecretsHealthStatus = {
+    healthy: true,
+    service: SERVICE_NAME,
+    secretsFound: 0,
+    issues: [],
+  };
+
+  try {
+    // Try to access a test secret to verify service is working
+    const testSecret = await secrets.get({ service: SERVICE_NAME, name: 'test-connection' });
+    if (testSecret) {
+      status.secretsFound++;
+    }
+  } catch (error) {
+    // Service might not exist yet, which is OK for development
+    status.issues.push('Secrets service not initialized (this is normal for first run)');
+  }
+
+  // Check for common expected secrets
+  const expectedSecrets = ['telegram-bot-token', 'telegram-chat-id'];
+  for (const secretName of expectedSecrets) {
+    try {
+      const secret = await secrets.get({ service: SERVICE_NAME, name: secretName });
+      if (secret) {
+        status.secretsFound++;
+      }
+    } catch {
+      // Secret doesn't exist, which is OK
+    }
+  }
+
+  return status;
+}
+
+function shouldEnableSecurity(): boolean {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const secureMode = process.env.SECURE_MODE === 'true';
+  const skipSecurity = process.env.SKIP_SECURITY === 'true';
+
+  if (skipSecurity) return false;
+  if (isProduction || secureMode) return true;
+
+  // Default to security enabled for safety
+  return true;
+}
+
 async function main() {
   console.log('🚀 Trader Analyzer Dev Server');
   console.log('================================');
+
+  // Security configuration
+  const enableSecurity = shouldEnableSecurity();
+  console.log(`🔒 Security Mode: ${enableSecurity ? 'Enabled' : 'Disabled'}`);
+
+  // Check secrets health
+  console.log('🔐 Checking secrets configuration...');
+  const secretsStatus = await checkSecretsHealth();
+  const secretsStatusText = secretsStatus.healthy ? '✅ Operational' : '⚠️  Issues Detected';
+  console.log(
+    `🔐 Secrets Status: ${secretsStatusText} (${secretsStatus.secretsFound} secrets found)`
+  );
+
+  if (secretsStatus.issues.length > 0) {
+    console.log('📋 Secrets Notes:');
+    secretsStatus.issues.forEach(issue => console.log(`   - ${issue}`));
+  }
 
   const requestedPort = parseInt(process.env.PORT || String(DEFAULT_PORT), 10);
   console.log(`📋 Requested port: ${requestedPort} (from PORT env var or default ${DEFAULT_PORT})`);
@@ -72,13 +148,20 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(`🎯 Starting Next.js dev server on port ${port}...`);
-  console.log(`🌐 Dashboard will be available at: http://localhost:${port}`);
-  console.log('================================');
-
   try {
+    // Build command with security flags if enabled
+    const baseCmd = ['bun'];
+    if (enableSecurity) {
+      baseCmd.push(...SECURITY_FLAGS);
+    }
+    baseCmd.push('run', 'next', 'dev', '--port', String(port));
+
+    console.log(`🎯 Starting Next.js dev server on port ${port}...`);
+    console.log(`🌐 Dashboard will be available at: http://localhost:${port}`);
+    console.log('================================');
+
     const proc = spawn({
-      cmd: ['bun', 'run', 'next', 'dev', '--port', String(port)],
+      cmd: baseCmd,
       cwd: process.cwd(),
       env: { ...process.env, PORT: String(port) },
       stdout: 'inherit',

@@ -1,0 +1,19 @@
+# Cloudflare Pages Headers for Factory Wager Mini App
+
+/*
+  X-Frame-Options: ALLOW-FROM https://web.telegram.org
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+/miniapp/*
+  X-Frame-Options: ALLOW-FROM https://web.telegram.org
+  Content-Security-Policy: frame-ancestors 'self' https://web.telegram.org https://*.telegram.org;
+
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/api/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, POST, OPTIONS
+  Access-Control-Allow-Headers: Content-Type, Authorization

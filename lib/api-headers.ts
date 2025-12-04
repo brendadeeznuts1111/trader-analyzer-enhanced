@@ -4,7 +4,7 @@
  * for all API responses
  */
 
-import { createHash } from 'crypto';
+import { md5 } from './crypto-utils';
 
 // Server identification
 const SERVER_NAME = process.env.SERVER_NAME || 'trader-analyzer';
@@ -46,7 +46,7 @@ const CACHE_PRESETS = {
  */
 function generateETag(content: string | object): string {
   const data = typeof content === 'string' ? content : JSON.stringify(content);
-  const hash = createHash('md5').update(data).digest('hex').slice(0, 16);
+  const hash = md5(data).slice(0, 16);
   return `"${hash}"`;
 }
 

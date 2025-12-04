@@ -13,14 +13,12 @@
 
 import { Database } from 'bun:sqlite';
 import { serve, Server } from 'bun';
-import { Logger } from '../logger';
-import { DebugInspector, formatNs, formatBytes, inspector } from '../debug-inspector';
+import { logger } from '../logger';
+import { formatNs, formatBytes, inspector } from '../debug-inspector';
 import {
   MarketCanonicalizer,
   MarketIdentifier,
   CanonicalMarket,
-  MarketExchange,
-  MarketType,
 } from './uuidv5';
 
 // =============================================================================
@@ -160,14 +158,14 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
   private _memoryCache = new Map<string, CacheEntry>();
 
   // HTTP server instance
-  private _httpServer: Server | null = null;
+  private _httpServer: Server<any> | null = null;
 
   // Configuration
   private _config: CanonicalizerConfig;
 
   // File handles using Bun's file API
-  private _logFile: BunFile | null = null;
-  private _metricsFile: BunFile | null = null;
+  private _logFile: any = null;
+  private _metricsFile: any = null;
 
   constructor(config?: Partial<CanonicalizerConfig>) {
     super();
@@ -231,14 +229,14 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
     const result = { ...target };
 
     for (const key in source) {
-      if (source.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
         const sourceValue = source[key];
         const targetValue = result[key];
 
         if (this._isObject(sourceValue) && this._isObject(targetValue)) {
-          result[key] = this._deepMerge(targetValue, sourceValue);
+          (result as any)[key] = this._deepMerge(targetValue as any, sourceValue as any);
         } else {
-          result[key] = sourceValue as T[Extract<keyof T, string>];
+          (result as any)[key] = sourceValue;
         }
       }
     }
@@ -255,7 +253,7 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
   // ===========================================================================
 
   private async _initialize(): Promise<void> {
-    Logger.info('Initializing Enhanced Market Canonicalizer');
+    logger.info('Initializing Enhanced Market Canonicalizer');
 
     // Initialize SQLite cache
     if (this._config.cache.sqlite.enabled) {
@@ -280,7 +278,7 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
     // Setup signal handlers
     this._setupSignalHandlers();
 
-    Logger.info('Enhanced Market Canonicalizer initialized', {
+    logger.info('Enhanced Market Canonicalizer initialized', {
       cache: {
         memory: this._config.cache.memory,
         sqlite: this._config.cache.sqlite.enabled,
@@ -321,16 +319,16 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
 
       // Vacuum if requested
       if (this._config.cache.sqlite.vacuumOnStart) {
-        Logger.info('Vacuuming SQLite cache database');
+        logger.info('Vacuuming SQLite cache database');
         this._cacheDb.run('VACUUM;');
       }
 
-      Logger.info('SQLite cache initialized', {
+      logger.info('SQLite cache initialized', {
         path: this._config.cache.sqlite.path,
         tables: this._cacheDb.prepare('SELECT name FROM sqlite_master WHERE type="table"').all(),
       });
     } catch (error) {
-      Logger.error('Failed to initialize SQLite cache', { error: (error as Error).message });
+      logger.error('Failed to initialize SQLite cache', { error: (error as Error).message });
       this._config.cache.sqlite.enabled = false;
     }
   }
@@ -344,10 +342,10 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
       if (await cacheFile.exists()) {
         const cacheData = await cacheFile.json();
         // Load cache entries (implementation details later)
-        Logger.info('Filesystem cache loaded', { entries: Object.keys(cacheData).length });
+        logger.info('Filesystem cache loaded', { entries: Object.keys(cacheData).length });
       }
     } catch (error) {
-      Logger.warn('Failed to initialize filesystem cache', { error: (error as Error).message });
+      logger.warn('Failed to initialize filesystem cache', { error: (error as Error).message });
       this._config.cache.filesystem.enabled = false;
     }
   }
@@ -359,9 +357,9 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
       await Bun.write(`${logDir}/.gitkeep`, '');
 
       this._logFile = Bun.file(this._config.logging.file.path);
-      Logger.info('File logging initialized', { path: this._config.logging.file.path });
+      logger.info('File logging initialized', { path: this._config.logging.file.path });
     } catch (error) {
-      Logger.warn('Failed to initialize file logging', { error: (error as Error).message });
+      logger.warn('Failed to initialize file logging', { error: (error as Error).message });
     }
   }
 
@@ -384,18 +382,18 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
   }
 
   private async _shutdown(signal: string): Promise<void> {
-    Logger.info(`Received ${signal}, shutting down gracefully`);
+    logger.info(`Received ${signal}, shutting down gracefully`);
 
     // Stop HTTP server
     if (this._httpServer) {
       this._httpServer.stop();
-      Logger.info('HTTP server stopped');
+      logger.info('HTTP server stopped');
     }
 
     // Close database connections
     if (this._cacheDb) {
       this._cacheDb.close();
-      Logger.info('SQLite cache closed');
+      logger.info('SQLite cache closed');
     }
 
     // Final metrics report
@@ -446,7 +444,7 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
         if (sqliteResult) {
           this._metrics.cacheHits++;
           // Update memory cache
-          this._setInMemoryCache(market, sqliteResult);
+          this._setInMemoryCache(market, sqliteResult.result);
           const processingTime = Bun.nanoseconds() - startTime;
           return {
             result: sqliteResult.result,
@@ -536,7 +534,7 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
           return result;
         } catch (error) {
           failed++;
-          Logger.warn('Batch canonicalization failed for market', {
+          logger.warn('Batch canonicalization failed for market', {
             market,
             error: (error as Error).message,
           });
@@ -610,7 +608,7 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
     try {
       const key = this._generateCacheKey(market);
       const row = this._cacheDb
-        .prepare('SELECT * FROM cache_entries WHERE uuid = ?')
+        .prepare('SELECT * FROM cache_entries WHERE uuid = $1')
         .get(key) as any;
 
       if (!row) return null;
@@ -621,9 +619,8 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
 
       // Update access stats
       this._cacheDb.run(
-        'UPDATE cache_entries SET last_accessed = ?, access_count = access_count + 1 WHERE uuid = ?',
-        Date.now(),
-        key
+        'UPDATE cache_entries SET last_accessed = $1, access_count = access_count + 1 WHERE uuid = $2',
+        [Date.now(), key]
       );
 
       return {
@@ -636,7 +633,7 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
         size: row.size_bytes,
       };
     } catch (error) {
-      Logger.warn('SQLite cache read error', { error: (error as Error).message });
+      logger.warn('SQLite cache read error', { error: (error as Error).message });
       return null;
     }
   }
@@ -683,16 +680,11 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
       this._cacheDb.run(
         `INSERT OR REPLACE INTO cache_entries
          (uuid, market_json, result_json, created_at, last_accessed, size_bytes)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        key,
-        marketJson,
-        resultJson,
-        now,
-        now,
-        size
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [key, marketJson, resultJson, now, now, size]
       );
     } catch (error) {
-      Logger.warn('SQLite cache write error', { error: (error as Error).message });
+      logger.warn('SQLite cache write error', { error: (error as Error).message });
     }
   }
 
@@ -747,7 +739,7 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
       errors: Object.fromEntries(this._metrics.errors),
     };
 
-    Logger.info('Metrics Report', metrics);
+    logger.info('Metrics Report', metrics);
 
     // Write to metrics file if enabled
     if (this._metricsFile) {
@@ -821,7 +813,7 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
           diskUsage: dbStats?.total_size || 0,
         };
       } catch (error) {
-        Logger.warn('Failed to get SQLite stats', { error: (error as Error).message });
+        logger.warn('Failed to get SQLite stats', { error: (error as Error).message });
       }
     }
 
@@ -870,7 +862,7 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
           return new Response('Not Found', { status: 404 });
       }
     } catch (error) {
-      Logger.error('Request error', { path, error: (error as Error).message });
+      logger.error('Request error', { path, error: (error as Error).message });
       return new Response(
         JSON.stringify({
           error: 'Internal Server Error',
@@ -886,7 +878,7 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
 
   async startServer(): Promise<void> {
     if (this._httpServer) {
-      Logger.warn('HTTP server already running');
+      logger.warn('HTTP server already running');
       return;
     }
 
@@ -906,7 +898,7 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
       },
     });
 
-    Logger.info('HTTP server started', {
+    logger.info('HTTP server started', {
       url: `http://${this._config.server.host}:${this._config.server.port}`,
       websocket: `ws://${this._config.server.host}:${this._config.server.port}/ws/canonicalize`,
     });
@@ -937,7 +929,7 @@ export class EnhancedMarketCanonicalizer extends MarketCanonicalizer {
           return new Response('Not Found', { status: 404 });
       }
     } catch (error) {
-      Logger.error('Request error', { path, error: (error as Error).message });
+      logger.error('Request error', { path, error: (error as Error).message });
       return new Response(
         JSON.stringify({
           error: 'Internal Server Error',
@@ -1079,17 +1071,17 @@ canonicalizer_memory_cache_size ${cacheStats.memory.size}
   }
 
   // WebSocket handlers (simplified)
-  private _handleWebSocketMessage(ws: any, message: any): void {
+  private _handleWebSocketMessage(_ws: any, _message: any): void {
     // TODO: Implement WebSocket message handling
-    Logger.debug('WebSocket message received', { message });
+    logger.debug('WebSocket message received', { message: _message });
   }
 
-  private _handleWebSocketOpen(ws: any): void {
-    Logger.debug('WebSocket connection opened');
+  private _handleWebSocketOpen(_ws: any): void {
+    logger.debug('WebSocket connection opened');
   }
 
-  private _handleWebSocketClose(ws: any): void {
-    Logger.debug('WebSocket connection closed');
+  private _handleWebSocketClose(_ws: any): void {
+    logger.debug('WebSocket connection closed');
   }
 
   // ===========================================================================
@@ -1111,7 +1103,7 @@ canonicalizer_memory_cache_size ${cacheStats.memory.size}
       this._cacheDb = null;
     }
 
-    Logger.info('Enhanced Market Canonicalizer closed');
+    logger.info('Enhanced Market Canonicalizer closed');
   }
 }
 

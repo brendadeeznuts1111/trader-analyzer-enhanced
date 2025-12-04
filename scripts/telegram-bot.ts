@@ -336,10 +336,11 @@ async function handleMarkets(msg: IncomingMessage) {
 }
 
 async function handleApp(msg: IncomingMessage) {
-  const appUrl = process.env.MINIAPP_URL || 'https://edgeterminal.fly.dev';
+  // Cloudflare Pages deployed miniapp
+  const appUrl = process.env.MINIAPP_URL || 'https://staging.factory-wager-miniapp.pages.dev';
 
   const keyboard: InlineKeyboardButton[][] = [
-    [{ text: 'Open Trading Dashboard', web_app: { url: `${appUrl}/miniapp` } }],
+    [{ text: 'Open Trading Dashboard', web_app: { url: appUrl } }],
   ];
 
   await sendWithKeyboard(

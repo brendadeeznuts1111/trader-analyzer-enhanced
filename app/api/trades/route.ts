@@ -2,6 +2,18 @@ import { NextResponse } from 'next/server';
 import { buildApiHeaders, headersToObject, createErrorResponse } from '@/lib/api-headers';
 import { API_CONFIG } from '@/lib/constants';
 
+// CORS preflight handler
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Telegram-Init-Data',
+    },
+  });
+}
+
 // Adapter layer: Next.js dashboard ↔ Bun unified pipeline
 
 // Map canonical market IDs to symbols for backward compatibility

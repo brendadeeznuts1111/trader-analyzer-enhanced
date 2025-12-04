@@ -1,4 +1,4 @@
-# Trader Role-Play Analyzer
+# [TRADER-ANALYZER] Trader Role-Play Analyzer
 
 ![Next.js](https://img.shields.io/badge/Next.js-16.0-black?logo=next.js)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
@@ -12,9 +12,9 @@ Intelligent analysis platform for learning trading strategies by role-playing as
 > **Runtime**: Bun-native development with Next.js 16 frontend
 > **Architecture**: Multi-environment support (Bun SQLite + Next.js in-memory cache)
 
-## Core Features
+## [CORE-FEATURES] Core Features
 
-### 1. UUIDv5 Canonical Market System (NEW)
+### [UUIDV5-SYSTEM] 1. UUIDv5 Canonical Market System (NEW)
 
 - **Deterministic UUIDs**: Same market input always produces identical UUID across all systems
 - **Cross-Exchange Compatibility**: Unified identifiers for Polymarket, Kalshi, Manifold, BitMEX, Sports
@@ -35,28 +35,28 @@ console.log(canonical.uuid); // "d4551ab8-b0d7-5444-ab99-915c1a29308e"
 // Same input = Same UUID (deterministic)
 ```
 
-### 2. Role-Play Learning
+### [ROLE-PLAY] 2. Role-Play Learning
 
 - Guess the trader's next move based on market conditions
 - Real-time scoring system to record your judgment accuracy
 - Provide trader's thought process hints to help understand decision logic
 - Auto-play mode with adjustable speed
 
-### 3. AI Action Prediction
+### [AI-PREDICTION] 3. AI Action Prediction
 
 - Intelligent prediction based on trader's historical patterns
 - Display similar historical situations and their outcomes
 - Pattern statistical analysis, including operation distribution and average PnL
 - Prediction confidence and detailed reasons
 
-### 4. Trader Profile Analysis
+### [TRADER-PROFILE] 4. Trader Profile Analysis
 
 - Risk preference assessment (Aggressive/Steady/Conservative)
 - Trading frequency type (Scalping/Intraday/Swing/Trend)
 - Trading discipline and patience score
 - Core strengths and areas for improvement
 
-### 5. Complete Data Visualization
+### [DATA-VISUALIZATION] 5. Complete Data Visualization
 
 - Multi-period K-line charts (1m ~ 1w) via Cloudflare Workers
 - Trade markers displayed in real-time on the chart
@@ -64,7 +64,7 @@ console.log(canonical.uuid); // "d4551ab8-b0d7-5444-ab99-915c1a29308e"
 - Equity curve and monthly PnL analysis
 - **Global Edge Deployment**: 200+ data centers worldwide
 
-## Tech Stack
+## [TECH-STACK] Tech Stack
 
 | Layer     | Technology                                       |
 | --------- | ------------------------------------------------ |
@@ -75,7 +75,7 @@ console.log(canonical.uuid); // "d4551ab8-b0d7-5444-ab99-915c1a29308e"
 | Charts    | Lightweight Charts, Recharts                     |
 | Testing   | Bun test runner (68 unit tests)                  |
 
-## Quick Start
+## [QUICK-START] Quick Start
 
 ### Prerequisites
 
@@ -131,7 +131,7 @@ bunx wrangler deploy --config scripts/deploy/markets-wrangler.toml --env staging
 
 > **Note**: Build scripts inject git metadata (version, commit, branch) automatically via `--define` flags. See `lib/constants.ts` for available helpers. [#REF:BUN-BUILD]
 
-## Project Structure
+## [PROJECT-STRUCTURE] Project Structure
 
 ```
 trader-analyzer/
@@ -177,7 +177,7 @@ trader-analyzer/
     └── API_DOCUMENTATION.md
 ```
 
-## API Reference
+## [API-REFERENCE] API Reference
 
 ### Canonical Markets API (NEW)
 
@@ -263,7 +263,7 @@ GET /api/health
 GET /api/health/blueprint
 ```
 
-## Architecture
+## [ARCHITECTURE] Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -301,7 +301,7 @@ GET /api/health/blueprint
             └───────────────────────────────────────┘
 ```
 
-## Testing
+## [TESTING] Testing
 
 ### Test Coverage
 
@@ -336,7 +336,7 @@ The canonical system has comprehensive tests for:
 - Hit count tracking
 - End-to-end pipeline validation
 
-## Performance
+## [PERFORMANCE] Performance
 
 | Metric                  | Value  |
 | ----------------------- | ------ |
@@ -346,7 +346,7 @@ The canonical system has comprehensive tests for:
 | API Response (cached)   | ~4ms   |
 | Build Time              | ~8s    |
 
-## Environment Variables
+## [ENVIRONMENT] Environment Variables
 
 ```bash
 # .env.local
@@ -356,7 +356,7 @@ POLY_ENABLED=true
 DEV=true  # Uses in-memory cache instead of SQLite
 ```
 
-## Version History
+## [VERSION-HISTORY] Version History
 
 - **v0.1.16** (Current): UUIDv5 Canonical Market System
   - Bun.randomUUIDv5() with crypto fallback
@@ -374,7 +374,7 @@ DEV=true  # Uses in-memory cache instead of SQLite
 - **v0.1.13**: OHLCV aggregation
 - **v0.1.12**: Markets API with ETag caching
 
-## Contributing
+## [CONTRIBUTING] Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feat/your-feature`
@@ -383,7 +383,7 @@ DEV=true  # Uses in-memory cache instead of SQLite
 5. Push to branch: `git push origin feat/your-feature`
 6. Open a Pull Request
 
-## License
+## [LICENSE] License
 
 MIT License - see [LICENSE](LICENSE) for details.
 

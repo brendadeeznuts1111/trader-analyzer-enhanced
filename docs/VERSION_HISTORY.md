@@ -1,6 +1,6 @@
-# Trader Analyzer Version History
+# [VERSION-HISTORY] Trader Analyzer Version History
 
-## v0.1.15 (Current) - Enhanced Documentation & Technical References
+## [V0.1.15] v0.1.15 (Current) - Enhanced Documentation & Technical References
 
 **Release Date:** December 3, 2025
 

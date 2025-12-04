@@ -25,6 +25,8 @@ const ENV = (Bun.argv.find(arg => arg.startsWith('--env='))?.split('=')[1] || 'd
   | 'staging'
   | 'production';
 
+const VARIANT = Bun.argv.find(arg => arg.startsWith('--variant='))?.split('=')[1] || '';
+
 const COMPILE = Bun.argv.includes('--compile');
 const ENTRYPOINT =
   Bun.argv.find(arg => arg.endsWith('.ts') && !arg.includes('compile.ts')) ||
@@ -79,11 +81,12 @@ async function build() {
   // Create defines
   const defines = createBuildDefines({
     BUILD_VERSION: meta.version,
+    BUILD_VARIANT: VARIANT,
     BUILD_TIME: meta.buildTime,
     GIT_COMMIT: meta.gitCommit,
     GIT_BRANCH: meta.gitBranch,
     NODE_ENV: ENV,
-    DEBUG: ENV === 'development',
+    DEBUG: ENV === 'development' || VARIANT === 'debug',
     ENABLE_ANALYTICS: ENV === 'production',
     ENABLE_EXPERIMENTAL: ENV !== 'production',
     API_URL: API_URLS[ENV],
@@ -91,11 +94,12 @@ async function build() {
     PLATFORM: process.platform,
     BUILD_CONFIG: {
       version: meta.version,
+      variant: VARIANT,
       buildTime: meta.buildTime,
       gitCommit: meta.gitCommit,
       gitBranch: meta.gitBranch,
       env: ENV,
-      debug: ENV === 'development',
+      debug: ENV === 'development' || VARIANT === 'debug',
       api: {
         baseUrl: API_URLS[ENV],
         workersUrl: API_URLS[ENV],
@@ -110,11 +114,15 @@ async function build() {
   console.log(`   Git commit: ${meta.gitCommit}`);
   console.log(`   Git branch: ${meta.gitBranch}`);
   console.log(`   Environment: ${ENV}`);
+  console.log(`   Variant:     ${VARIANT}`);
   console.log(`   API URL:    ${API_URLS[ENV]}`);
   console.log('');
 
-  const outdir = COMPILE ? undefined : `./dist/${ENV}`;
-  const outfile = COMPILE ? `./dist/${meta.pkgName}-${ENV}` : undefined;
+  const targetDir = VARIANT ? `build/${VARIANT}` : `dist/${ENV}`;
+  const outdir = `./${targetDir}`;
+  const jsOutfile = `./${targetDir}/start-server.js`;
+  const execName = VARIANT === 'debug' ? 'bun-debug' : `${meta.pkgName}-${VARIANT || ENV}`;
+  const execOutfile = `./${targetDir}/${execName}${process.platform === 'win32' ? '.exe' : ''}`;
 
   const result = await Bun.build({
     entrypoints: [ENTRYPOINT],
@@ -134,7 +142,7 @@ async function build() {
   }
 
   console.log('✅ Build successful!');
-  console.log(`   Output: ${outdir || outfile}`);
+  console.log(`   Output: ${outdir}`);
   console.log(`   Files: ${result.outputs.length}`);
 
   for (const output of result.outputs) {
@@ -145,9 +153,8 @@ async function build() {
   // If compiling to executable
   if (COMPILE) {
     console.log('\n🔗 Compiling to executable...');
-    const execName = `${meta.pkgName}-${ENV}${process.platform === 'win32' ? '.exe' : ''}`;
-    await $`bun build --compile ${ENTRYPOINT} --outfile ./dist/${execName}`;
-    console.log(`✅ Executable: ./dist/${execName}`);
+    await $`bun build --compile ${jsOutfile} --outfile ${execOutfile}`;
+    console.log(`✅ Executable: ${execOutfile}`);
   }
 
   return result;

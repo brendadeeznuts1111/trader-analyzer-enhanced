@@ -9,9 +9,9 @@
  * - Admin controls
  */
 
+// Simple credential access
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-const TELEGRAM_API = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
 // ═══════════════════════════════════════════════════════════════
 // CUSTOM ERRORS
@@ -745,7 +745,7 @@ async function telegramApi<T = any>(
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), telegramConfig.timeout);
 
-    const response = await fetch(`${TELEGRAM_API}/${method}`, {
+    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/${method}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(params),

@@ -6,6 +6,18 @@ import { headersToObject } from '../../../../lib/api-headers';
 import { exchangeManager } from '../../../../lib/exchanges/exchange_manager';
 import { PolymarketExchange } from '../../../../lib/exchanges/polymarket_exchange';
 
+// CORS preflight handler
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Telegram-Init-Data',
+    },
+  });
+}
+
 /**
  * GET /api/markets/canonical
  *
@@ -70,7 +82,6 @@ export async function GET(request: Request) {
         outcomePrices: m.outcomePrices,
         volume: m.volume,
         endDate: m.endDate,
-        slug: m.slug,
       }));
     } else {
       // For other exchanges, return demo data
@@ -146,7 +157,7 @@ export async function GET(request: Request) {
         m =>
           m.displayName.toLowerCase().includes(searchQuery) ||
           m.description.toLowerCase().includes(searchQuery) ||
-          m.tags.some(t => t.includes(searchQuery))
+          m.tags.some((t: string) => t.includes(searchQuery))
       );
     }
 

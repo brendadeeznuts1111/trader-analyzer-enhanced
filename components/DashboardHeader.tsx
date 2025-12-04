@@ -16,6 +16,7 @@ import {
   Network,
   MessageCircle,
 } from 'lucide-react';
+import SecretsStatus from './SecretsStatus';
 
 type ViewMode =
   | 'overview'
@@ -83,14 +84,17 @@ export function DashboardHeader({
     <>
       {/* Header */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-6 border-b border-border">
-        <div>
+        <div className="flex-1">
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent">
             Trader Role-Play Analyzer
           </h1>
           <p className="text-muted-foreground mt-1 font-medium flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-yellow-500" />
+            <Sparkles className="w-4 h-4 text-bright-warning" />
             Learn trading strategies by role-playing top traders
           </p>
+          <div className="mt-4 max-w-md">
+            <SecretsStatus />
+          </div>
         </div>
         <div className="flex items-center gap-4 flex-wrap">
           {/* Exchange Selector Button */}
@@ -98,7 +102,7 @@ export function DashboardHeader({
             onClick={() => setShowApiConfig(!showApiConfig)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
               isConnected
-                ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                ? 'bg-profit-green/20 text-profit-green border border-profit-green/30'
                 : 'bg-secondary/30 text-muted-foreground hover:text-foreground border border-white/5'
             }`}
           >

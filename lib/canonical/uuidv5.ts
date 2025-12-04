@@ -9,8 +9,35 @@
  * falls back to crypto-based implementation for Next.js runtime.
  */
 
+// Simple API key retrieval with caching
+const apiKeyCache = new Map<string, string | null>();
+
+async function getExchangeApiKey(exchange: string): Promise<string | null> {
+  const cacheKey = exchange.toLowerCase();
+  if (apiKeyCache.has(cacheKey)) {
+    return apiKeyCache.get(cacheKey)!;
+  }
+
+  try {
+    const { secrets } = await import('bun');
+    const apiKey = await secrets.get({
+      service: 'trader-analyzer',
+      name: `${exchange.toLowerCase()}-api-key`,
+    });
+    apiKeyCache.set(cacheKey, apiKey);
+    return apiKey;
+  } catch {
+    // Fallback to env vars
+    const envKey =
+      process.env[`${exchange.toUpperCase()}_API_KEY`] ||
+      process.env[`ORCA_${exchange.toUpperCase()}_APIKEY`];
+    apiKeyCache.set(cacheKey, envKey || null);
+    return envKey || null;
+  }
+}
+
 import { createHash } from 'crypto';
-import { Logger } from '../logger';
+import { logger } from '../logger';
 
 // Check if running in Bun
 const isBun = typeof globalThis.Bun !== 'undefined';
@@ -27,12 +54,13 @@ function generateUUIDv5(name: string, namespace: string): string {
     return (globalThis as any).Bun.randomUUIDv5(name, namespace);
   }
 
-  // Fallback: Generate UUIDv5 using Node.js crypto (SHA-1 based)
+  // Fallback: Generate UUIDv5 using Bun sync crypto (SHA-1 based)
   // Parse namespace UUID to bytes
   const namespaceBytes = parseUUID(namespace);
 
-  // Create SHA-1 hash of namespace + name
-  const hash = createHash('sha1').update(Buffer.from(namespaceBytes)).update(name).digest();
+  // Create SHA-1 hash of namespace + name using Bun native crypto
+  const data = new Uint8Array([...namespaceBytes, ...new TextEncoder().encode(name)]);
+  const hash = new Bun.CryptoHasher('sha1').update(data).digest();
 
   // Set version (5) and variant (RFC 4122)
   hash[6] = (hash[6] & 0x0f) | 0x50; // Version 5
@@ -256,7 +284,7 @@ export class MarketCanonicalizer {
 
     const headers = { ...baseHeaders[exchange] };
 
-    // Add exchange-specific API key if available
+    // Add exchange-specific API key if available (env fallback only for sync)
     const apiKey = process.env[`${exchange.toUpperCase()}_API_KEY`];
     if (apiKey) {
       if (exchange === 'kalshi') {
@@ -288,7 +316,7 @@ export class MarketCanonicalizer {
    * Batch canonicalization with logging
    */
   batchCanonicalize(markets: MarketIdentifier[]): Map<string, CanonicalMarket> {
-    Logger.time('batchCanonicalize');
+    const startTime = performance.now();
     const canonicalMap = new Map<string, CanonicalMarket>();
 
     for (const market of markets) {
@@ -296,8 +324,8 @@ export class MarketCanonicalizer {
       canonicalMap.set(canonical.uuid, canonical);
     }
 
-    const duration = Logger.timeEndSilent('batchCanonicalize');
-    Logger.debug(`Canonicalized ${markets.length} markets`, {
+    const duration = performance.now() - startTime;
+    logger.debug(`Canonicalized ${markets.length} markets`, {
       count: markets.length,
       duration: `${duration.toFixed(2)}ms`,
       exchanges: [...new Set(markets.map(m => m.exchange))],
