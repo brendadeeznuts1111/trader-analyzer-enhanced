@@ -43,6 +43,18 @@
   - [9.3 BunUUIDConfig](#93-bunuuidconfig)
 - [10. File Structure](#10-file-structure)
 - [11. Testing](#11-testing)
+  - [11.1 Bun Native Tests](#111-bun-native-tests)
+  - [11.2 node:test Support](#112-nodetest-support-bun-13)
+- [12. Bun 1.3 Node.js Compatibility](#12-bun-13-nodejs-compatibility)
+  - [12.1 worker_threads Enhancements](#121-worker_threads-enhancements)
+  - [12.2 node:crypto Improvements](#122-nodecrypto-improvements)
+  - [12.3 node:vm Module](#123-nodevm-module)
+  - [12.4 node:fs Enhancements](#124-nodefs-enhancements)
+  - [12.5 node:zlib - Zstandard](#125-nodezlib---zstandard-support)
+  - [12.6 Compatibility Summary](#126-compatibility-summary)
+- [13. Worker Pool](#13-worker-pool)
+  - [13.1 UUID Worker Pool](#131-uuid-worker-pool)
+  - [13.2 Performance](#132-performance)
 
 ---
 
@@ -733,6 +745,8 @@ examples/
 
 ## 11. Testing
 
+### 11.1 Bun Native Tests
+
 ```bash
 # Native API tests (30 tests)
 bun test tests/bun-native-apis.test.ts
@@ -743,6 +757,176 @@ bun test tests/uuid-system/
 # Benchmark
 bun -e "import { benchmarkUUIDv5 } from './src'; await benchmarkUUIDv5(10000);"
 ```
+
+### 11.2 node:test Support (Bun 1.3+)
+
+Bun now supports `node:test` module, leveraging `bun:test` under the hood:
+
+```typescript
+import { test, describe } from "node:test";
+import assert from "node:assert";
+
+describe("UUIDv5", () => {
+  test("deterministic generation", () => {
+    const uuid1 = randomUUIDv5("test", DNS_NAMESPACE);
+    const uuid2 = randomUUIDv5("test", DNS_NAMESPACE);
+    assert.strictEqual(uuid1, uuid2);
+  });
+});
+```
+
+---
+
+## 12. Bun 1.3 Node.js Compatibility
+
+### 12.1 worker_threads Enhancements
+
+```typescript
+import { 
+  Worker, 
+  setEnvironmentData, 
+  getEnvironmentData 
+} from "node:worker_threads";
+
+// Share config between workers
+setEnvironmentData("config", { debug: true });
+
+const worker = new Worker("./worker.js");
+
+// In worker.js
+const config = getEnvironmentData("config");
+console.log(config.debug); // true
+```
+
+**Additional worker_threads features:**
+- `Worker.getHeapSnapshot()` - Heap tracking
+- `Worker` emits `Error` objects (not stringified)
+- `MessagePort` communication after transfer fixes
+
+### 12.2 node:crypto Improvements
+
+```typescript
+import crypto from "node:crypto";
+
+// X25519 curve support
+const { publicKey, privateKey } = crypto.generateKeyPairSync("x25519");
+
+// HKDF key derivation
+const derivedKey = crypto.hkdfSync(
+  "sha256",
+  Buffer.from("secret"),
+  Buffer.from("salt"),
+  Buffer.from("info"),
+  32
+);
+
+// Prime generation
+const prime = crypto.generatePrimeSync(256);
+```
+
+**Performance improvements:**
+- `Sign` and `Verify` classes: **34x faster** (native C++)
+- Native `Hash`, `Hmac`, `Cipheriv`, `Decipheriv` implementations
+
+### 12.3 node:vm Module
+
+```typescript
+import vm from "node:vm";
+
+// Compile and run scripts
+const script = new vm.Script('1 + 1');
+const result = script.runInThisContext(); // 2
+
+// ECMAScript modules
+const module = new vm.SourceTextModule('export const x = 1');
+
+// Bytecode caching for faster compilation
+const cached = new vm.Script(code, { cachedData: previousCache });
+```
+
+### 12.4 node:fs Enhancements
+
+```typescript
+import fs from "node:fs";
+
+// Glob support with patterns
+const files = fs.globSync("**/*.ts", {
+  exclude: ["node_modules/**"]
+});
+
+// Async glob
+for await (const file of fs.promises.glob("src/**/*.ts")) {
+  console.log(file);
+}
+```
+
+### 12.5 node:zlib - Zstandard Support
+
+```typescript
+import zlib from "node:zlib";
+
+// Zstandard compression (faster than gzip)
+const compressed = zlib.zstdCompressSync(data);
+const decompressed = zlib.zstdDecompressSync(compressed);
+
+// Streaming
+const zstdStream = zlib.createZstdCompress();
+```
+
+### 12.6 Compatibility Summary
+
+| Module | Key Features |
+|--------|--------------|
+| `node:test` | Full test runner with `bun:test` backend |
+| `node:worker_threads` | `setEnvironmentData`, `getHeapSnapshot` |
+| `node:crypto` | X25519, HKDF, 34x faster Sign/Verify |
+| `node:vm` | SourceTextModule, SyntheticModule, bytecode caching |
+| `node:fs` | `glob()`, `globSync()`, embedded files |
+| `node:zlib` | Zstandard (zstd) compression |
+| `node:http2` | Full stream management, window size config |
+| `node:net` | `BlockList`, `SocketAddress`, AbortSignal |
+
+---
+
+## 13. Worker Pool
+
+### 13.1 UUID Worker Pool
+
+```typescript
+import { getUUIDWorkerPool, destroyUUIDWorkerPool } from './src';
+
+const pool = getUUIDWorkerPool({
+  poolSize: 4,
+  smol: true,
+  config: {
+    namespace: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
+    format: 'hex'
+  }
+});
+
+// Single generation
+const uuid = await pool.generate('my-name');
+
+// Batch generation
+const uuids = await pool.generateBatch(['a', 'b', 'c']);
+
+// UUIDv7 (time-sortable)
+const v7uuids = await pool.generateV7(10);
+
+// Benchmark
+const result = await pool.benchmark(10000);
+// { count: 10000, duration: 29ms, rate: 343484 }
+
+// Cleanup
+destroyUUIDWorkerPool();
+```
+
+### 13.2 Performance
+
+| Mode | Rate |
+|------|------|
+| Single worker | 343K UUIDs/sec |
+| 4 workers parallel | 579K UUIDs/sec avg |
 
 ---
 
