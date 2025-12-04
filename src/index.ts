@@ -88,6 +88,18 @@ export {
   createTimeController
 } from './utils/uuid-config';
 
+// UUID Worker Pool
+export {
+  UUIDWorkerPool,
+  getUUIDWorkerPool,
+  destroyUUIDWorkerPool
+} from './workers/uuid-worker-pool';
+
+export type {
+  UUIDWorkerConfig,
+  WorkerPoolOptions
+} from './workers/uuid-worker-pool';
+
 // Time Control Utilities
 export {
   TimeController,
