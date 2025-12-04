@@ -50,6 +50,10 @@ export interface URLPatternInit {
  * URLPatternOptions - Options for URLPattern constructor
  */
 export interface URLPatternOptions {
+  /**
+   * If true, pattern matching ignores case (e.g., '/Users/:id' matches '/users/:id')
+   * @default false
+   */
   ignoreCase?: boolean;
 }
 
