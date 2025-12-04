@@ -1,11 +1,17 @@
 /**
- * URLPattern API Implementation
+ * URLPattern Web API Implementation
  * 
- * Provides declarative pattern matching for URLs, similar to how regular
- * expressions work for strings. Based on the WHATWG URLPattern specification.
+ * Declarative URL pattern matching - specify a pattern once, then test URLs
+ * against it or extract parameters. Think of it like regular expressions for URLs.
  * 
- * @see https://developer.mozilla.org/en-US/docs/Web/API/URLPattern
- * @see https://github.com/oven-sh/bun/pull/25168
+ * Based on the WHATWG URLPattern specification (https://urlpattern.spec.whatwg.org/)
+ * and Bun PR #25168 (https://github.com/oven-sh/bun/pull/25168).
+ * 
+ * @module url-pattern
+ * @example
+ * const pattern = new URLPattern({ pathname: '/users/:id' });
+ * pattern.test('https://example.com/users/123'); // true
+ * pattern.exec('https://example.com/users/123').pathname.groups.id // '123'
  */
 
 // ============================================================================
