@@ -4,23 +4,53 @@
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Bun Native APIs Used](#bun-native-apis-used)
-- [UUIDv5 vs UUIDv7](#uuidv5-vs-uuidv7)
-- [Output Formats](#output-formats)
-- [Configuration](#configuration)
-- [Environment Variables](#environment-variables)
-- [Usage Examples](#usage-examples)
-- [Performance Benchmarks](#performance-benchmarks)
-- [API Reference](#api-reference)
+- [1. Overview](#1-overview)
+- [2. Bun Native APIs](#2-bun-native-apis)
+  - [2.1 randomUUIDv5](#21-randomuuidv5)
+  - [2.2 Bun.randomUUIDv7](#22-bunrandomuuidv7)
+  - [2.3 Bun.hash](#23-bunhash)
+  - [2.4 Bun.CryptoHasher](#24-buncryptohasher)
+  - [2.5 Bun.deepEquals](#25-bundeepequals)
+  - [2.6 Bun.nanoseconds](#26-bunnanoseconds)
+  - [2.7 Bun.file / Bun.write](#27-bunfile--bunwrite)
+  - [2.8 Bun.inspect](#28-buninspect)
+  - [2.9 Bun.env](#29-bunenv)
+- [3. UUID Versions](#3-uuid-versions)
+  - [3.1 UUIDv5 (Deterministic)](#31-uuidv5-deterministic)
+  - [3.2 UUIDv7 (Time-Sortable)](#32-uuidv7-time-sortable)
+  - [3.3 Comparison](#33-comparison)
+- [4. Output Formats](#4-output-formats)
+  - [4.1 UUIDv5 Formats](#41-uuidv5-formats)
+  - [4.2 UUIDv7 Formats](#42-uuidv7-formats)
+- [5. Configuration](#5-configuration)
+  - [5.1 UUIDConfigMetadata](#51-uuidconfigmetadata)
+  - [5.2 UUIDv5Config Interface](#52-uuidv5config-interface)
+  - [5.3 TOML Configuration](#53-toml-configuration)
+- [6. Environment Variables](#6-environment-variables)
+  - [6.1 LOG_LEVEL](#61-log_level)
+- [7. Usage Examples](#7-usage-examples)
+  - [7.1 UUIDv5 Generation](#71-uuidv5-generation)
+  - [7.2 UUIDv7 Generation](#72-uuidv7-generation)
+  - [7.3 Configuration Management](#73-configuration-management)
+  - [7.4 Entity IDs](#74-entity-ids)
+  - [7.5 Storage](#75-storage)
+- [8. Performance](#8-performance)
+  - [8.1 Benchmark Results](#81-benchmark-results)
+  - [8.2 Format Performance](#82-format-performance)
+- [9. API Reference](#9-api-reference)
+  - [9.1 UUIDv5Generator](#91-uuidv5generator)
+  - [9.2 UUIDv7Generator](#92-uuidv7generator)
+  - [9.3 BunUUIDConfig](#93-bunuuidconfig)
+- [10. File Structure](#10-file-structure)
+- [11. Testing](#11-testing)
 
 ---
 
-## Overview
+## 1. Overview
 
 This system provides enterprise-grade UUID generation using **Bun's native APIs directly** - no abstraction layers, no wrappers that add overhead. Every UUID operation goes straight to Bun's optimized C++ implementations.
 
-### Key Principles
+### 1.1 Key Principles
 
 1. **Direct API Usage**: `import { randomUUIDv5 } from "bun"` - not wrapped
 2. **Native Performance**: 2.4M+ UUIDs/sec, 10M+ hashes/sec
@@ -29,53 +59,265 @@ This system provides enterprise-grade UUID generation using **Bun's native APIs 
 
 ---
 
-## Bun Native APIs Used
+## 2. Bun Native APIs
 
-| API | Purpose | Performance |
-|-----|---------|-------------|
-| `randomUUIDv5(name, namespace, format)` | Deterministic UUID generation | 2.4M/sec |
-| `Bun.randomUUIDv7(encoding, timestamp)` | Time-sortable UUID generation | 2M+/sec |
-| `Bun.hash(data)` | Fast non-cryptographic hashing | 10M+/sec |
-| `Bun.CryptoHasher` | SHA-1/SHA-256/SHA-512/MD5 | 1.5M/sec |
-| `Bun.deepEquals(a, b, strict)` | Deep object comparison | Native speed |
-| `Bun.nanoseconds()` | High-precision timing | Nanosecond resolution |
-| `Bun.file()` / `Bun.write()` | Native file I/O | Zero-copy when possible |
-| `Bun.inspect(obj, options)` | Formatted object output | With colors |
-| `Bun.env` | Environment variable access | Direct access |
+### 2.1 randomUUIDv5
 
-### Direct Import Pattern
-
+**Signature:**
 ```typescript
-// ✅ CORRECT - Direct import from bun
+function randomUUIDv5(
+  name: string | BufferSource,
+  namespace: string | BufferSource,
+  encoding?: 'base64' | 'base64url' | 'hex' | 'buffer'
+): string | Buffer;
+```
+
+**Overloads:**
+```typescript
+// Returns string (default)
+randomUUIDv5(name: string | BufferSource, namespace: string | BufferSource): string;
+
+// Returns string with encoding
+randomUUIDv5(name: string | BufferSource, namespace: string | BufferSource, encoding: 'base64' | 'base64url' | 'hex'): string;
+
+// Returns Buffer
+randomUUIDv5(name: string | BufferSource, namespace: string | BufferSource, encoding: 'buffer'): Buffer;
+```
+
+**Usage:**
+```typescript
 import { randomUUIDv5 } from "bun";
 
-// ✅ CORRECT - Direct Bun global usage
-const hash = Bun.hash(data).toString(16);
-const uuid7 = Bun.randomUUIDv7("hex");
-const equal = Bun.deepEquals(a, b, true);
+// String output (default)
+randomUUIDv5("example.com", "6ba7b811-9dad-11d1-80b4-00c04fd430c8");
+// → "a6e4a5e0-f7b4-5c5e-8b1a-1234567890ab"
 
-// ❌ WRONG - Don't wrap native APIs
-function myUUIDWrapper(name, ns) {
-  return randomUUIDv5(name, ns); // Unnecessary overhead
+// Buffer output (16 bytes)
+randomUUIDv5("example.com", "6ba7b811-9dad-11d1-80b4-00c04fd430c8", "buffer");
+// → <Buffer 16 bytes>
+
+// Base64 output
+randomUUIDv5("example.com", "6ba7b811-9dad-11d1-80b4-00c04fd430c8", "base64");
+// → "puSl4Pe0XF6LGhI0VniQqw=="
+```
+
+**Performance:** 2.4M UUIDs/sec
+
+---
+
+### 2.2 Bun.randomUUIDv7
+
+**Signature:**
+```typescript
+namespace Bun {
+  // String output (default hex)
+  function randomUUIDv7(encoding?: 'hex' | 'base64' | 'base64url', timestamp?: number): string;
+  
+  // Buffer output
+  function randomUUIDv7(encoding: 'buffer', timestamp?: number): Buffer;
+  
+  // Timestamp only (returns hex string)
+  function randomUUIDv7(timestamp?: number): string;
 }
+```
+
+**Usage:**
+```typescript
+// Default (hex string)
+Bun.randomUUIDv7();
+// → "019aeb14-17dd-7000-a546-f6b66518d3aa"
+
+// With encoding
+Bun.randomUUIDv7("base64");
+// → "AZrrFBffcACjP5Vhenee6A=="
+
+Bun.randomUUIDv7("base64url");
+// → "AZrrFBffcAGRFaKkeDGM1g"
+
+// Buffer (avoids string conversion overhead)
+Bun.randomUUIDv7("buffer");
+// → <Buffer 16 bytes>
+
+// With specific timestamp
+Bun.randomUUIDv7("hex", Date.now() - 86400000); // 24 hours ago
+```
+
+**Performance:** 2M+ UUIDs/sec
+
+---
+
+### 2.3 Bun.hash
+
+**Signature:**
+```typescript
+namespace Bun {
+  function hash(data: string | BufferSource): bigint;
+}
+```
+
+**Usage:**
+```typescript
+const hash = Bun.hash("my-data");
+// → 1234567890123456789n (bigint)
+
+// Convert to hex string
+const hexHash = Bun.hash("my-data").toString(16);
+// → "112210f47de98115"
+```
+
+**Performance:** 10M+ hashes/sec
+
+---
+
+### 2.4 Bun.CryptoHasher
+
+**Signature:**
+```typescript
+namespace Bun {
+  class CryptoHasher {
+    constructor(algorithm: 'sha1' | 'sha256' | 'sha512' | 'md5');
+    update(data: string | BufferSource): this;
+    digest(encoding: 'hex' | 'base64' | 'buffer'): string | Buffer;
+  }
+}
+```
+
+**Usage:**
+```typescript
+// SHA-1 (40 hex chars)
+const sha1 = new Bun.CryptoHasher("sha1")
+  .update("data")
+  .digest("hex");
+
+// SHA-256 (64 hex chars)
+const sha256 = new Bun.CryptoHasher("sha256")
+  .update("data")
+  .digest("hex");
+```
+
+**Performance:** 1.5M hashes/sec
+
+---
+
+### 2.5 Bun.deepEquals
+
+**Signature:**
+```typescript
+namespace Bun {
+  function deepEquals(a: any, b: any, strict?: boolean): boolean;
+}
+```
+
+**Usage:**
+```typescript
+// Loose comparison (ignores undefined)
+Bun.deepEquals({ a: 1 }, { a: 1, b: undefined });
+// → true
+
+// Strict comparison
+Bun.deepEquals({ a: 1 }, { a: 1, b: undefined }, true);
+// → false
+
+// Class instances
+class Foo { a = 1; }
+Bun.deepEquals(new Foo(), { a: 1 });       // → true (loose)
+Bun.deepEquals(new Foo(), { a: 1 }, true); // → false (strict)
 ```
 
 ---
 
-## UUIDv5 vs UUIDv7
+### 2.6 Bun.nanoseconds
 
-### UUIDv5 - Deterministic (SHA-1 Based)
-
+**Signature:**
 ```typescript
-import { randomUUIDv5 } from "bun";
-
-// Same input ALWAYS produces same UUID
-randomUUIDv5("user@example.com", "6ba7b811-9dad-11d1-80b4-00c04fd430c8");
-// → "a6e4a5e0-f7b4-5c5e-8b1a-1234567890ab" (always this value)
-
-randomUUIDv5("user@example.com", "6ba7b811-9dad-11d1-80b4-00c04fd430c8");
-// → "a6e4a5e0-f7b4-5c5e-8b1a-1234567890ab" (same!)
+namespace Bun {
+  function nanoseconds(): number;
+}
 ```
+
+**Usage:**
+```typescript
+const start = Bun.nanoseconds();
+// ... operation ...
+const end = Bun.nanoseconds();
+const durationNs = end - start;
+const durationMs = durationNs / 1_000_000;
+```
+
+---
+
+### 2.7 Bun.file / Bun.write
+
+**Signature:**
+```typescript
+namespace Bun {
+  function file(path: string): BunFile;
+  function write(path: string, data: string | BufferSource): Promise<number>;
+}
+
+interface BunFile {
+  text(): Promise<string>;
+  json(): Promise<any>;
+  arrayBuffer(): Promise<ArrayBuffer>;
+  exists(): Promise<boolean>;
+  stat(): Promise<{ mtime: Date; size: number }>;
+}
+```
+
+**Usage:**
+```typescript
+// Read file
+const file = Bun.file("./config.toml");
+const content = await file.text();
+
+// Write file
+await Bun.write("./output.json", JSON.stringify(data));
+```
+
+---
+
+### 2.8 Bun.inspect
+
+**Signature:**
+```typescript
+namespace Bun {
+  function inspect(value: any, options?: { colors?: boolean; depth?: number }): string;
+}
+```
+
+**Usage:**
+```typescript
+const formatted = Bun.inspect(obj, { colors: true, depth: 2 });
+console.log(formatted);
+```
+
+---
+
+### 2.9 Bun.env
+
+**Signature:**
+```typescript
+namespace Bun {
+  const env: Record<string, string | undefined>;
+}
+```
+
+**Usage:**
+```typescript
+const logLevel = Bun.env.LOG_LEVEL || "info";
+const apiKey = Bun.env.API_KEY;
+```
+
+---
+
+## 3. UUID Versions
+
+### 3.1 UUIDv5 (Deterministic)
+
+**Characteristics:**
+- SHA-1 based hash
+- Same input ALWAYS produces same UUID
+- Requires namespace + name
 
 **Use Cases:**
 - Content-addressable storage
@@ -83,16 +325,24 @@ randomUUIDv5("user@example.com", "6ba7b811-9dad-11d1-80b4-00c04fd430c8");
 - Idempotent operations
 - Canonical identifiers
 
-### UUIDv7 - Time-Sortable (Random)
-
 ```typescript
-// Each call produces a UNIQUE UUID
-Bun.randomUUIDv7();           // → "019aeb14-17dd-7000-a546-f6b66518d3aa"
-Bun.randomUUIDv7();           // → "019aeb14-17de-7000-b234-9876543210cd" (different!)
+// Same input = same output (always)
+randomUUIDv5("user@example.com", URL_NAMESPACE);
+// → "a6e4a5e0-f7b4-5c5e-8b1a-1234567890ab"
 
-// With specific timestamp
-Bun.randomUUIDv7("hex", Date.now() - 86400000); // 24 hours ago
+randomUUIDv5("user@example.com", URL_NAMESPACE);
+// → "a6e4a5e0-f7b4-5c5e-8b1a-1234567890ab" (identical!)
 ```
+
+---
+
+### 3.2 UUIDv7 (Time-Sortable)
+
+**Characteristics:**
+- 48-bit Unix timestamp (milliseconds)
+- Random component for uniqueness
+- Chronologically sortable
+- Each call produces unique UUID
 
 **Use Cases:**
 - Database primary keys (B-tree friendly)
@@ -100,85 +350,103 @@ Bun.randomUUIDv7("hex", Date.now() - 86400000); // 24 hours ago
 - Time-series data
 - Audit trails
 
-### Comparison Table
+```typescript
+// Each call = unique UUID
+Bun.randomUUIDv7();
+// → "019aeb14-17dd-7000-a546-f6b66518d3aa"
+
+Bun.randomUUIDv7();
+// → "019aeb14-17de-7000-b234-9876543210cd" (different!)
+```
+
+---
+
+### 3.3 Comparison
 
 | Feature | UUIDv5 | UUIDv7 |
 |---------|--------|--------|
 | **Deterministic** | ✅ Yes | ❌ No |
 | **Time-sortable** | ❌ No | ✅ Yes |
-| **Unique per call** | ❌ No (same input = same UUID) | ✅ Yes |
-| **Embedded timestamp** | ❌ No | ✅ Yes (48-bit ms) |
-| **Use case** | Deduplication, canonical IDs | Event logs, DB keys |
+| **Unique per call** | ❌ No | ✅ Yes |
+| **Embedded timestamp** | ❌ No | ✅ Yes (48-bit) |
+| **Requires namespace** | ✅ Yes | ❌ No |
+| **Use case** | Deduplication | Event logs, DB keys |
 
 ---
 
-## Output Formats
+## 4. Output Formats
 
-### UUIDv5 Formats (7 options)
+### 4.1 UUIDv5 Formats
 
 ```typescript
 type UUIDFormat = "string" | "buffer" | "hex" | "base64" | "base64url" | "base32" | "binary";
 ```
 
-| Format | Example Output | Length | Bun Native |
-|--------|----------------|--------|------------|
-| `string` | `8549740c-ef3f-58b8-b53f-ffffee79a248` | 36 chars | ✅ Yes |
-| `buffer` | `<Buffer 85 49 74 0c ...>` | 16 bytes | ✅ Yes |
-| `hex` | `8549740c-ef3f-58b8-b53f-ffffee79a248` | 36 chars | ✅ Yes |
-| `base64` | `hUl0DO8/WLi1P///7nmiSA==` | 24 chars | ✅ Yes |
-| `base64url` | `hUl0DO8_WLi1P___7nmiSA` | 22 chars | Custom* |
-| `base32` | `QVEXIDHPH5MLRNJ7777646NCJA` | 26 chars | Custom* |
-| `binary` | `10000101010010010111...` | 128 bits | Custom* |
+| Format | Example | Length | Bun Native |
+|--------|---------|--------|------------|
+| `string` | `8549740c-ef3f-58b8-b53f-ffffee79a248` | 36 chars | ✅ |
+| `buffer` | `<Buffer 85 49 74 0c ...>` | 16 bytes | ✅ |
+| `hex` | `8549740c-ef3f-58b8-b53f-ffffee79a248` | 36 chars | ✅ |
+| `base64` | `hUl0DO8/WLi1P///7nmiSA==` | 24 chars | ✅ |
+| `base64url` | `hUl0DO8_WLi1P___7nmiSA` | 22 chars | Custom |
+| `base32` | `QVEXIDHPH5MLRNJ7777646NCJA` | 26 chars | Custom |
+| `binary` | `10000101010010010111...` | 128 bits | Custom |
 
-*Custom formats use Bun's native buffer output, then convert.
+---
 
-### UUIDv7 Formats (4 options)
+### 4.2 UUIDv7 Formats
 
 ```typescript
 type UUIDv7Format = "hex" | "base64" | "base64url" | "buffer";
 ```
 
-| Format | Example Output | Bun Native |
-|--------|----------------|------------|
-| `hex` | `019aeb14-17dd-7000-a546-f6b66518d3aa` | ✅ Yes |
-| `base64` | `AZrrFBffcACjP5Vhenee6A==` | ✅ Yes |
-| `base64url` | `AZrrFBffcAGRFaKkeDGM1g` | ✅ Yes |
-| `buffer` | `<Buffer 16 bytes>` | ✅ Yes |
+| Format | Example | Bun Native |
+|--------|---------|------------|
+| `hex` | `019aeb14-17dd-7000-a546-f6b66518d3aa` | ✅ |
+| `base64` | `AZrrFBffcACjP5Vhenee6A==` | ✅ |
+| `base64url` | `AZrrFBffcAGRFaKkeDGM1g` | ✅ |
+| `buffer` | `<Buffer 16 bytes>` | ✅ |
 
 ---
 
-## Configuration
+## 5. Configuration
 
-### UUIDv5Config Interface
+### 5.1 UUIDConfigMetadata
 
 ```typescript
 interface UUIDConfigMetadata {
-  created: string;      // ISO timestamp when config was created
-  modified: string;     // ISO timestamp of last modification
-  version: string;      // Semantic version (e.g., "1.0.0")
-  hash?: string;        // Integrity hash using Bun.hash()
-  uuid?: string;        // UUIDv7 identifier for this config instance
+  created: string;      // ISO timestamp
+  modified: string;     // ISO timestamp
+  version: string;      // Semantic version
+  hash?: string;        // Bun.hash() integrity check
+  uuid?: string;        // UUIDv7 config identifier
 }
+```
 
+---
+
+### 5.2 UUIDv5Config Interface
+
+```typescript
 interface UUIDv5Config {
   metadata: UUIDConfigMetadata;
   
   namespaces: {
-    dns: string;        // RFC 4122 DNS namespace
-    url: string;        // RFC 4122 URL namespace
-    oid: string;        // RFC 4122 OID namespace
-    x500: string;       // RFC 4122 X.500 namespace
-    vault: string;      // Custom: Vault Optimizer
-    sports: string;     // Custom: Sports Market
-    arbitrage: string;  // Custom: Arbitrage Engine
-    polymarket: string; // Custom: Polymarket
-    altcoins: string;   // Custom: Altcoins
+    dns: string;        // RFC 4122
+    url: string;        // RFC 4122
+    oid: string;        // RFC 4122
+    x500: string;       // RFC 4122
+    vault: string;      // Custom
+    sports: string;     // Custom
+    arbitrage: string;  // Custom
+    polymarket: string; // Custom
+    altcoins: string;   // Custom
   };
   
   storage: {
     keyFormat: 'string' | 'buffer' | 'hex' | 'base64';
     compression: boolean;
-    maxStorageSize: number;  // bytes
+    maxStorageSize: number;
     autoCleanup: boolean;
   };
   
@@ -190,13 +458,15 @@ interface UUIDv5Config {
   
   monitoring: {
     enableHealthChecks: boolean;
-    healthCheckInterval: number;  // ms
+    healthCheckInterval: number;
     logLevel: 'debug' | 'info' | 'warn' | 'error';
   };
 }
 ```
 
-### TOML Configuration File
+---
+
+### 5.3 TOML Configuration
 
 ```toml
 # config/uuid.toml
@@ -204,35 +474,29 @@ interface UUIDv5Config {
 [namespaces]
 dns = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
 url = "6ba7b811-9dad-11d1-80b4-00c04fd430c8"
-vault = "8ba7b810-9dad-11d1-80b4-00c04fd430c8"
 
 [storage]
 keyFormat = "buffer"
 compression = false
-maxStorageSize = 104857600  # 100MB
-autoCleanup = true
-
-[performance]
-enableBenchmarking = true
-benchmarkIterations = 10000
-cacheSize = 1000
+maxStorageSize = 104857600
 
 [monitoring]
-enableHealthChecks = true
-healthCheckInterval = 30000
 logLevel = "info"
 ```
 
 ---
 
-## Environment Variables
+## 6. Environment Variables
 
-The system uses `Bun.env` for runtime configuration:
+### 6.1 LOG_LEVEL
 
-### LOG_LEVEL
+**Description:** Controls logging verbosity during initialization.
 
-Controls logging verbosity during initialization.
+**Values:** `debug` | `info` | `warn` | `error`
 
+**Default:** `info`
+
+**Usage:**
 ```bash
 # Default (info) - minimal output
 bun run src/index.ts
@@ -241,18 +505,17 @@ bun run src/index.ts
 LOG_LEVEL=debug bun run src/index.ts
 ```
 
-**Output with `LOG_LEVEL=debug`:**
+**Output with debug:**
 ```
 [BunUUIDConfig] Logging level set to: debug
 [BunUUIDConfig] Config UUID: 019aeb1d-9712-7000-a8d7-6c29f5c04a6e
 ```
 
-### Implementation
-
+**Implementation:**
 ```typescript
-// In BunUUIDConfig constructor
+// Uses Bun.env for environment variable access
 const logLevel = Bun.env.LOG_LEVEL || 'info';
-this.config.monitoring.logLevel = logLevel as 'debug' | 'info' | 'warn' | 'error';
+this.config.monitoring.logLevel = logLevel;
 
 if (logLevel === 'debug') {
   console.log(`[BunUUIDConfig] Logging level set to: ${logLevel}`);
@@ -262,122 +525,92 @@ if (logLevel === 'debug') {
 
 ---
 
-## Usage Examples
+## 7. Usage Examples
 
-### Basic UUIDv5 Generation
+### 7.1 UUIDv5 Generation
 
 ```typescript
 import { uuidv5, generateVaultUUID } from './src';
 
-// Using the generator class
-const uuid = uuidv5.generateForVault('my-vault-name');
-// → "8549740c-ef3f-58b8-b53f-ffffee79a248"
+// Generator class
+const uuid = uuidv5.generateForVault('my-vault');
 
-// Using convenience function
-const vaultId = generateVaultUUID('my-vault-name', 'buffer');
-// → <Buffer 16 bytes>
+// Convenience function
+const vaultId = generateVaultUUID('my-vault', 'buffer');
 
-// Different formats
-uuidv5.generateForVault('test', 'string');    // Standard UUID string
-uuidv5.generateForVault('test', 'buffer');    // 16-byte Buffer
-uuidv5.generateForVault('test', 'base64url'); // URL-safe string
-uuidv5.generateForVault('test', 'base32');    // Case-insensitive
-```
-
-### UUIDv7 Time-Sortable IDs
-
-```typescript
-import { uuidv7, generateTimeOrderedId } from './src';
-
-// Generate current timestamp UUID
-const eventId = uuidv7.generate('hex');
-// → "019aeb14-17dd-7000-a546-f6b66518d3aa"
-
-// Generate at specific timestamp
-const pastId = uuidv7.generateAt(Date.now() - 86400000); // 24h ago
-
-// Extract timestamp from UUID
-const timestamp = uuidv7.extractTimestamp(eventId);
-const date = new Date(timestamp);
-// → 2025-12-04T20:35:53.979Z
-
-// Sort UUIDs chronologically
-const sorted = uuidv7.sort([uuid1, uuid2, uuid3], 'asc');
-
-// Check if valid UUIDv7
-uuidv7.isUUIDv7(eventId); // → true
-```
-
-### Configuration Management
-
-```typescript
-import { uuidConfig } from './src';
-
-// Get current config
-const config = uuidConfig.getConfig();
-console.log(config.metadata.uuid);
-
-// Generate UUIDs via config
-const uuid = uuidConfig.generateUUID('hex');        // UUIDv7 string
-const buffer = uuidConfig.generateUUIDBuffer();     // UUIDv7 buffer
-
-// Regenerate config UUID
-const newUUID = uuidConfig.regenerateConfigUUID();
-
-// Compute integrity hash
-const hash = uuidConfig.computeConfigHash();
-
-// Inspect config (formatted with colors)
-console.log(uuidConfig.inspect());
-```
-
-### Entity ID Generation
-
-```typescript
-import { entityIds, VaultEntity } from './src';
-
-// Generate entity IDs
-const vaultId = entityIds.generateVaultId('My Vault');
-const marketId = entityIds.generateSportsMarketId('NBA', 'Lakers vs Celtics');
-const arbId = entityIds.generateArbitrageId('BTC', 'binance', 'coinbase');
-
-// Create entities (auto-generates IDs)
-const vault = new VaultEntity('Trading Vault', { balance: 10000 });
-console.log(vault.id); // → UUIDv5 based on name
-```
-
-### High-Performance Storage
-
-```typescript
-import { vaultStorage, sportsMarketStorage } from './src';
-
-// Store with UUID key
-const id = vaultStorage.set({ name: 'My Vault', balance: 10000 }, 'vault-key');
-
-// Retrieve
-const data = vaultStorage.get(id);
-
-// Query by type
-const allVaults = vaultStorage.getByType('Object');
-
-// Get stats
-const stats = vaultStorage.getStats();
-// → { total: 100, byType: {...}, storageSize: 1024 }
+// All formats
+uuidv5.generateForVault('test', 'string');
+uuidv5.generateForVault('test', 'buffer');
+uuidv5.generateForVault('test', 'base64url');
+uuidv5.generateForVault('test', 'base32');
 ```
 
 ---
 
-## Performance Benchmarks
-
-Run the benchmark:
+### 7.2 UUIDv7 Generation
 
 ```typescript
-import { benchmarkUUIDv5 } from './src';
+import { uuidv7, generateTimeOrderedId } from './src';
 
-const results = await benchmarkUUIDv5(10000);
+// Current time
+const eventId = uuidv7.generate('hex');
+
+// Specific timestamp
+const pastId = uuidv7.generateAt(Date.now() - 86400000);
+
+// Extract timestamp
+const timestamp = uuidv7.extractTimestamp(eventId);
+
+// Sort chronologically
+const sorted = uuidv7.sort([uuid1, uuid2, uuid3], 'asc');
 ```
 
-### Results (Apple M-series / Intel i9)
+---
+
+### 7.3 Configuration Management
+
+```typescript
+import { uuidConfig } from './src';
+
+// Get config
+const config = uuidConfig.getConfig();
+
+// Generate UUIDs
+const uuid = uuidConfig.generateUUID('hex');
+const buffer = uuidConfig.generateUUIDBuffer();
+
+// Inspect
+console.log(uuidConfig.inspect());
+```
+
+---
+
+### 7.4 Entity IDs
+
+```typescript
+import { entityIds, VaultEntity } from './src';
+
+const vaultId = entityIds.generateVaultId('My Vault');
+const vault = new VaultEntity('Trading Vault', { balance: 10000 });
+```
+
+---
+
+### 7.5 Storage
+
+```typescript
+import { vaultStorage } from './src';
+
+const id = vaultStorage.set({ name: 'Vault', balance: 10000 }, 'key');
+const data = vaultStorage.get(id);
+const stats = vaultStorage.getStats();
+```
+
+---
+
+## 8. Performance
+
+### 8.1 Benchmark Results
 
 ```
 📊 Overall Performance:
@@ -385,39 +618,31 @@ const results = await benchmarkUUIDv5(10000);
    Average: 407.78ns per UUID
    Throughput: 2,452,283 UUIDs/sec
 
-📈 Format Benchmarks (1,000 iterations each):
-   string    : 676.71ns avg, 1,477,740/sec
-   buffer    : 490.96ns avg, 2,036,829/sec
-   hex       : 716.29ns avg, 1,396,080/sec
-   base64    : 295.13ns avg, 3,388,394/sec
-   base64url : 7598.08ns avg, 131,612/sec
-   base32    : 1796.96ns avg, 556,495/sec
-   binary    : 7501.46ns avg, 133,307/sec
-
-✅ Validation Tests (using Bun.deepEquals):
+✅ Validation Tests:
    Deterministic: ✓ PASS
    Format consistency: ✓ PASS
-   Parse consistency: ✓ PASS
    UUID validity: ✓ PASS
-
-💾 Memory Efficiency:
-   buffer:    16 bytes (most compact)
-   base64url: 22 chars
-   base32:    26 chars
-   string:    36 chars (standard UUID)
-```
-
-### Bun.hash Performance
-
-```
-Bun.hash: 10,000 in 0.93ms (10,764,263/sec)
 ```
 
 ---
 
-## API Reference
+### 8.2 Format Performance
 
-### UUIDv5Generator
+| Format | Avg Time | Throughput |
+|--------|----------|------------|
+| `base64` | 295ns | 3,388,394/sec |
+| `buffer` | 491ns | 2,036,829/sec |
+| `string` | 677ns | 1,477,740/sec |
+| `hex` | 716ns | 1,396,080/sec |
+| `base32` | 1,797ns | 556,495/sec |
+| `base64url` | 7,598ns | 131,612/sec |
+| `binary` | 7,501ns | 133,307/sec |
+
+---
+
+## 9. API Reference
+
+### 9.1 UUIDv5Generator
 
 ```typescript
 class UUIDv5Generator {
@@ -426,35 +651,33 @@ class UUIDv5Generator {
   generateForNBAGame(id: string, format?: UUIDFormat): string | Buffer;
   generateForArbitrage(id: string, format?: UUIDFormat): string | Buffer;
   generateFromFields(fields: Record<string, any>, namespace?: string, format?: UUIDFormat): string | Buffer;
-  generateBufferUUID(name: string, namespace: string): Buffer;
-  generateHexUUID(name: string, namespace: string): string;
-  generateBase64UUID(name: string, namespace: string): string;
   parseUUID(uuid: string | Buffer): { bytes: Buffer; hex: string; base64: string; string: string };
   isValidUUIDv5(uuid: string | Buffer): boolean;
 }
 
-// Singleton instance
 export const uuidv5: UUIDv5Generator;
 ```
 
-### UUIDv7Generator
+---
+
+### 9.2 UUIDv7Generator
 
 ```typescript
 class UUIDv7Generator {
   generate(format?: UUIDv7Format, timestamp?: number): string | Buffer;
   generateAt(timestamp: number, format?: UUIDv7Format): string | Buffer;
-  generateNow(format?: UUIDv7Format): string | Buffer;
   extractTimestamp(uuid: string | Buffer): number;
   isUUIDv7(uuid: string | Buffer): boolean;
   compare(a: string | Buffer, b: string | Buffer): -1 | 0 | 1;
   sort(uuids: (string | Buffer)[], order?: 'asc' | 'desc'): (string | Buffer)[];
 }
 
-// Singleton instance
 export const uuidv7: UUIDv7Generator;
 ```
 
-### BunUUIDConfig
+---
+
+### 9.3 BunUUIDConfig
 
 ```typescript
 class BunUUIDConfig {
@@ -468,46 +691,37 @@ class BunUUIDConfig {
   regenerateConfigUUID(): string;
   computeConfigHash(): string;
   
-  generateUUIDv5(name: string, namespace?: string): string;
-  getTimestamp(format?: 'iso' | 'unix' | 'human'): string;
-  getEnvironmentInfo(): object;
-  
   inspect(): string;
-  
-  loadFromFile(): Promise<void>;
-  saveToFile(): Promise<void>;
   destroy(): void;
 }
 
-// Singleton instance
 export const uuidConfig: BunUUIDConfig;
 ```
 
 ---
 
-## File Structure
+## 10. File Structure
 
 ```
 src/
 ├── utils/
 │   ├── uuid-v5.ts          # UUIDv5Generator & UUIDv7Generator
-│   ├── uuid-config.ts      # BunUUIDConfig with metadata
-│   └── time-control.ts     # Deterministic time control
+│   ├── uuid-config.ts      # BunUUIDConfig
+│   └── time-control.ts     # Time control utilities
 ├── core/
 │   └── entity-ids.ts       # Entity ID generation
 ├── database/
-│   └── uuid-storage.ts     # High-performance storage
+│   └── uuid-storage.ts     # UUID-keyed storage
 ├── api/
-│   └── uuid-enhanced-api.ts # REST API endpoints
-└── index.ts                # Main exports
+│   └── uuid-enhanced-api.ts
+└── index.ts
 
 tests/
-├── bun-native-apis.test.ts # 30 native API tests
+├── bun-native-apis.test.ts
 └── uuid-system/
-    └── time-controlled.test.ts
 
 config/
-└── uuid.toml               # TOML configuration
+└── uuid.toml
 
 examples/
 ├── uuid-v5-usage.ts
@@ -517,16 +731,16 @@ examples/
 
 ---
 
-## Testing
+## 11. Testing
 
 ```bash
-# Run native API tests (30 tests)
+# Native API tests (30 tests)
 bun test tests/bun-native-apis.test.ts
 
-# Run UUID system tests
+# UUID system tests
 bun test tests/uuid-system/
 
-# Run benchmark
+# Benchmark
 bun -e "import { benchmarkUUIDv5 } from './src'; await benchmarkUUIDv5(10000);"
 ```
 
