@@ -197,25 +197,33 @@ async function cmdServe(options: {
 }): Promise<void> {
   header(`${APP_NAME} Canonicalizer Server v${APP_VERSION}`);
 
-  const config: Partial<CanonicalizerConfig> = {
+  const config = {
     server: {
       port: options.port || 3000,
-      host: options.host || 'localhost',
+      host: options.host || '0.0.0.0',
       cors: {
         enabled: true,
         origin: options['cors-origin'] ? options['cors-origin'].split(',') : ['*'],
       },
+      compression: true,
+      timeout: 30_000,
     },
-    performance: {
-      maxConcurrent: options['max-concurrent'] || 100,
+    worker: {
+      maxConcurrent: options['max-concurrent'] || 10,
+      batchSize: 50,
+      retryAttempts: 3,
+      timeout: 15_000,
     },
-    cache: {
-      sqlite: {
-        enabled: options['cache-sqlite'] !== false,
-      },
+    sqlite: {
+      enabled: options['cache-sqlite'] !== false,
+      path: './data/canonical.db',
+      vacuumOnStart: true,
     },
-    logging: {
-      level: (options['log-level'] || 'info') as any,
+    logger: {
+      level: (options['log-level'] || 'info') as 'debug' | 'info' | 'warn' | 'error',
+      format: 'text' as 'json' | 'text',
+      file: { enabled: true, path: './logs/app.log', maxSize: '10m', maxFiles: 5 },
+      console: true,
     },
   };
 
@@ -362,8 +370,8 @@ async function cmdCanonicalizeBatch(options: {
       // Assume JSON
       markets = JSON.parse(content);
     }
-  } catch (error) {
-    error(`Failed to load input file: ${(error as Error).message}`);
+  } catch (err) {
+    error(`Failed to load input file: ${(err as Error).message}`);
     return;
   }
 

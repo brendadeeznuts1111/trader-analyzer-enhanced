@@ -368,7 +368,7 @@ export const CLOUDFLARE_DOCS = {
 /** Default ports for various services */
 export const PORTS = {
   /** Next.js frontend */
-  nextjs: 3002,
+  nextjs: 3003,
   /** Bun backend API */
   bunBackend: 8000,
   /** Cloudflare Workers local */

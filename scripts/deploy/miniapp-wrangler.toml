@@ -1,0 +1,38 @@
+# Cloudflare Pages configuration for Telegram Mini App
+# Deploy: bunx wrangler pages deploy .next --project-name=factory-wager-miniapp
+# Or use: bun run deploy:miniapp
+
+name = "factory-wager-miniapp"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Pages-specific settings
+pages_build_output_dir = ".next"
+
+# Custom domain configuration
+# Domain: miniapp.factory-wager.com (or app.factory-wager.com)
+# Configure in Cloudflare Dashboard: Pages > factory-wager-miniapp > Custom domains
+
+# Environment variables for the miniapp
+[vars]
+NODE_ENV = "production"
+NEXT_PUBLIC_API_URL = "https://api.factory-wager.com"
+NEXT_PUBLIC_MINIAPP_URL = "https://miniapp.factory-wager.com"
+
+# KV namespace for caching user sessions (optional)
+# [[kv_namespaces]]
+# binding = "MINIAPP_SESSIONS"
+# id = "your-kv-namespace-id"
+
+# Staging environment
+[env.staging]
+vars = { NODE_ENV = "staging", NEXT_PUBLIC_API_URL = "https://staging-api.factory-wager.com", NEXT_PUBLIC_MINIAPP_URL = "https://staging-miniapp.factory-wager.com" }
+
+# Production environment
+[env.production]
+vars = { NODE_ENV = "production", NEXT_PUBLIC_API_URL = "https://api.factory-wager.com", NEXT_PUBLIC_MINIAPP_URL = "https://miniapp.factory-wager.com" }
+
+# Development settings
+[dev]
+port = 8789
+local_protocol = "http"

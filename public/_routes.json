@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": [
+    "/api/*",
+    "/_next/static/*",
+    "/favicon.ico",
+    "/robots.txt",
+    "/manifest.json"
+  ]
+}

@@ -4,6 +4,17 @@
  * Uses PORT env variable or defaults to 3002, falls back to next available
  */
 
+declare const BUILD_VERSION: string;
+declare const BUILD_VARIANT: string;
+
+import { logger } from '../lib/logger';
+
+if (process.argv.includes('--version') || process.argv.includes('-v')) {
+  const version = BUILD_VERSION + (BUILD_VARIANT ? `_${BUILD_VARIANT}` : '');
+  logger.info(version);
+  process.exit(0);
+}
+
 import { spawn } from 'bun';
 
 const DEFAULT_PORT = 3002;
@@ -30,7 +41,7 @@ async function findAvailablePort(startPort: number): Promise<number> {
     if (await isPortAvailable(port)) {
       return port;
     }
-    console.log(`Port ${port} is in use, trying next...`);
+    logger.warn(`Port ${port} is in use, trying next...`);
   }
   throw new Error(
     `No available ports found in range ${startPort}-${startPort + MAX_PORT_ATTEMPTS - 1}`
@@ -44,11 +55,11 @@ async function main() {
   if (await isPortAvailable(requestedPort)) {
     port = requestedPort;
   } else {
-    console.log(`Requested port ${requestedPort} is in use, finding available port...`);
+    logger.warn(`Requested port ${requestedPort} is in use, finding available port...`);
     port = await findAvailablePort(requestedPort + 1);
   }
 
-  console.log(`Starting production server on port ${port}...`);
+  logger.info(`Starting production server on port ${port} (version: ${BUILD_VERSION}${BUILD_VARIANT ? `_${BUILD_VARIANT}` : ''})...`);
 
   const proc = spawn({
     cmd: ['bun', 'run', 'next', 'start', '--port', String(port)],
@@ -72,4 +83,7 @@ async function main() {
   await proc.exited;
 }
 
-main().catch(console.error);
+main().catch((error) => {
+  logger.error('Server startup failed', { error: error.message });
+  process.exit(1);
+});

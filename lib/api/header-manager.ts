@@ -334,3 +334,23 @@ export const headerManager = new HeaderManager();
 
 // Default export
 export default headerManager;
+
+/**
+ * API Route Handler Wrapper - STANDARDIZE ALL ENDPOINTS WITH THIS
+ * Usage:
+ * export const GET = withApiHandler(async (req) => {
+ *   return { data: '...' };
+ * }, { exchange: 'polymarket' });
+ */
+export async function withApiHandler<T>(
+  handler: (req: any) => Promise<T>,
+  config: {
+    exchange?: MarketExchange;
+    querySchema?: any;
+    bodySchema?: any;
+  }
+): Promise<Response> {
+  // TODO: Complete implementation when Zod is added
+  const result = await handler({} as any);
+  return createCanonicalResponse(result, config as any);
+}

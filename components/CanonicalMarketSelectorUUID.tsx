@@ -109,8 +109,12 @@ export function CanonicalMarketSelectorUUID({
     setError(null);
 
     try {
-      // Use local API that wraps the canonical system
-      const res = await fetch(`/api/markets/canonical?exchange=${exchange}&limit=50`);
+      // Build API URL dynamically for staging deployments
+      const apiUrl = window.location.hostname.includes('pages.dev') || window.location.hostname.includes('staging')
+        ? 'http://localhost:3004'
+        : window.location.origin;
+
+      const res = await fetch(`${apiUrl}/api/markets/canonical?exchange=${exchange}&limit=50`);
 
       if (!res.ok) {
         throw new Error(`API error: ${res.status}`);

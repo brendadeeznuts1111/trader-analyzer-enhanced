@@ -6,7 +6,7 @@
  * GET /api/telegram - Get bot status and chat info
  */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import {
   // Message sending
   sendMessage,
@@ -144,7 +144,8 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
+// POST handler
+const postHandler = async (request: NextRequest) => {
   const startTime = Date.now();
 
   try {
@@ -655,7 +656,7 @@ export async function POST(request: Request) {
     );
     return NextResponse.json(body, init);
   }
-}
+};
 
 function errorResponse(message: string, request: Request) {
   const { body, init } = createErrorResponse(message, 400, undefined, request);

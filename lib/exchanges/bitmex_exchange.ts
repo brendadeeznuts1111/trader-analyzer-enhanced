@@ -1,6 +1,6 @@
 /**
  * BitMEX Exchange Adapter
- * Implementation of BaseExchange for BitMEX
+ * Implementation of BaseExchange for BitMEX using CCXT
  */
 
 import {
@@ -11,11 +11,14 @@ import {
   OrderParams,
   OrderResult,
   ExchangeConfig,
+  ExchangeHealthStatus,
+  ExchangeStatistics,
 } from './base_exchange';
 import { Order, Trade } from '../types';
+import { logger } from '../logger';
 
 /**
- * BitMEX Exchange Implementation
+ * BitMEX Exchange Implementation using CCXT
  */
 export class BitmexExchange implements BaseExchange {
   name = 'bitmex';
@@ -24,18 +27,60 @@ export class BitmexExchange implements BaseExchange {
 
   private credentials: ExchangeCredentials | null = null;
   private initialized = false;
+  private ccxtInstance: any = null;
+  private statistics: ExchangeStatistics = {
+    totalRequests: 0,
+    successfulRequests: 0,
+    failedRequests: 0,
+    averageResponseTimeMs: 0,
+    peakResponseTimeMs: 0,
+    requestsByType: {
+      marketData: 0,
+      trading: 0,
+      account: 0,
+      other: 0,
+    },
+    performanceTrends: {
+      responseTimeTrend: 'stable',
+      successRateTrend: 'stable',
+    },
+    lastReset: new Date().toISOString(),
+    sessionDuration: '0s',
+  };
 
   /**
    * Initialize BitMEX exchange connection
    * @param credentials Exchange credentials
    */
   async initialize(credentials: ExchangeCredentials): Promise<void> {
-    this.credentials = credentials;
-    this.initialized = true;
-    // In a real implementation, this would connect to BitMEX API
-    console.log(
-      `BitMEX exchange initialized for ${credentials.apiKey ? 'API key user' : 'public access'}`
-    );
+    try {
+      if (!credentials.apiKey || !credentials.apiSecret) {
+        throw new Error('BitMEX requires both API key and secret');
+      }
+
+      // Dynamically import CCXT to avoid issues in environments where it might not be available
+      const ccxt = await import('ccxt');
+      this.ccxtInstance = new ccxt.bitmex({
+        apiKey: credentials.apiKey,
+        secret: credentials.apiSecret,
+        enableRateLimit: true,
+        timeout: 30000,
+      });
+
+      // Test connection
+      await this.ccxtInstance.fetchMarkets();
+      
+      this.credentials = credentials;
+      this.initialized = true;
+      
+      logger.info('BitMEX exchange initialized successfully', {
+        apiKey: credentials.apiKey?.substring(0, 8) + '...',
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error('Failed to initialize BitMEX exchange', { error: errorMessage });
+      throw new Error(`BitMEX initialization failed: ${errorMessage}`);
+    }
   }
 
   /**
@@ -44,23 +89,41 @@ export class BitmexExchange implements BaseExchange {
    * @returns Market data
    */
   async fetchMarketData(symbol: string): Promise<MarketData> {
-    if (!this.initialized) {
+    if (!this.initialized || !this.ccxtInstance) {
       throw new Error('BitMEX exchange not initialized');
     }
 
-    // Mock implementation - in real implementation would call BitMEX API
-    return {
-      symbol,
-      lastPrice: 50000 + Math.random() * 10000,
-      bid: 49500 + Math.random() * 500,
-      ask: 50500 + Math.random() * 500,
-      volume: 1000 + Math.random() * 5000,
-      timestamp: new Date().toISOString(),
-      exchangeSpecific: {
-        fundingRate: 0.0001,
-        openInterest: 10000000,
-      },
-    };
+    const startTime = Date.now();
+    try {
+      this.statistics.totalRequests++;
+      this.statistics.requestsByType.marketData++;
+
+      const ticker = await this.ccxtInstance.fetchTicker(symbol);
+      const responseTime = Date.now() - startTime;
+      
+      this.updateStatistics(true, responseTime);
+
+      return {
+        symbol,
+        lastPrice: ticker.last,
+        bid: ticker.bid,
+        ask: ticker.ask,
+        volume: ticker.baseVolume,
+        timestamp: new Date().toISOString(),
+        exchangeSpecific: {
+          high: ticker.high,
+          low: ticker.low,
+          change: ticker.change,
+          percentage: ticker.percentage,
+          average: ticker.average,
+        },
+      };
+    } catch (error) {
+      this.updateStatistics(false, Date.now() - startTime);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error('Failed to fetch BitMEX market data', { symbol, error: errorMessage });
+      throw new Error(`Failed to fetch market data for ${symbol}: ${errorMessage}`);
+    }
   }
 
   /**
@@ -68,28 +131,44 @@ export class BitmexExchange implements BaseExchange {
    * @returns Account balance information
    */
   async fetchBalance(): Promise<AccountBalance> {
-    if (!this.initialized) {
+    if (!this.initialized || !this.ccxtInstance) {
       throw new Error('BitMEX exchange not initialized');
     }
 
-    // Mock implementation
-    return {
-      total: 10000,
-      available: 8000,
-      currencies: {
-        XBT: {
-          total: 1.2,
-          available: 1.0,
-          reserved: 0.2,
-        },
-        USD: {
-          total: 50000,
-          available: 40000,
-          reserved: 10000,
-        },
-      },
-      timestamp: new Date().toISOString(),
-    };
+    const startTime = Date.now();
+    try {
+      this.statistics.totalRequests++;
+      this.statistics.requestsByType.account++;
+
+      const balance = await this.ccxtInstance.fetchBalance();
+      const responseTime = Date.now() - startTime;
+      
+      this.updateStatistics(true, responseTime);
+
+      const currencies: Record<string, { total: number; available: number; reserved: number }> = {};
+      
+      Object.keys(balance).forEach(currency => {
+        if (currency !== 'info' && currency !== 'free' && currency !== 'used' && currency !== 'total') {
+          currencies[currency] = {
+            total: balance[currency].total || 0,
+            available: balance[currency].free || 0,
+            reserved: balance[currency].used || 0,
+          };
+        }
+      });
+
+      return {
+        total: balance.total || 0,
+        available: balance.free || 0,
+        currencies,
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error) {
+      this.updateStatistics(false, Date.now() - startTime);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error('Failed to fetch BitMEX balance', { error: errorMessage });
+      throw new Error(`Failed to fetch balance: ${errorMessage}`);
+    }
   }
 
   /**
@@ -98,25 +177,49 @@ export class BitmexExchange implements BaseExchange {
    * @returns Order result
    */
   async placeOrder(params: OrderParams): Promise<OrderResult> {
-    if (!this.initialized) {
+    if (!this.initialized || !this.ccxtInstance) {
       throw new Error('BitMEX exchange not initialized');
     }
 
-    // Mock implementation
-    return {
-      id: `order_${Math.random().toString(36).slice(2, 11)}`,
-      symbol: params.symbol,
-      side: params.side,
-      type: params.type,
-      amount: params.amount,
-      price: params.price || 0,
-      status: 'open',
-      timestamp: new Date().toISOString(),
-      exchangeSpecific: {
-        orderType: 'Limit',
-        timeInForce: params.timeInForce || 'GTC',
-      },
-    };
+    const startTime = Date.now();
+    try {
+      this.statistics.totalRequests++;
+      this.statistics.requestsByType.trading++;
+
+      const order = await this.ccxtInstance.createOrder(
+        params.symbol,
+        params.type,
+        params.side,
+        params.amount,
+        params.price,
+        {
+          stopPrice: params.stopPrice,
+          leverage: params.leverage,
+          timeInForce: params.timeInForce,
+          ...params.exchangeSpecific,
+        }
+      );
+
+      const responseTime = Date.now() - startTime;
+      this.updateStatistics(true, responseTime);
+
+      return {
+        id: order.id,
+        symbol: order.symbol,
+        side: order.side,
+        type: order.type,
+        amount: order.amount,
+        price: order.price,
+        status: order.status,
+        timestamp: new Date(order.timestamp || Date.now()).toISOString(),
+        exchangeSpecific: order.info,
+      };
+    } catch (error) {
+      this.updateStatistics(false, Date.now() - startTime);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error('Failed to place BitMEX order', { params, error: errorMessage });
+      throw new Error(`Failed to place order: ${errorMessage}`);
+    }
   }
 
   /**
@@ -125,28 +228,46 @@ export class BitmexExchange implements BaseExchange {
    * @returns Order history
    */
   async fetchOrderHistory(params?: any): Promise<Order[]> {
-    if (!this.initialized) {
+    if (!this.initialized || !this.ccxtInstance) {
       throw new Error('BitMEX exchange not initialized');
     }
 
-    // Mock implementation
-    return [
-      {
-        orderID: 'order_123',
-        symbol: 'XBTUSD',
-        displaySymbol: 'BTCUSD',
-        side: 'Buy',
-        ordType: 'Limit',
-        orderQty: 1,
-        price: 50000,
-        stopPx: null,
-        avgPx: 50000,
-        cumQty: 1,
-        ordStatus: 'Filled',
-        timestamp: new Date(Date.now() - 86400000).toISOString(),
-        text: 'Test order',
-      },
-    ];
+    const startTime = Date.now();
+    try {
+      this.statistics.totalRequests++;
+      this.statistics.requestsByType.trading++;
+
+      const orders = await this.ccxtInstance.fetchOrders(
+        params?.symbol,
+        params?.since,
+        params?.limit,
+        params
+      );
+
+      const responseTime = Date.now() - startTime;
+      this.updateStatistics(true, responseTime);
+
+      return orders.map((order: any) => ({
+        orderID: order.id,
+        symbol: order.symbol,
+        displaySymbol: order.symbol,
+        side: order.side,
+        ordType: order.type,
+        orderQty: order.amount,
+        price: order.price,
+        stopPx: order.stopPrice,
+        avgPx: order.average,
+        cumQty: order.filled,
+        ordStatus: order.status,
+        timestamp: new Date(order.timestamp || Date.now()).toISOString(),
+        text: order.info?.text || '',
+      }));
+    } catch (error) {
+      this.updateStatistics(false, Date.now() - startTime);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error('Failed to fetch BitMEX order history', { params, error: errorMessage });
+      throw new Error(`Failed to fetch order history: ${errorMessage}`);
+    }
   }
 
   /**
@@ -155,95 +276,112 @@ export class BitmexExchange implements BaseExchange {
    * @returns Trade history
    */
   async fetchTradeHistory(params?: any): Promise<Trade[]> {
-    if (!this.initialized) {
+    if (!this.initialized || !this.ccxtInstance) {
       throw new Error('BitMEX exchange not initialized');
     }
 
-    // Mock implementation
-    return [
-      {
-        id: 'trade_123',
-        datetime: new Date().toISOString(),
-        symbol: 'XBTUSD',
-        displaySymbol: 'BTCUSD',
-        side: 'buy',
-        price: 50000,
-        amount: 0.1,
-        cost: 5000,
-        fee: {
-          cost: 5,
-          currency: 'XBT',
-        },
-        orderID: 'order_123',
+    const startTime = Date.now();
+    try {
+      this.statistics.totalRequests++;
+      this.statistics.requestsByType.trading++;
+
+      const trades = await this.ccxtInstance.fetchMyTrades(
+        params?.symbol,
+        params?.since,
+        params?.limit,
+        params
+      );
+
+      const responseTime = Date.now() - startTime;
+      this.updateStatistics(true, responseTime);
+
+      return trades.map((trade: any) => ({
+        id: trade.id,
+        datetime: new Date(trade.timestamp || Date.now()).toISOString(),
+        symbol: trade.symbol,
+        displaySymbol: trade.symbol,
+        side: trade.side,
+        price: trade.price,
+        amount: trade.amount,
+        cost: trade.cost,
+        fee: trade.fee,
+        orderID: trade.order,
         execType: 'Trade',
-      },
-    ];
+      }));
+    } catch (error) {
+      this.updateStatistics(false, Date.now() - startTime);
+      logger.error('Failed to fetch BitMEX trade history', { params, error: error.message });
+      throw new Error(`Failed to fetch trade history: ${error.message}`);
+    }
   }
 
   /**
    * Check exchange health status
    * @returns Exchange health status
    */
-  async checkHealth(): Promise<any> {
-    if (!this.initialized) {
+  async checkHealth(): Promise<ExchangeHealthStatus> {
+    if (!this.initialized || !this.ccxtInstance) {
       throw new Error('BitMEX exchange not initialized');
     }
 
-    // Mock implementation - in real implementation would call BitMEX health API
-    return {
-      status: 'online',
-      responseTimeMs: 45,
-      lastChecked: new Date().toISOString(),
-      errorRate: 0.01,
-      uptimePercentage: 99.95,
-      maintenanceMode: false,
-      apiStatus: {
-        marketData: 'operational',
-        trading: 'operational',
-        account: 'operational',
-      },
-      exchangeSpecific: {
-        systemLoad: 0.35,
-        orderBookDepth: 'excellent',
-        liquidityScore: 0.98,
-      },
-    };
+    const startTime = Date.now();
+    try {
+      this.statistics.totalRequests++;
+      this.statistics.requestsByType.other++;
+
+      // Test basic API connectivity
+      await this.ccxtInstance.fetchMarkets();
+      const responseTime = Date.now() - startTime;
+      
+      this.updateStatistics(true, responseTime);
+
+      return {
+        status: 'online',
+        responseTimeMs: responseTime,
+        lastChecked: new Date().toISOString(),
+        errorRate: this.calculateErrorRate(),
+        uptimePercentage: 99.95, // This would come from monitoring in production
+        maintenanceMode: false,
+        apiStatus: {
+          marketData: 'operational',
+          trading: 'operational',
+          account: 'operational',
+        },
+      };
+    } catch (error) {
+      this.updateStatistics(false, Date.now() - startTime);
+      logger.error('BitMEX health check failed', { error: error.message });
+      
+      return {
+        status: 'offline',
+        responseTimeMs: Date.now() - startTime,
+        lastChecked: new Date().toISOString(),
+        errorRate: this.calculateErrorRate(),
+        uptimePercentage: 0,
+        maintenanceMode: false,
+        apiStatus: {
+          marketData: 'down',
+          trading: 'down',
+          account: 'down',
+        },
+      };
+    }
   }
 
   /**
    * Get exchange statistics
    * @returns Exchange performance statistics
    */
-  async getStatistics(): Promise<any> {
-    if (!this.initialized) {
-      throw new Error('BitMEX exchange not initialized');
-    }
+  async getStatistics(): Promise<ExchangeStatistics> {
+    // Update session duration
+    const startTime = new Date(this.statistics.lastReset);
+    const now = new Date();
+    const durationMs = now.getTime() - startTime.getTime();
+    const hours = Math.floor(durationMs / (1000 * 60 * 60));
+    const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+    this.statistics.sessionDuration = `${hours}h ${minutes}m`;
 
-    // Mock implementation - in real implementation would track actual statistics
-    return {
-      totalRequests: 15000,
-      successfulRequests: 14850,
-      failedRequests: 150,
-      averageResponseTimeMs: 75,
-      peakResponseTimeMs: 350,
-      requestsByType: {
-        marketData: 8000,
-        trading: 4000,
-        account: 2000,
-        other: 1000,
-      },
-      performanceTrends: {
-        responseTimeTrend: 'stable',
-        successRateTrend: 'improving',
-      },
-      lastReset: new Date(Date.now() - 86400000).toISOString(),
-      sessionDuration: '24h 30m',
-      exchangeSpecific: {
-        orderFillRate: 0.92,
-        slippageScore: 0.05,
-        liquidityProviderCount: 45,
-      },
-    };
+    return this.statistics;
   }
 
   /**
@@ -272,5 +410,40 @@ export class BitmexExchange implements BaseExchange {
         p2pTrading: false,
       },
     };
+  }
+
+  /**
+   * Update statistics after each request
+   * @param success Whether the request was successful
+   * @param responseTime Response time in milliseconds
+   */
+  private updateStatistics(success: boolean, responseTime: number): void {
+    if (success) {
+      this.statistics.successfulRequests++;
+    } else {
+      this.statistics.failedRequests++;
+    }
+
+    // Update average response time
+    const totalTime = this.statistics.averageResponseTimeMs * (this.statistics.successfulRequests - 1) + responseTime;
+    this.statistics.averageResponseTimeMs = totalTime / this.statistics.successfulRequests;
+
+    // Update peak response time
+    if (responseTime > this.statistics.peakResponseTimeMs) {
+      this.statistics.peakResponseTimeMs = responseTime;
+    }
+
+    // Update performance trends (simplified)
+    const successRate = this.statistics.successfulRequests / this.statistics.totalRequests;
+    this.statistics.performanceTrends.successRateTrend = successRate > 0.95 ? 'improving' : successRate > 0.9 ? 'stable' : 'degrading';
+  }
+
+  /**
+   * Calculate current error rate
+   * @returns Error rate as a decimal (0-1)
+   */
+  private calculateErrorRate(): number {
+    if (this.statistics.totalRequests === 0) return 0;
+    return this.statistics.failedRequests / this.statistics.totalRequests;
   }
 }

@@ -1,11 +1,11 @@
-# 📖 Trader Analyzer Data Formats v2.0
+# [DATA-FORMATS] 📖 Trader Analyzer Data Formats v2.0
 
 > **Version**: 2.0.0 | **Updated**: December 2024 | **Authors**: Anti-Grav Team
 > **Platforms**: EdgeTerminal (Bun + Next.js) | **License**: MIT
 
 This document provides **comprehensive, production-ready documentation** of all data formats, structures, and API specifications used in the EdgeTerminal trading intelligence platform.
 
-## 🎯 Table of Contents
+## [TABLE-OF-CONTENTS] 🎯 Table of Contents
 
 - [🎯 1. Core Data Structures](#1-core-data-structures)
   - [📋 1.1 CSV Data Formats](#11-csv-data-formats)
@@ -29,7 +29,7 @@ This document provides **comprehensive, production-ready documentation** of all 
 
 ---
 
-## 🎯 1. Core Data Structures
+## [CORE-DATA] 🎯 1. Core Data Structures
 
 ### 📋 1.1 CSV Data Formats
 
@@ -46,20 +46,21 @@ TRADE_002,2024-01-15T09:31:00Z,XBTUSD,sell,45100.0,50.0,2255000.0,1127.5,XBt,exe
 
 **Field Specifications**:
 
-| Field | Type | Required | Description | Validation |
-|-------|------|----------|-------------|------------|
-| `id` | `string` | ✅ | Unique trade identifier | UUID format preferred |
-| `datetime` | `string` | ✅ | ISO 8601 timestamp | `YYYY-MM-DDTHH:mm:ssZ` |
-| `symbol` | `string` | ✅ | Trading pair symbol | e.g., "XBTUSD", "ETHUSD" |
-| `side` | `string` | ✅ | Trade direction | `"buy"` or `"sell"` only |
-| `price` | `number` | ✅ | Execution price | Positive decimal |
-| `amount` | `number` | ✅ | Trade quantity | Positive decimal |
-| `cost` | `number` | ✅ | Total cost (price × amount) | Calculated field |
-| `fee_cost` | `number` | ✅ | Transaction fee | Non-negative decimal |
-| `fee_currency` | `string` | ✅ | Fee denomination | e.g., "XBt", "USD" |
-| `execID` | `string` | ✅ | Exchange execution ID | Exchange-specific format |
+| Field          | Type     | Required | Description                 | Validation               |
+| -------------- | -------- | -------- | --------------------------- | ------------------------ |
+| `id`           | `string` | ✅       | Unique trade identifier     | UUID format preferred    |
+| `datetime`     | `string` | ✅       | ISO 8601 timestamp          | `YYYY-MM-DDTHH:mm:ssZ`   |
+| `symbol`       | `string` | ✅       | Trading pair symbol         | e.g., "XBTUSD", "ETHUSD" |
+| `side`         | `string` | ✅       | Trade direction             | `"buy"` or `"sell"` only |
+| `price`        | `number` | ✅       | Execution price             | Positive decimal         |
+| `amount`       | `number` | ✅       | Trade quantity              | Positive decimal         |
+| `cost`         | `number` | ✅       | Total cost (price × amount) | Calculated field         |
+| `fee_cost`     | `number` | ✅       | Transaction fee             | Non-negative decimal     |
+| `fee_currency` | `string` | ✅       | Fee denomination            | e.g., "XBt", "USD"       |
+| `execID`       | `string` | ✅       | Exchange execution ID       | Exchange-specific format |
 
 **Validation Rules**:
+
 - ✅ All numeric fields must be valid positive numbers
 - ✅ `side` must be exactly `"buy"` or `"sell"` (case-sensitive)
 - ✅ `datetime` must parse as valid ISO 8601 timestamp
@@ -79,22 +80,23 @@ ord_def456,XBTUSD,Sell,Stop,500,,44000,,0,New,2024-01-15T09:35:00Z,Stop loss ord
 
 **Field Specifications**:
 
-| Field | Type | Required | Description | Validation |
-|-------|------|----------|-------------|------------|
-| `orderID` | `string` | ✅ | Unique order identifier | Exchange-generated |
-| `symbol` | `string` | ✅ | Trading pair | Standard format |
-| `side` | `string` | ✅ | Order direction | `"Buy"` or `"Sell"` |
-| `ordType` | `string` | ✅ | Order type | `"Limit"`, `"Market"`, `"Stop"`, `"StopLimit"` |
-| `orderQty` | `number` | ✅ | Original quantity | Positive integer |
-| `price` | `number` | ⚠️ | Limit price | Required for limit orders |
-| `stopPx` | `number` | ⚠️ | Stop trigger price | Required for stop orders |
-| `avgPx` | `number` | ❌ | Average fill price | Calculated |
-| `cumQty` | `number` | ✅ | Filled quantity | 0 ≤ cumQty ≤ orderQty |
-| `ordStatus` | `string` | ✅ | Order status | `"New"`, `"Filled"`, `"Canceled"`, `"Rejected"`, `"PartiallyFilled"` |
-| `timestamp` | `string` | ✅ | Order timestamp | ISO 8601 |
-| `text` | `string` | ❌ | Additional notes | Free-form text |
+| Field       | Type     | Required | Description             | Validation                                                           |
+| ----------- | -------- | -------- | ----------------------- | -------------------------------------------------------------------- |
+| `orderID`   | `string` | ✅       | Unique order identifier | Exchange-generated                                                   |
+| `symbol`    | `string` | ✅       | Trading pair            | Standard format                                                      |
+| `side`      | `string` | ✅       | Order direction         | `"Buy"` or `"Sell"`                                                  |
+| `ordType`   | `string` | ✅       | Order type              | `"Limit"`, `"Market"`, `"Stop"`, `"StopLimit"`                       |
+| `orderQty`  | `number` | ✅       | Original quantity       | Positive integer                                                     |
+| `price`     | `number` | ⚠️       | Limit price             | Required for limit orders                                            |
+| `stopPx`    | `number` | ⚠️       | Stop trigger price      | Required for stop orders                                             |
+| `avgPx`     | `number` | ❌       | Average fill price      | Calculated                                                           |
+| `cumQty`    | `number` | ✅       | Filled quantity         | 0 ≤ cumQty ≤ orderQty                                                |
+| `ordStatus` | `string` | ✅       | Order status            | `"New"`, `"Filled"`, `"Canceled"`, `"Rejected"`, `"PartiallyFilled"` |
+| `timestamp` | `string` | ✅       | Order timestamp         | ISO 8601                                                             |
+| `text`      | `string` | ❌       | Additional notes        | Free-form text                                                       |
 
 **Status Definitions**:
+
 - 🔄 **New**: Order placed, not yet processed
 - ⚡ **PartiallyFilled**: Partially executed
 - ✅ **Filled**: Completely executed
@@ -160,6 +162,7 @@ ord_def456,XBTUSD,Sell,Stop,500,,44000,,0,New,2024-01-15T09:35:00Z,Stop loss ord
 ```
 
 **Example Response**:
+
 ```json title="Account Summary Example"
 {
   "exportDate": "2024-12-03T10:18:42.491Z",
@@ -169,7 +172,7 @@ ord_def456,XBTUSD,Sell,Stop,500,,44000,,0,New,2024-01-15T09:35:00Z,Stop loss ord
     "email": "trader@example.com"
   },
   "wallet": {
-    "walletBalance": 125000.50,
+    "walletBalance": 125000.5,
     "marginBalance": 122250.75,
     "availableMargin": 110000.25,
     "unrealisedPnl": 0,
@@ -179,9 +182,9 @@ ord_def456,XBTUSD,Sell,Stop,500,,44000,,0,New,2024-01-15T09:35:00Z,Stop loss ord
     {
       "symbol": "XBTUSD",
       "currentQty": 100,
-      "avgEntryPrice": 45000.00,
-      "unrealisedPnl": 2500.00,
-      "liquidationPrice": 35000.00
+      "avgEntryPrice": 45000.0,
+      "unrealisedPnl": 2500.0,
+      "liquidationPrice": 35000.0
     }
   ]
 }
@@ -278,7 +281,7 @@ ord_def456,XBTUSD,Sell,Stop,500,,44000,,0,New,2024-01-15T09:35:00Z,Stop loss ord
             "3": { "type": "integer" }, // Wednesday
             "4": { "type": "integer" }, // Thursday
             "5": { "type": "integer" }, // Friday
-            "6": { "type": "integer" }  // Saturday
+            "6": { "type": "integer" } // Saturday
           }
         },
         "most_active_hour": { "type": "integer", "minimum": 0, "maximum": 23 },
@@ -337,13 +340,19 @@ ord_def456,XBTUSD,Sell,Stop,500,,44000,,0,New,2024-01-15T09:35:00Z,Stop loss ord
       "required": ["trader_type", "overall_score", "advice"]
     }
   },
-  "required": ["basic_stats", "risk_preference", "trading_frequency", "discipline_scores", "summary"]
+  "required": [
+    "basic_stats",
+    "risk_preference",
+    "trading_frequency",
+    "discipline_scores",
+    "summary"
+  ]
 }
 ```
 
 ---
 
-## 🚀 2. API Specifications
+## [API-SPECS] 🚀 2. API Specifications
 
 ### 🌐 2.1 REST Endpoints
 
@@ -355,6 +364,7 @@ ord_def456,XBTUSD,Sell,Stop,500,,44000,,0,New,2024-01-15T09:35:00Z,Stop loss ord
 **Timeout**: 30 seconds
 
 **Request Schema**:
+
 ```json title="Prediction Request" {1-10}
 {
   "type": "object",
@@ -370,13 +380,18 @@ ord_def456,XBTUSD,Sell,Stop,500,,44000,,0,New,2024-01-15T09:35:00Z,Stop loss ord
     },
     "symbol": { "type": "string", "pattern": "^[A-Z]+/[A-Z]+$" },
     "current_price": { "type": "number", "minimum": 0 },
-    "timeframe": { "type": "string", "enum": ["1m", "5m", "15m", "1h", "4h", "1d"], "default": "1h" }
+    "timeframe": {
+      "type": "string",
+      "enum": ["1m", "5m", "15m", "1h", "4h", "1d"],
+      "default": "1h"
+    }
   },
   "required": ["credentials", "symbol", "current_price"]
 }
 ```
 
 **Response Schema**:
+
 ```json title="Prediction Response" {1-25}
 {
   "type": "object",
@@ -452,6 +467,7 @@ ord_def456,XBTUSD,Sell,Stop,500,,44000,,0,New,2024-01-15T09:35:00Z,Stop loss ord
 ```
 
 **Error Responses**:
+
 ```json title="API Error Format"
 {
   "type": "object",
@@ -459,7 +475,16 @@ ord_def456,XBTUSD,Sell,Stop,500,,44000,,0,New,2024-01-15T09:35:00Z,Stop loss ord
     "error": {
       "type": "object",
       "properties": {
-        "code": { "type": "string", "enum": ["VALIDATION_ERROR", "AUTH_ERROR", "RATE_LIMIT", "EXCHANGE_ERROR", "INTERNAL_ERROR"] },
+        "code": {
+          "type": "string",
+          "enum": [
+            "VALIDATION_ERROR",
+            "AUTH_ERROR",
+            "RATE_LIMIT",
+            "EXCHANGE_ERROR",
+            "INTERNAL_ERROR"
+          ]
+        },
         "message": { "type": "string" },
         "details": { "type": "object" },
         "timestamp": { "type": "string", "format": "date-time" },
@@ -478,6 +503,7 @@ ord_def456,XBTUSD,Sell,Stop,500,,44000,,0,New,2024-01-15T09:35:00Z,Stop loss ord
 **Version**: v1.0.0
 
 **Available Exchanges**:
+
 ```json title="Exchange Capabilities"
 {
   "bitmex": {
@@ -506,7 +532,7 @@ ord_def456,XBTUSD,Sell,Stop,500,,44000,,0,New,2024-01-15T09:35:00Z,Stop loss ord
 
 ---
 
-## ⚡ 3. Performance & Optimization
+## [PERFORMANCE] ⚡ 3. Performance & Optimization
 
 ### 🌐 3.1 HTTP Headers
 
@@ -528,8 +554,9 @@ Z-Compression-Ratio: 3.2
 ```
 
 **Implementation**:
+
 ```javascript title="Bun Compression Middleware"
-import { serve } from "bun";
+import { serve } from 'bun';
 
 serve({
   port: 3000,
@@ -543,7 +570,7 @@ serve({
     }
 
     return response;
-  }
+  },
 });
 ```
 
@@ -568,11 +595,12 @@ ETag: "33a64df551425fcc55e4d42a148795d9f25f89d4"
 ```
 
 **ETag Generation**:
+
 ```javascript title="ETag Generation for API Responses"
 function generateETag(data) {
-  const hash = new Bun.CryptoHasher("sha256");
+  const hash = new Bun.CryptoHasher('sha256');
   hash.update(JSON.stringify(data));
-  return `"${hash.digest("hex").substring(0, 32)}"`;
+  return `"${hash.digest('hex').substring(0, 32)}"`;
 }
 
 // Usage in API routes
@@ -586,7 +614,7 @@ export async function GET() {
   }
 
   return Response.json(data, {
-    headers: { 'ETag': etag, 'Cache-Control': 'max-age=300' }
+    headers: { ETag: etag, 'Cache-Control': 'max-age=300' },
   });
 }
 ```
@@ -598,22 +626,23 @@ export async function GET() {
 
 ```html title="DNS Prefetch Optimization"
 <!-- Pre-resolve critical exchange domains -->
-<link rel="dns-prefetch" href="//api.polymarket.com">
-<link rel="dns-prefetch" href="//api.kalishi.com">
-<link rel="dns-prefetch" href="//api.binance.com">
-<link rel="dns-prefetch" href="//fapi.binance.com">
-<link rel="dns-prefetch" href="//testnet.binance.vision">
+<link rel="dns-prefetch" href="//api.polymarket.com" />
+<link rel="dns-prefetch" href="//api.kalishi.com" />
+<link rel="dns-prefetch" href="//api.binance.com" />
+<link rel="dns-prefetch" href="//fapi.binance.com" />
+<link rel="dns-prefetch" href="//testnet.binance.vision" />
 
 <!-- Preconnect for faster TLS handshake -->
-<link rel="preconnect" href="//fonts.googleapis.com">
-<link rel="preconnect" href="//fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="//fonts.googleapis.com" />
+<link rel="preconnect" href="//fonts.gstatic.com" crossorigin />
 
 <!-- Preload critical resources -->
-<link rel="preload" href="/api/markets" as="fetch" crossorigin>
-<link rel="modulepreload" href="/_next/static/chunks/main.js">
+<link rel="preload" href="/api/markets" as="fetch" crossorigin />
+<link rel="modulepreload" href="/_next/static/chunks/main.js" />
 ```
 
 **Implementation in Next.js**:
+
 ```jsx title="Next.js DNS Prefetch in _document.tsx"
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 
@@ -643,13 +672,14 @@ export default class MyDocument extends Document {
 
 ---
 
-## 🗄️ 4. Database Patterns
+## [DATABASE] 🗄️ 4. Database Patterns
 
 ### 🔍 4.1 Query Patterns
 
 #### 📊 Optimized Trade Queries
 
 **Pattern 1: Time-Range Filtering with Composite Index**
+
 ```sql title="Time-Range Trade Query"
 -- Composite index: (user_id, timestamp, symbol)
 -- Supports efficient pagination and filtering
@@ -672,6 +702,7 @@ LIMIT $5 OFFSET $6;
 ```
 
 **Pattern 2: Aggregated P&L Calculations**
+
 ```sql title="P&L Aggregation Query"
 -- Window function for running totals
 -- Materialized view for performance
@@ -698,6 +729,7 @@ FROM daily_pnl;
 ```
 
 **Pattern 3: Market Depth Analysis**
+
 ```sql title="Orderbook Depth Query"
 -- Efficient orderbook reconstruction
 -- Supports real-time depth updates
@@ -718,6 +750,7 @@ ORDER BY price DESC;
 #### ⚡ 4.2 Indexing Strategies
 
 **Recommended Indexes**:
+
 ```sql title="Database Indexes for Performance"
 -- Primary performance indexes
 CREATE INDEX CONCURRENTLY idx_trades_user_timestamp
@@ -741,6 +774,7 @@ WHERE timestamp >= NOW() - INTERVAL '90 days';
 ```
 
 **Index Maintenance**:
+
 ```sql title="Index Maintenance Queries"
 -- Monitor index usage
 SELECT
@@ -762,7 +796,7 @@ ANALYZE trades;
 
 ---
 
-## 🖥️ 5. System Integration
+## [SYSTEM-INTEGRATION] 🖥️ 5. System Integration
 
 ### 🌐 5.1 Browser Detection
 
@@ -800,6 +834,7 @@ interface BrowserCapabilities {
 ```
 
 **Detection Implementation**:
+
 ```typescript title="Browser Capability Detection"
 function detectBrowserCapabilities(): BrowserCapabilities {
   const ua = navigator.userAgent;
@@ -823,7 +858,7 @@ function detectBrowserCapabilities(): BrowserCapabilities {
       hardwareConcurrency: navigator.hardwareConcurrency || 1,
       deviceMemory: (navigator as any).deviceMemory,
       connection: detectConnectionSpeed(),
-    }
+    },
   };
 }
 
@@ -884,6 +919,7 @@ interface OperatingSystem {
 ```
 
 **OS-Specific Optimizations**:
+
 ```typescript title="OS-Specific Feature Detection"
 function getOSCapabilities(): OperatingSystem {
   const platform = navigator.platform;
@@ -898,7 +934,7 @@ function getOSCapabilities(): OperatingSystem {
     os,
     features,
     compatibility,
-    paths: getSystemPaths(os.name)
+    paths: getSystemPaths(os.name),
   };
 }
 
@@ -997,6 +1033,7 @@ interface PerformanceProfile {
 ```
 
 **Profiling Implementation**:
+
 ```typescript title="Performance Profiling"
 class PerformanceProfiler {
   private sessionId: string;
@@ -1025,11 +1062,7 @@ class PerformanceProfiler {
     const endTime = performance.now();
 
     // Get Core Web Vitals
-    const [lcp, fid, cls] = await Promise.all([
-      this.getLCP(),
-      this.getFID(),
-      this.getCLS()
-    ]);
+    const [lcp, fid, cls] = await Promise.all([this.getLCP(), this.getFID(), this.getCLS()]);
 
     // Get memory info
     const memory = (performance as any).memory;
@@ -1044,49 +1077,54 @@ class PerformanceProfiler {
         endTime,
         duration: endTime - this.startTime,
         userAgent: navigator.userAgent,
-        url: window.location.href
+        url: window.location.href,
       },
       metrics: {
         lcp,
         fid,
         cls,
         timeToInteractive: this.measure('tti'),
-        firstContentfulPaint: performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 0,
+        firstContentfulPaint:
+          performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 0,
         domContentLoaded: performance.getEntriesByName('dom-content-loaded')[0]?.startTime || 0,
         loadComplete: performance.getEntriesByName('load')[0]?.startTime || 0,
-        resourceTiming: performance.getEntriesByType('resource') as PerformanceResourceTiming[]
+        resourceTiming: performance.getEntriesByType('resource') as PerformanceResourceTiming[],
       },
-      memory: memory ? {
-        usedJSHeapSize: memory.usedJSHeapSize,
-        totalJSHeapSize: memory.totalJSHeapSize,
-        jsHeapSizeLimit: memory.jsHeapSizeLimit,
-        gcCollections: 0, // Would need additional tracking
-        gcPauseTime: 0
-      } : {
-        usedJSHeapSize: 0,
-        totalJSHeapSize: 0,
-        jsHeapSizeLimit: 0,
-        gcCollections: 0,
-        gcPauseTime: 0
-      },
-      network: connection ? {
-        connectionType: connection.type || 'unknown',
-        effectiveType: connection.effectiveType || 'unknown',
-        downlink: connection.downlink || 0,
-        rtt: connection.rtt || 0
-      } : {
-        connectionType: 'unknown',
-        effectiveType: 'unknown',
-        downlink: 0,
-        rtt: 0
-      },
-      breakdown: this.calculateBreakdown()
+      memory: memory
+        ? {
+            usedJSHeapSize: memory.usedJSHeapSize,
+            totalJSHeapSize: memory.totalJSHeapSize,
+            jsHeapSizeLimit: memory.jsHeapSizeLimit,
+            gcCollections: 0, // Would need additional tracking
+            gcPauseTime: 0,
+          }
+        : {
+            usedJSHeapSize: 0,
+            totalJSHeapSize: 0,
+            jsHeapSizeLimit: 0,
+            gcCollections: 0,
+            gcPauseTime: 0,
+          },
+      network: connection
+        ? {
+            connectionType: connection.type || 'unknown',
+            effectiveType: connection.effectiveType || 'unknown',
+            downlink: connection.downlink || 0,
+            rtt: connection.rtt || 0,
+          }
+        : {
+            connectionType: 'unknown',
+            effectiveType: 'unknown',
+            downlink: 0,
+            rtt: 0,
+          },
+      breakdown: this.calculateBreakdown(),
     };
   }
 
   private async getLCP(): Promise<number> {
-    return new Promise((resolve) => {
-      const observer = new PerformanceObserver((list) => {
+    return new Promise(resolve => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1];
         resolve(lastEntry.startTime);
@@ -1099,8 +1137,8 @@ class PerformanceProfiler {
   }
 
   private async getFID(): Promise<number> {
-    return new Promise((resolve) => {
-      const observer = new PerformanceObserver((list) => {
+    return new Promise(resolve => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1];
         resolve(lastEntry.processingStart - lastEntry.startTime);
@@ -1112,9 +1150,9 @@ class PerformanceProfiler {
   }
 
   private async getCLS(): Promise<number> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       let clsValue = 0;
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         for (const entry of list.getEntries()) {
           if (!(entry as any).hadRecentInput) {
             clsValue += (entry as any).value;
@@ -1136,11 +1174,11 @@ class PerformanceProfiler {
     const total = navigation.loadEventEnd - navigation.fetchStart;
 
     return {
-      rendering: (navigation.domContentLoadedEventEnd - navigation.responseEnd) / total * 100,
-      scripting: (navigation.domInteractive - navigation.domLoading) / total * 100,
-      painting: (navigation.domComplete - navigation.domContentLoadedEventEnd) / total * 100,
-      loading: (navigation.responseEnd - navigation.fetchStart) / total * 100,
-      idle: (navigation.loadEventEnd - navigation.domComplete) / total * 100
+      rendering: ((navigation.domContentLoadedEventEnd - navigation.responseEnd) / total) * 100,
+      scripting: ((navigation.domInteractive - navigation.domLoading) / total) * 100,
+      painting: ((navigation.domComplete - navigation.domContentLoadedEventEnd) / total) * 100,
+      loading: ((navigation.responseEnd - navigation.fetchStart) / total) * 100,
+      idle: ((navigation.loadEventEnd - navigation.domComplete) / total) * 100,
     };
   }
 }
@@ -1158,23 +1196,26 @@ console.log('Performance Profile:', profile);
 
 ---
 
-## ✅ 6. Validation & Error Handling
+## [VALIDATION] ✅ 6. Validation & Error Handling
 
 ### 📋 6.1 CSV Validation Rules
 
 **Structural Validation**:
+
 - ✅ **Header Presence**: All required headers must exist
 - ✅ **Row Consistency**: Each row must match header count
 - ✅ **Encoding**: UTF-8 encoding required
 - ✅ **Line Endings**: CRLF or LF accepted
 
 **Data Type Validation**:
+
 - ✅ **Numeric Fields**: Must parse as valid numbers
 - ✅ **Date Fields**: Must parse as ISO 8601 timestamps
 - ✅ **Enum Fields**: Must match allowed values
 - ✅ **String Fields**: Length limits and character restrictions
 
 **Business Logic Validation**:
+
 - ✅ **Range Checks**: Values within reasonable bounds
 - ✅ **Cross-Field Validation**: Related fields must be consistent
 - ✅ **Uniqueness**: IDs must be unique where required
@@ -1183,6 +1224,7 @@ console.log('Performance Profile:', profile);
 ### 🌐 6.2 API Validation
 
 **Request Validation**:
+
 ```typescript title="API Request Validation"
 import { z } from 'zod';
 
@@ -1203,39 +1245,48 @@ export async function POST(request: Request) {
     return Response.json({ success: true });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return Response.json({
-        error: 'Validation failed',
-        details: error.errors
-      }, { status: 400 });
+      return Response.json(
+        {
+          error: 'Validation failed',
+          details: error.errors,
+        },
+        { status: 400 }
+      );
     }
 
-    return Response.json({
-      error: 'Internal server error'
-    }, { status: 500 });
+    return Response.json(
+      {
+        error: 'Internal server error',
+      },
+      { status: 500 }
+    );
   }
 }
 ```
 
 **Response Validation**:
+
 ```typescript title="API Response Validation"
 const ApiResponseSchema = z.discriminatedUnion('success', [
   z.object({
     success: z.literal(true),
     data: z.any(),
-    meta: z.object({
-      timestamp: z.string().datetime(),
-      requestId: z.string().uuid(),
-      version: z.string()
-    }).optional()
+    meta: z
+      .object({
+        timestamp: z.string().datetime(),
+        requestId: z.string().uuid(),
+        version: z.string(),
+      })
+      .optional(),
   }),
   z.object({
     success: z.literal(false),
     error: z.object({
       code: z.string(),
       message: z.string(),
-      details: z.any().optional()
-    })
-  })
+      details: z.any().optional(),
+    }),
+  }),
 ]);
 
 // Validate responses in tests
@@ -1247,6 +1298,7 @@ function validateApiResponse(response: unknown) {
 ### 🚨 6.3 Error Classification
 
 **HTTP Status Codes**:
+
 - **200 OK**: Successful request
 - **201 Created**: Resource created successfully
 - **400 Bad Request**: Invalid request parameters
@@ -1261,6 +1313,7 @@ function validateApiResponse(response: unknown) {
 - **503 Service Unavailable**: Service temporarily unavailable
 
 **Error Response Format**:
+
 ```json title="Standardized Error Response"
 {
   "success": false,
@@ -1286,11 +1339,12 @@ function validateApiResponse(response: unknown) {
 
 ---
 
-## 📚 7. Best Practices
+## [BEST-PRACTICES] 📚 7. Best Practices
 
 ### 🗂️ 7.1 Data Organization
 
 **File Structure**:
+
 ```
 data/
 ├── raw/                    # Original exported files
@@ -1309,6 +1363,7 @@ data/
 ```
 
 **Naming Conventions**:
+
 - ✅ **Files**: `snake_case` (e.g., `bitmex_trades.csv`)
 - ✅ **Fields**: `camelCase` for JSON, `snake_case` for CSV
 - ✅ **APIs**: `kebab-case` (e.g., `/api/market-data`)
@@ -1317,6 +1372,7 @@ data/
 ### 🔒 7.2 Security Considerations
 
 **API Security**:
+
 - ✅ **Rate Limiting**: Implement per-user and per-IP limits
 - ✅ **Input Validation**: Sanitize all user inputs
 - ✅ **Authentication**: Use JWT or API keys
@@ -1324,6 +1380,7 @@ data/
 - ✅ **CORS Policy**: Restrict to allowed origins
 
 **Data Security**:
+
 - ✅ **Encryption**: Encrypt sensitive data at rest
 - ✅ **Access Control**: Implement RBAC (Role-Based Access Control)
 - ✅ **Audit Logging**: Log all data access and modifications
@@ -1332,12 +1389,14 @@ data/
 ### ⚡ 7.3 Performance Optimization
 
 **Database Optimization**:
+
 - ✅ **Indexing Strategy**: Index frequently queried columns
 - ✅ **Query Optimization**: Use EXPLAIN ANALYZE for slow queries
 - ✅ **Connection Pooling**: Reuse database connections
 - ✅ **Caching Layer**: Cache frequently accessed data
 
 **API Optimization**:
+
 - ✅ **Pagination**: Implement cursor-based pagination
 - ✅ **Compression**: Enable gzip/brotli compression
 - ✅ **ETags**: Implement conditional requests
@@ -1346,12 +1405,14 @@ data/
 ### 📊 7.4 Monitoring & Observability
 
 **Metrics to Track**:
+
 - ✅ **API Performance**: Response times, error rates, throughput
 - ✅ **Database Performance**: Query latency, connection count, cache hit rate
 - ✅ **User Experience**: Page load times, Core Web Vitals
 - ✅ **Business Metrics**: Active users, trade volume, feature usage
 
 **Logging Strategy**:
+
 ```typescript title="Structured Logging"
 interface LogEntry {
   timestamp: string;
@@ -1378,14 +1439,15 @@ logger.info('Trade executed', {
   metadata: {
     symbol: 'BTC/USD',
     amount: 0.1,
-    price: 45000
-  }
+    price: 45000,
+  },
 });
 ```
 
 ### 🧪 7.5 Testing Strategy
 
 **Unit Tests**:
+
 ```typescript title="API Route Testing"
 import { describe, it, expect } from 'bun:test';
 import { POST } from './route';
@@ -1399,8 +1461,8 @@ describe('/api/trades', () => {
         symbol: 'BTC/USD',
         side: 'buy',
         amount: 0.1,
-        price: 45000
-      })
+        price: 45000,
+      }),
     });
 
     const response = await POST(request);
@@ -1416,9 +1478,9 @@ describe('/api/trades', () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        symbol: 'BTC/USD'
+        symbol: 'BTC/USD',
         // Missing required fields
-      })
+      }),
     });
 
     const response = await POST(request);
@@ -1432,6 +1494,7 @@ describe('/api/trades', () => {
 ```
 
 **Integration Tests**:
+
 ```typescript title="End-to-End Testing"
 describe('Trading Workflow', () => {
   it('should complete full trading cycle', async () => {
@@ -1443,7 +1506,7 @@ describe('Trading Workflow', () => {
       symbol: 'BTC/USD',
       side: 'buy',
       amount: 0.1,
-      price: 45000
+      price: 45000,
     });
 
     // 3. Verify order status
@@ -1459,42 +1522,43 @@ describe('Trading Workflow', () => {
 
 ---
 
-## 📖 8. Quick Reference
+## [QUICK-REFERENCE] 📖 8. Quick Reference
 
 ### 🎯 API Endpoints Summary
 
-| Endpoint | Method | Purpose | Rate Limit |
-|----------|--------|---------|------------|
-| `/api/markets` | GET | List all markets | 100/min |
-| `/api/markets/:id` | GET | Get market details | 200/min |
-| `/api/trades` | GET/POST | Trade operations | 50/min |
-| `/api/predict` | POST | AI predictions | 10/min |
-| `/events` | GET | SSE stream | Unlimited |
+| Endpoint           | Method   | Purpose            | Rate Limit |
+| ------------------ | -------- | ------------------ | ---------- |
+| `/api/markets`     | GET      | List all markets   | 100/min    |
+| `/api/markets/:id` | GET      | Get market details | 200/min    |
+| `/api/trades`      | GET/POST | Trade operations   | 50/min     |
+| `/api/predict`     | POST     | AI predictions     | 10/min     |
+| `/events`          | GET      | SSE stream         | Unlimited  |
 
 ### 📊 Data Formats Quick Reference
 
-| Format | Use Case | Example |
-|--------|----------|---------|
-| **CSV** | Bulk data import | `id,timestamp,symbol,price` |
-| **JSON** | API responses | `{"success": true, "data": {...}}` |
-| **SSE** | Real-time updates | `data: {"event": "trade"}` |
-| **ETags** | Caching | `"abc123"` |
-| **Z-Headers** | Compression | `gzip, deflate` |
+| Format        | Use Case          | Example                            |
+| ------------- | ----------------- | ---------------------------------- |
+| **CSV**       | Bulk data import  | `id,timestamp,symbol,price`        |
+| **JSON**      | API responses     | `{"success": true, "data": {...}}` |
+| **SSE**       | Real-time updates | `data: {"event": "trade"}`         |
+| **ETags**     | Caching           | `"abc123"`                         |
+| **Z-Headers** | Compression       | `gzip, deflate`                    |
 
 ### ⚡ Performance Targets
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
+| Metric            | Target | Measurement     |
+| ----------------- | ------ | --------------- |
 | API Response Time | <200ms | 95th percentile |
-| Page Load Time | <2s | Core Web Vitals |
-| Database Query | <50ms | EXPLAIN ANALYZE |
-| Bundle Size | <500KB | gzip compressed |
+| Page Load Time    | <2s    | Core Web Vitals |
+| Database Query    | <50ms  | EXPLAIN ANALYZE |
+| Bundle Size       | <500KB | gzip compressed |
 
 ---
 
 **🎉 DATA_FORMATS.md v2.0 Complete!**
 
 This enhanced documentation now provides:
+
 - ✅ **Professional API documentation** with JSON schemas
 - ✅ **Complete HTTP header specifications** (Z-Headers, ETags, DNS prefetch)
 - ✅ **Database query patterns** and indexing strategies
@@ -1514,6 +1578,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 **Headers**: `id,datetime,symbol,side,price,amount,cost,fee_cost,fee_currency,execID`
 
 **Field Descriptions**:
+
 - `id`: Unique trade identifier (string)
 - `datetime`: Trade execution timestamp (ISO format string)
 - `symbol`: Trading pair symbol (e.g., "XBTUSD")
@@ -1526,6 +1591,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 - `execID`: Execution identifier (string)
 
 **Validation Rules**:
+
 - All numeric fields must be valid numbers
 - `side` must be either "buy" or "sell"
 - `datetime` must be parseable as ISO timestamp
@@ -1536,6 +1602,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 **Headers**: `orderID,symbol,side,ordType,orderQty,price,stopPx,avgPx,cumQty,ordStatus,timestamp,text`
 
 **Field Descriptions**:
+
 - `orderID`: Unique order identifier (string)
 - `symbol`: Trading pair symbol (string)
 - `side`: Order direction ("Buy" or "Sell")
@@ -1550,6 +1617,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 - `text`: Additional order information (string)
 
 **Validation Rules**:
+
 - `side` must be "Buy" or "Sell"
 - `ordType` must be one of the allowed order types
 - `ordStatus` must be one of the allowed statuses
@@ -1560,6 +1628,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 **Headers**: `transactID,account,currency,transactType,amount,fee,transactStatus,address,tx,text,timestamp,walletBalance,marginBalance`
 
 **Field Descriptions**:
+
 - `transactID`: Unique transaction identifier (string)
 - `account`: Account number (number)
 - `currency`: Transaction currency (string, e.g., "XBt")
@@ -1575,6 +1644,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 - `marginBalance`: Margin balance after transaction (number or empty)
 
 **Validation Rules**:
+
 - `currency` should be "XBt" for BitMEX
 - `transactType` must be one of the allowed transaction types
 - Numeric fields must be valid numbers
@@ -1584,6 +1654,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 **Headers**: `execID,orderID,symbol,side,lastQty,lastPx,execType,ordType,ordStatus,execCost,execComm,timestamp,text`
 
 **Field Descriptions**:
+
 - `execID`: Unique execution identifier (string)
 - `orderID`: Parent order identifier (string)
 - `symbol`: Trading pair symbol (string)
@@ -1599,6 +1670,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 - `text`: Additional information (string)
 
 **Validation Rules**:
+
 - `side` must be "Buy" or "Sell"
 - All numeric fields must be valid numbers
 
@@ -1706,6 +1778,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 **Endpoint**: `POST /api/backend/predict`
 
 **Request Body**:
+
 ```json
 {
   "credentials": {
@@ -1719,6 +1792,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Response**:
+
 ```json
 {
   "prediction": {
@@ -1752,6 +1826,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Error Responses**:
+
 - `400 Bad Request`: Missing required fields
 - `401 Unauthorized`: Invalid API credentials
 - `500 Internal Server Error`: Backend processing error
@@ -1762,6 +1837,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 **Endpoint**: `GET /api/exchanges`
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -1858,6 +1934,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 **Endpoint**: `POST /api/exchanges`
 
 **Request Body** (Set Active Exchange):
+
 ```json
 {
   "operation": "set_active_exchange",
@@ -1871,6 +1948,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -1880,6 +1958,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Request Body** (Get Market Data):
+
 ```json
 {
   "operation": "get_market_data",
@@ -1888,6 +1967,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -1907,6 +1987,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Request Body** (Place Order):
+
 ```json
 {
   "operation": "place_order",
@@ -1921,6 +2002,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -1942,6 +2024,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Request Body** (Get Balance):
+
 ```json
 {
   "operation": "get_balance"
@@ -1949,6 +2032,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -1973,6 +2057,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Request Body** (Check Health):
+
 ```json
 {
   "operation": "check_health"
@@ -1980,6 +2065,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -2007,7 +2093,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
       "responseTimeMs": 85,
       "lastChecked": "2024-12-01T12:00:00Z",
       "errorRate": 0.02,
-      "uptimePercentage": 99.90,
+      "uptimePercentage": 99.9,
       "maintenanceMode": false,
       "apiStatus": {
         "marketData": "operational",
@@ -2046,6 +2132,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Request Body** (Get Statistics):
+
 ```json
 {
   "operation": "get_statistics"
@@ -2053,6 +2140,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -2143,6 +2231,7 @@ The documentation now rivals enterprise-level API docs and provides everything n
 ```
 
 **Error Responses**:
+
 - `400 Bad Request`: Invalid request parameters
 - `401 Unauthorized`: Invalid exchange credentials
 - `500 Internal Server Error`: Exchange operation failed

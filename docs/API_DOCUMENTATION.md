@@ -1,6 +1,6 @@
-# Cloudflare Workers API Documentation [#REF:v0.1.15.API.DOCS]
+# [API-DOCS] Cloudflare Workers API Documentation [#REF:v0.1.15.API.DOCS]
 
-## Overview
+## [OVERVIEW] Overview
 
 The Trader Analyzer API is now fully hosted on Cloudflare Workers, providing global edge deployment with sub-50ms latency worldwide. All endpoints support ETag caching for efficient bandwidth usage.
 
@@ -8,7 +8,7 @@ The Trader Analyzer API is now fully hosted on Cloudflare Workers, providing glo
 > **RSS Feed**: Bun release notes at [bun.com/blog/rss.xml](https://bun.com/blog/rss.xml) [#REF:BUN-RSS-HEX:0x5253532D]
 > **Debug**: [Debugger](https://bun.com/docs/runtime/debugger) | [HTTP Error Handling](https://bun.com/docs/runtime/http/error-handling) [#REF:BUN-DEBUG]
 
-## Base URL
+## [BASE-URL] Base URL
 
 ```
 Production: https://trader-analyzer-markets.utahj4754.workers.dev  [#REF:PROD-URL-HEX:0x50524F44]
@@ -16,13 +16,13 @@ Staging:    https://trader-analyzer-markets-staging.utahj4754.workers.dev [#REF:
 Local:      http://localhost:${PORTS.workersLocal} [#REF:LOCAL-URL-HEX:0x4C4F4341]
 ```
 
-## Authentication
+## [AUTHENTICATION] Authentication
 
 Currently no authentication required. All endpoints are public for demo purposes.
 
 > **Future**: JWT-based auth planned for v0.2.0 [#REF:AUTH-HEX:0x41555448]
 
-## Response Format
+## [RESPONSE-FORMAT] Response Format
 
 All responses are JSON with consistent structure:
 
@@ -35,7 +35,7 @@ All responses are JSON with consistent structure:
 }
 ```
 
-## Caching [#REF:CACHE-HEX:0x43414348]
+## [CACHING] Caching [#REF:CACHE-HEX:0x43414348]
 
 All endpoints support HTTP ETag caching with CRC32 checksums:
 
@@ -55,7 +55,7 @@ Last-Modified: Wed, 03 Dec 2025 12:00:00 GMT
 
 ---
 
-## Markets API
+## [MARKETS-API] Markets API
 
 ### Get All Markets
 
@@ -218,7 +218,7 @@ function aggregateCandles(candles, targetMinutes, sourceMinutes) {
 
 ---
 
-## Trading Data API
+## [TRADING-API] Trading Data API
 
 ### Get Trading Statistics [#REF:STATS-API-HEX:0x53544154]
 
@@ -515,7 +515,7 @@ GET /api/trades?sessionId=session-1
 
 ---
 
-## Real-time WebSocket API [#REF:WS-API-HEX:0x57534150]
+## [WEBSOCKET-API] Real-time WebSocket API [#REF:WS-API-HEX:0x57534150]
 
 ### Connection [#REF:WS-CONN-HEX:0x57434F4E]
 
@@ -698,7 +698,7 @@ ws.send(JSON.stringify({ type: 'ping' }));
 
 ---
 
-## Polling Fallback API [#REF:POLL-API-HEX:0x504F4C4C]
+## [POLLING-API] Polling Fallback API [#REF:POLL-API-HEX:0x504F4C4C]
 
 ### Get Feed Data [#REF:FEED-API-HEX:0x46454544]
 
@@ -839,7 +839,7 @@ class ConnectionManager {
 
 ---
 
-## Error Responses
+## [ERROR-RESPONSES] Error Responses
 
 All endpoints return consistent error format:
 
@@ -860,7 +860,7 @@ All endpoints return consistent error format:
 
 ---
 
-## Rate Limits
+## [RATE-LIMITS] Rate Limits
 
 - **Workers**: 100,000 requests/day free tier
 - **KV**: 10 million reads/month free
@@ -868,7 +868,7 @@ All endpoints return consistent error format:
 
 ---
 
-## SDK Examples
+## [SDK-EXAMPLES] SDK Examples
 
 ### JavaScript/TypeScript
 
@@ -926,7 +926,7 @@ class TraderAPI:
 
 ---
 
-## Changelog
+## [CHANGELOG] Changelog
 
 ### v0.1.15
 
@@ -955,7 +955,7 @@ class TraderAPI:
 
 ---
 
-## Technical References [#REF:TECH-REFS-HEX:0x54455245]
+## [TECH-REFERENCES] Technical References [#REF:TECH-REFS-HEX:0x54455245]
 
 ### Hex Code Reference Table
 
@@ -1001,7 +1001,7 @@ const CRC32_TABLE = new Uint32Array(256);
 
 ---
 
-## Changelog
+## [CHANGELOG-2] Changelog
 
 ### v0.1.15 (Current) - Enhanced Documentation & Technical References
 

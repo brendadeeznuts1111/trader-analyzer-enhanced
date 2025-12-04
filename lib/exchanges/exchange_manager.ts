@@ -62,7 +62,7 @@ export class ExchangeManager {
    */
   public async setActiveExchange(
     exchangeName: string,
-    credentials: ExchangeCredentials
+    credentials?: ExchangeCredentials
   ): Promise<void> {
     const normalizedName = exchangeName.toLowerCase();
     const exchange = this.exchanges.get(normalizedName);
@@ -71,7 +71,36 @@ export class ExchangeManager {
       throw new Error(`Exchange ${exchangeName} not found`);
     }
 
-    await exchange.initialize(credentials);
+    // If no credentials provided, try to get from secure storage
+    let finalCredentials = credentials;
+    if (!finalCredentials) {
+      try {
+        const { secrets } = await import('bun');
+        const apiKey = await secrets.get({
+          service: 'trader-analyzer',
+          name: `${exchangeName.toLowerCase()}-api-key`,
+        });
+        if (apiKey) {
+          finalCredentials = { apiKey };
+        }
+      } catch {
+        // Fallback to environment variables
+        const envApiKey =
+          process.env[`${exchangeName.toUpperCase()}_API_KEY`] ||
+          process.env[`ORCA_${exchangeName.toUpperCase()}_APIKEY`];
+        if (envApiKey) {
+          finalCredentials = { apiKey: envApiKey };
+        }
+      }
+    }
+
+    if (!finalCredentials) {
+      throw new Error(
+        `No credentials found for exchange ${exchangeName}. Please configure API key.`
+      );
+    }
+
+    await exchange.initialize(finalCredentials);
     this.activeExchange = normalizedName;
   }
 
@@ -113,7 +142,7 @@ export class ExchangeManager {
    * @param symbol Market symbol
    * @returns Market data
    */
-  public async fetchMarketData(symbol: string): Promise<any> {
+  public async fetchMarketData(symbol: string): Promise<import('./base_exchange').MarketData> {
     const exchange = this.getActiveExchange();
     return exchange.fetchMarketData(symbol);
   }
@@ -122,7 +151,7 @@ export class ExchangeManager {
    * Fetch account balance from active exchange
    * @returns Account balance
    */
-  public async fetchBalance(): Promise<any> {
+  public async fetchBalance(): Promise<import('./base_exchange').AccountBalance> {
     const exchange = this.getActiveExchange();
     return exchange.fetchBalance();
   }
@@ -132,7 +161,7 @@ export class ExchangeManager {
    * @param params Order parameters
    * @returns Order result
    */
-  public async placeOrder(params: any): Promise<any> {
+  public async placeOrder(params: import('./base_exchange').OrderParams): Promise<import('./base_exchange').OrderResult> {
     const exchange = this.getActiveExchange();
     return exchange.placeOrder(params);
   }
@@ -142,7 +171,7 @@ export class ExchangeManager {
    * @param exchangeName Exchange name
    * @returns Exchange configuration
    */
-  public getExchangeConfig(exchangeName: string): any {
+  public getExchangeConfig(exchangeName: string): import('./base_exchange').ExchangeConfig {
     const exchange = this.getExchange(exchangeName);
     return exchange.getConfig();
   }
@@ -151,8 +180,8 @@ export class ExchangeManager {
    * Get all exchange configurations
    * @returns Map of exchange names to configurations
    */
-  public getAllExchangeConfigs(): Map<string, any> {
-    const configs = new Map<string, any>();
+  public getAllExchangeConfigs(): Map<string, import('./base_exchange').ExchangeConfig> {
+    const configs = new Map<string, import('./base_exchange').ExchangeConfig>();
     this.exchanges.forEach((exchange, name) => {
       configs.set(name, exchange.getConfig());
     });
@@ -171,8 +200,8 @@ export class ExchangeManager {
    * Check health status of all exchanges
    * @returns Map of exchange names to health status
    */
-  public async checkAllExchangeHealth(): Promise<Map<string, any>> {
-    const healthStatus = new Map<string, any>();
+  public async checkAllExchangeHealth(): Promise<Map<string, import('./base_exchange').ExchangeHealthStatus>> {
+    const healthStatus = new Map<string, import('./base_exchange').ExchangeHealthStatus>();
     for (const [name, exchange] of this.exchanges) {
       try {
         const status = await exchange.checkHealth();
@@ -180,6 +209,16 @@ export class ExchangeManager {
       } catch (error) {
         healthStatus.set(name, {
           status: 'offline',
+          responseTimeMs: 0,
+          lastChecked: new Date().toISOString(),
+          errorRate: 1,
+          uptimePercentage: 0,
+          maintenanceMode: false,
+          apiStatus: {
+            marketData: 'down',
+            trading: 'down',
+            account: 'down'
+          },
           error: error instanceof Error ? error.message : 'Unknown error',
         });
       }

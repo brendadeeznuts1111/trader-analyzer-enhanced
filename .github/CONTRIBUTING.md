@@ -1,8 +1,8 @@
-# Contributing to Trader Analyzer
+# [CONTRIBUTING] Contributing to Trader Analyzer
 
 Thank you for your interest in contributing to Trader Analyzer! This document provides guidelines and information for contributors.
 
-## Development Setup
+## [DEV-SETUP] Development Setup
 
 ### Prerequisites
 
@@ -30,7 +30,7 @@ bun test
 bun run deploy:workers
 ```
 
-## Development Workflow
+## [DEV-WORKFLOW] Development Workflow
 
 ### 1. Choose an Issue
 
@@ -82,7 +82,7 @@ git push origin feature/your-feature-name
 - Request review from maintainers
 - Address any feedback promptly
 
-## Code Style Guidelines
+## [CODE-STYLE] Code Style Guidelines
 
 ### TypeScript
 
@@ -103,7 +103,7 @@ git push origin feature/your-feature-name
 - Include [#REF] tags for technical references
 - Update API documentation for endpoint changes
 
-## Testing Requirements
+## [TESTING-REQS] Testing Requirements
 
 ### Unit Tests
 
@@ -123,7 +123,7 @@ git push origin feature/your-feature-name
 - Verify frontend-backend integration
 - Test deployment scenarios
 
-## API Design Guidelines
+## [API-DESIGN] API Design Guidelines
 
 ### RESTful Endpoints
 
@@ -146,7 +146,7 @@ git push origin feature/your-feature-name
 - Log errors for debugging
 - Don't expose sensitive information
 
-## Deployment
+## [DEPLOYMENT] Deployment
 
 ### Staging Deployment
 
@@ -168,14 +168,14 @@ wrangler deployments list
 wrangler deployments rollback <deployment-id>
 ```
 
-## Getting Help
+## [GETTING-HELP] Getting Help
 
 - **Documentation**: Check `docs/` directory
 - **Issues**: Search existing GitHub issues
 - **Discussions**: Use GitHub Discussions for questions
 - **Discord**: Join our community Discord
 
-## Recognition
+## [RECOGNITION] Recognition
 
 Contributors will be recognized in:
 

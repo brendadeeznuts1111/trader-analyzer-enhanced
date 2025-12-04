@@ -9,8 +9,14 @@
  * - Next.js/Node: In-memory Map with TTL
  */
 
-import { createHash } from 'crypto';
 import type { CanonicalMarket } from '../canonical';
+
+// Bun-native SHA-1 implementation
+const encoder = new TextEncoder();
+function sha1(str: string): string {
+  const hash = new Bun.CryptoHasher('sha1').update(encoder.encode(str)).digest('hex');
+  return hash.substring(0, 16);
+}
 
 // Check if running in Bun
 const isBun = typeof globalThis.Bun !== 'undefined';
@@ -63,7 +69,7 @@ const DEFAULT_CONFIGS: Record<string, CacheConfig> = {
  * Hash helper using crypto
  */
 function hashString(data: string): string {
-  return createHash('sha256').update(data).digest('hex').substring(0, 16);
+  return sha1(data).substring(0, 16);
 }
 
 /**
@@ -95,13 +101,13 @@ export class APICacheManager {
         this.db = new Database(path);
         this.initSchema();
         this.usingSQLite = true;
-        console.log(`Cache Manager initialized (${IS_DEV ? 'memory' : 'WAL'} mode)`);
+        if (IS_DEV) console.log(`Cache Manager initialized (${IS_DEV ? 'memory' : 'WAL'} mode)`);
       } catch (e) {
         console.warn('SQLite not available, using in-memory cache');
         this.usingSQLite = false;
       }
     } else {
-      console.log('Cache Manager initialized (in-memory mode for Next.js)');
+      if (IS_DEV) console.log('Cache Manager initialized (in-memory mode for Next.js)');
       this.usingSQLite = false;
     }
   }
