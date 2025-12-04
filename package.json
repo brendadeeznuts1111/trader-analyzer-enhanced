@@ -87,7 +87,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript-eslint/eslint-plugin": "^7",
+    "@typescript-eslint/eslint-plugin": "^8",
     "@typescript-eslint/parser": "^7",
     "bun-types": "^1.3.3",
     "bunx": "latest",
