@@ -1,0 +1,29 @@
+# config/uuid.toml
+[uuid]
+version = 5
+defaultFormat = "string"
+
+[uuid.namespaces]
+dns = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+url = "6ba7b811-9dad-11d1-80b4-00c04fd430c8"
+oid = "6ba7b812-9dad-11d1-80b4-00c04fd430c8"
+x500 = "6ba7b814-9dad-11d1-80b4-00c04fd430c8"
+
+[uuid.customNamespaces]
+vaultOptimizer = "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed"
+sportsMarket = "d1c8b8e0-3c8e-4e6b-8e7c-1b9d6bcdbbfd"
+arbitrage = "3f8b8e0c-4e6b-8e7c-d1c8-1b9d6bcdbbfd"
+nbaAnalytics = "8e7c1b9d-6bcd-bbfd-4b2d-9b5dab8dfbbd"
+polymarket = "9b5dab8d-fbbd-4b2d-9b5d-ab8dfbbd4bed"
+altcoins = "ab8dfbbd-4bed-4b2d-9b5d-1b9d6bcdbbfd"
+
+[uuid.storage]
+vaults = { namespace = "vaultOptimizer", format = "buffer" }
+sportsMarkets = { namespace = "sportsMarket", format = "buffer" }
+arbitrage = { namespace = "arbitrage", format = "hex" }
+nbaGames = { namespace = "nbaAnalytics", format = "string" }
+
+[uuid.performance]
+cacheSize = 10000
+precompute = true
+bufferPool = true
