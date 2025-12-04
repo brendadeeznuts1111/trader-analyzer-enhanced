@@ -113,9 +113,14 @@ export interface IURLPattern {
 // ============================================================================
 
 /**
- * Simple regex-based URLPattern polyfill
- * Note: This is a simplified implementation covering common use cases.
- * For full spec compliance, use the native implementation or a complete polyfill.
+ * URLPattern Polyfill - Regex-based implementation
+ * 
+ * Provides URLPattern functionality for environments without native support.
+ * Covers common use cases with named groups and wildcard patterns.
+ * 
+ * @note For full WHATWG spec compliance, use the native implementation or
+ * a complete polyfill library.
+ * @internal
  */
 class URLPatternPolyfill implements IURLPattern {
   readonly protocol: string;
