@@ -92,6 +92,15 @@ export class BunUUIDConfig {
     this.configPath = configPath || './config/uuid.toml';
     this.autoReload = autoReload;
 
+    // Use Bun.env for log level configuration
+    const logLevel = Bun.env.LOG_LEVEL || 'info';
+    this.config.monitoring.logLevel = logLevel as 'debug' | 'info' | 'warn' | 'error';
+    
+    if (logLevel === 'debug') {
+      console.log(`[BunUUIDConfig] Logging level set to: ${logLevel}`);
+      console.log(`[BunUUIDConfig] Config UUID: ${this.config.metadata.uuid}`);
+    }
+
     if (autoReload) {
       this.startWatching();
     }
