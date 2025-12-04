@@ -69,7 +69,7 @@
     "bench:cli-markets": "hyperfine --runs 20 'bun scripts/cli.ts markets'"
   },
   "dependencies": {
-    "@types/uuid": "10.0.0",
+    "@types/uuid": "11.0.0",
     "ccxt": "^4.5.20",
     "csv-parse": "^6.1.0",
     "lightweight-charts": "^4.2.1",
