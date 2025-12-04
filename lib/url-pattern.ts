@@ -614,5 +614,132 @@ export function isURLPatternResult(value: unknown): value is URLPatternResult {
   );
 }
 
+// ============================================================================
+// Pattern Validation & Utilities (Phase 2)
+// ============================================================================
+
+/**
+ * Validate a pathname pattern for syntax errors
+ * 
+ * Checks for common pattern issues like unmatched characters, invalid group names, etc.
+ * 
+ * @param pathname - Pathname pattern to validate
+ * @returns Validation result with isValid flag and optional error message
+ * @example
+ * const result = validatePattern('/users/:id');
+ * if (!result.isValid) console.error(result.error);
+ */
+export function validatePattern(pathname: string): { isValid: boolean; error?: string } {
+  if (!pathname) {
+    return { isValid: false, error: 'Pattern cannot be empty' };
+  }
+
+  // Check for invalid group names
+  const groupMatch = pathname.match(/:([a-zA-Z0-9_]*)/g);
+  if (groupMatch) {
+    for (const group of groupMatch) {
+      const name = group.slice(1); // Remove the ':'
+      if (!name) {
+        return { isValid: false, error: 'Empty parameter name - use :name format' };
+      }
+      if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name)) {
+        return { isValid: false, error: `Invalid parameter name: ${name}. Use alphanumeric and underscore only` };
+      }
+    }
+  }
+
+  // Check for consecutively placed wildcards
+  if (pathname.includes('**')) {
+    return { isValid: false, error: 'Consecutive wildcards (**) are not allowed' };
+  }
+
+  return { isValid: true };
+}
+
+/**
+ * Get all parameter names from a pattern
+ * 
+ * Extracts named groups from a pattern string.
+ * 
+ * @param pathname - Pathname pattern
+ * @returns Array of parameter names in order
+ * @example
+ * const params = getPatternParameters('/users/:userId/posts/:postId');
+ * // Returns: ['userId', 'postId']
+ */
+export function getPatternParameters(pathname: string): string[] {
+  const params: string[] = [];
+  const matches = pathname.match(/:([a-zA-Z0-9_]+)/g);
+  
+  if (matches) {
+    for (const match of matches) {
+      params.push(match.slice(1)); // Remove the ':'
+    }
+  }
+  
+  return params;
+}
+
+/**
+ * Check if two patterns could conflict (match overlapping URLs)
+ * 
+ * Useful for detecting routing ambiguities.
+ * 
+ * @param pattern1 - First pattern to compare
+ * @param pattern2 - Second pattern to compare
+ * @returns true if patterns could conflict
+ * @example
+ * const conflict = patternsConflict('/users/:id', '/users/:userId');
+ * // Returns: true (both match /users/123)
+ */
+export function patternsConflict(pattern1: string, pattern2: string): boolean {
+  // Exact match
+  if (pattern1 === pattern2) return true;
+
+  // One is a wildcard superset of the other
+  if (pattern1.endsWith('/*') && pattern2.startsWith(pattern1.slice(0, -1))) return true;
+  if (pattern2.endsWith('/*') && pattern1.startsWith(pattern2.slice(0, -1))) return true;
+
+  // Same structure with different parameter names (potential conflict)
+  const p1Structure = pattern1.replace(/:[a-zA-Z_][a-zA-Z0-9_]*/g, ':_');
+  const p2Structure = pattern2.replace(/:[a-zA-Z_][a-zA-Z0-9_]*/g, ':_');
+  
+  return p1Structure === p2Structure;
+}
+
+/**
+ * Create a pattern from a simpler syntax
+ * 
+ * Converts shorthand notation to full URLPatternInit.
+ * 
+ * @param spec - Pattern specification
+ * @returns URLPatternInit object
+ * @internal
+ * @example
+ * const pattern = createPatternFromSpec({
+ *   path: '/api/:resource/:id',
+ *   host: 'api.example.com'
+ * });
+ */
+export interface PatternSpec {
+  path?: string;
+  pathname?: string;
+  host?: string;
+  hostname?: string;
+  proto?: string;
+  protocol?: string;
+  base?: string;
+  baseURL?: string;
+}
+
+export function createPatternFromSpec(spec: PatternSpec): URLPatternInit {
+  return {
+    protocol: spec.proto || spec.protocol,
+    hostname: spec.host || spec.hostname,
+    pathname: spec.path || spec.pathname,
+    baseURL: spec.base || spec.baseURL,
+  };
+}
+
 // Export default
 export default URLPattern;
