@@ -1,0 +1,109 @@
+# Enhanced Bun Configuration for YAML System
+# This file demonstrates console depth configuration for better object inspection
+
+[console]
+depth = 4
+
+# Other useful configurations for the enhanced YAML system
+[install]
+cache = true
+optional = true
+
+# Performance optimizations
+[bundle]
+target = "bun"
+minify = true
+
+# Shell configuration with tmux integration
+[shell]
+name = "tmux"
+args = ["new-session", "-d", "-s", "bun-dev"]
+
+[shell.bun]
+path = "bun"
+cwd = "."
+env = { BUN_ENV = "development", NODE_ENV = "development" }
+
+# Development environment configuration
+[env]
+BUN_ENV = "development"
+NODE_ENV = "development"
+DEBUG = "trader-analyzer:*"
+TMUX_SESSION = "bun-dev"
+
+# Lockfile configuration
+[lockfile]
+save = true
+print = "yarn"
+
+# Test configuration
+[test]
+preload = ["./tests/setup.ts"]
+coverage = true
+coverageDir = "./coverage"
+coverageReporter = ["text", "html", "json"]
+
+# Run configuration
+[run]
+mainFields = ["main", "module"]
+shell = "system"
+
+# TypeScript configuration
+[define]
+# Define build-time constants
+process.env.BUILD_TIME = "\"$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)\""
+process.env.VERSION = "\"2.0.0\""
+
+# Performance and optimization settings
+[optimize]
+# Enable optimizations for production
+minifyWhitespace = true
+minifySyntax = true
+target = "bun"
+
+# Advanced optimizations
+[loader]
+# Custom loaders for different file types
+".yaml" = "yaml"
+".yml" = "yaml"
+".toml" = "toml"
+
+# Network optimizations
+[http]
+timeout = 30000
+maxRedirects = 5
+userAgent = "trader-analyzer/2.0.0"
+
+# Memory and performance tuning
+[performance]
+# Enable experimental performance features
+experimental = true
+# Memory limit for builds
+memoryLimit = "2GB"
+# Parallel compilation
+parallel = true
+
+# Development server optimizations
+[serve]
+port = 3030
+host = "localhost"
+cors = true
+static = "./public"
+
+# Hot reload configuration
+[reload]
+# Enable hot reload for development
+enabled = true
+# Watch these directories
+watch = ["src", "examples", "config"]
+# Ignore these patterns
+ignore = ["node_modules", ".git", "dist"]
+
+# Security settings
+[security]
+# Enable security features
+enabled = true
+# Restrict network access
+network = "allow"
+# Allowed hosts
+allowHosts = ["localhost", "127.0.0.1", "*.example.com"]

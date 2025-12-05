@@ -1,8 +1,19 @@
-import { DomainNotation, ParsedNotation, NotationParseOptions, NotationValidationError, Scope } from './types';
+import {
+  DomainNotation,
+  ParsedNotation,
+  NotationParseOptions,
+  NotationValidationError,
+  Scope,
+} from './types';
 
 export class DomainNotationParser {
   private static readonly SCOPE_VALUES: Set<Scope> = new Set([
-    'GLOBAL', 'MODULE', 'USER', 'ORG', 'PROJECT', 'TEAM'
+    'GLOBAL',
+    'MODULE',
+    'USER',
+    'ORG',
+    'PROJECT',
+    'TEAM',
   ]);
 
   private static readonly NOTATION_REGEX = /^\[\[([^\]]+)\]\]$/;
@@ -15,7 +26,7 @@ export class DomainNotationParser {
 
   static parse(notation: string, options: NotationParseOptions = {}): ParsedNotation {
     const { strictMode = true } = options;
-    
+
     // Validate overall format
     const match = notation.match(this.NOTATION_REGEX);
     if (!match) {
@@ -24,14 +35,14 @@ export class DomainNotationParser {
 
     const content = match[1];
     const components = this.extractComponents(content);
-    
+
     if (strictMode) {
       this.validateComponents(components);
     }
 
     return {
       raw: notation,
-      components: this.buildDomainNotation(components)
+      components: this.buildDomainNotation(components),
     };
   }
 
@@ -42,7 +53,7 @@ export class DomainNotationParser {
     // Extract all bracketed components
     while ((match = this.COMPONENT_REGEX.exec(content)) !== null) {
       const component = match[1];
-      
+
       if (component.includes(':')) {
         const [key, ...valueParts] = component.split(':');
         const value = valueParts.join(':');
@@ -56,7 +67,10 @@ export class DomainNotationParser {
     return components;
   }
 
-  private static assignPositionalComponent(components: Record<string, string>, component: string): void {
+  private static assignPositionalComponent(
+    components: Record<string, string>,
+    component: string
+  ): void {
     if (!components.domain) {
       components.domain = component;
     } else if (!components.scope) {
@@ -78,13 +92,15 @@ export class DomainNotationParser {
       class: components.class || '',
       ref: components.ref || '',
       blueprint: components.blueprint,
-      root: components.root
+      root: components.root,
     };
   }
 
   private static validateScope(scope: string): Scope {
     if (!this.SCOPE_VALUES.has(scope as Scope)) {
-      throw new Error(`Invalid scope: ${scope}. Must be one of: ${Array.from(this.SCOPE_VALUES).join(', ')}`);
+      throw new Error(
+        `Invalid scope: ${scope}. Must be one of: ${Array.from(this.SCOPE_VALUES).join(', ')}`
+      );
     }
     return scope as Scope;
   }
@@ -146,7 +162,7 @@ export class DomainNotationParser {
 
     return {
       value: parsedValue,
-      ...directives
+      ...directives,
     };
   }
 
@@ -166,15 +182,17 @@ export class DomainNotationParser {
 
     // Validate scope
     if (components.scope && !this.SCOPE_VALUES.has(components.scope as Scope)) {
-      errors.push({ 
-        field: 'scope', 
-        message: `Invalid scope: ${components.scope}`, 
-        value: components.scope 
+      errors.push({
+        field: 'scope',
+        message: `Invalid scope: ${components.scope}`,
+        value: components.scope,
       });
     }
 
     if (errors.length > 0) {
-      throw new Error(`Validation errors: ${errors.map(e => `${e.field}: ${e.message}`).join(', ')}`);
+      throw new Error(
+        `Validation errors: ${errors.map(e => `${e.field}: ${e.message}`).join(', ')}`
+      );
     }
   }
 
@@ -215,15 +233,15 @@ export class DomainNotationParser {
 
     // Add remaining components
     components.push(`[${notation.class}]`);
-    
+
     if (notation.ref) {
       components.push(`[#REF:${notation.ref}]`);
     }
-    
+
     if (notation.blueprint) {
       components.push(`[@BLUEPRINT:${notation.blueprint}]`);
     }
-    
+
     if (notation.root) {
       components.push(`[@ROOT:${notation.root}]`);
     }

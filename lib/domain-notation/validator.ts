@@ -2,11 +2,24 @@ import { DomainNotation, NotationValidationError, Blueprint, PropertyDefinition 
 
 export class DomainNotationValidator {
   private static readonly VALID_DOMAINS = new Set([
-    'TECH', 'TRADING', 'ANALYSIS', 'UI', 'API', 'DATA', 'SYSTEM', 'BUSINESS'
+    'TECH',
+    'TRADING',
+    'ANALYSIS',
+    'UI',
+    'API',
+    'DATA',
+    'SYSTEM',
+    'BUSINESS',
   ]);
 
   private static readonly VALID_TYPES = new Set([
-    'BLUEPRINT', 'INSTANCE', 'COMPONENT', 'SERVICE', 'CONFIG', 'STRATEGY', 'MODULE'
+    'BLUEPRINT',
+    'INSTANCE',
+    'COMPONENT',
+    'SERVICE',
+    'CONFIG',
+    'STRATEGY',
+    'MODULE',
   ]);
 
   private static readonly VERSION_REGEX = /^v-(\d+)\.(\d+)\.(\d+)\.(.+)$/;
@@ -18,10 +31,10 @@ export class DomainNotationValidator {
     if (!notation.domain) {
       errors.push({ field: 'domain', message: 'Domain is required', value: notation.domain });
     } else if (!this.VALID_DOMAINS.has(notation.domain)) {
-      errors.push({ 
-        field: 'domain', 
-        message: `Invalid domain: ${notation.domain}. Must be one of: ${Array.from(this.VALID_DOMAINS).join(', ')}`, 
-        value: notation.domain 
+      errors.push({
+        field: 'domain',
+        message: `Invalid domain: ${notation.domain}. Must be one of: ${Array.from(this.VALID_DOMAINS).join(', ')}`,
+        value: notation.domain,
       });
     }
 
@@ -34,10 +47,10 @@ export class DomainNotationValidator {
     if (!notation.type) {
       errors.push({ field: 'type', message: 'Type is required', value: notation.type });
     } else if (!this.VALID_TYPES.has(notation.type)) {
-      errors.push({ 
-        field: 'type', 
-        message: `Invalid type: ${notation.type}. Must be one of: ${Array.from(this.VALID_TYPES).join(', ')}`, 
-        value: notation.type 
+      errors.push({
+        field: 'type',
+        message: `Invalid type: ${notation.type}. Must be one of: ${Array.from(this.VALID_TYPES).join(', ')}`,
+        value: notation.type,
       });
     }
 
@@ -48,20 +61,20 @@ export class DomainNotationValidator {
 
     // Validate ref format
     if (notation.ref && !this.VERSION_REGEX.test(notation.ref)) {
-      errors.push({ 
-        field: 'ref', 
-        message: `Invalid ref format: ${notation.ref}. Expected format: v-MAJOR.MINOR.PATCH.x1.x2.x3.x4.x5.x6.INSTANCE`, 
-        value: notation.ref 
+      errors.push({
+        field: 'ref',
+        message: `Invalid ref format: ${notation.ref}. Expected format: v-MAJOR.MINOR.PATCH.x1.x2.x3.x4.x5.x6.INSTANCE`,
+        value: notation.ref,
       });
     }
 
     // Validate meta properties
     for (const [key, value] of Object.entries(notation.meta)) {
       if (!key || !value) {
-        errors.push({ 
-          field: 'meta', 
-          message: `Invalid meta property: ${key}=${value}`, 
-          value: { key, value }
+        errors.push({
+          field: 'meta',
+          message: `Invalid meta property: ${key}=${value}`,
+          value: { key, value },
         });
       }
     }
@@ -84,10 +97,10 @@ export class DomainNotationValidator {
     }
 
     if (!property.value) {
-      errors.push({ 
-        field: 'property', 
-        message: `Property value is required for key: ${key}`, 
-        value: property 
+      errors.push({
+        field: 'property',
+        message: `Property value is required for key: ${key}`,
+        value: property,
       });
     }
 
@@ -95,28 +108,28 @@ export class DomainNotationValidator {
     if (property.type) {
       const validTypes = ['string', 'number', 'boolean', 'object', 'array'];
       if (!validTypes.includes(property.type)) {
-        errors.push({ 
-          field: 'property', 
-          message: `Invalid property type: ${property.type} for key: ${key}`, 
-          value: property 
+        errors.push({
+          field: 'property',
+          message: `Invalid property type: ${property.type} for key: ${key}`,
+          value: property,
         });
       }
     }
 
     // Validate directives
     if (property.inherit && property.inherit !== 'parent') {
-      errors.push({ 
-        field: 'property', 
-        message: `Invalid inherit directive: ${property.inherit} for key: ${key}`, 
-        value: property 
+      errors.push({
+        field: 'property',
+        message: `Invalid inherit directive: ${property.inherit} for key: ${key}`,
+        value: property,
       });
     }
 
     if (property.override && property.override !== 'true' && property.override !== 'false') {
-      errors.push({ 
-        field: 'property', 
-        message: `Invalid override directive: ${property.override} for key: ${key}`, 
-        value: property 
+      errors.push({
+        field: 'property',
+        message: `Invalid override directive: ${property.override} for key: ${key}`,
+        value: property,
       });
     }
 
@@ -128,21 +141,33 @@ export class DomainNotationValidator {
 
     // Validate required fields
     if (!blueprint.id) {
-      errors.push({ field: 'blueprint.id', message: 'Blueprint ID is required', value: blueprint.id });
+      errors.push({
+        field: 'blueprint.id',
+        message: 'Blueprint ID is required',
+        value: blueprint.id,
+      });
     }
 
     if (!blueprint.version) {
-      errors.push({ field: 'blueprint.version', message: 'Blueprint version is required', value: blueprint.version });
+      errors.push({
+        field: 'blueprint.version',
+        message: 'Blueprint version is required',
+        value: blueprint.version,
+      });
     } else if (!/^\d+\.\d+\.\d+/.test(blueprint.version)) {
-      errors.push({ 
-        field: 'blueprint.version', 
-        message: `Invalid version format: ${blueprint.version}. Expected: MAJOR.MINOR.PATCH`, 
-        value: blueprint.version 
+      errors.push({
+        field: 'blueprint.version',
+        message: `Invalid version format: ${blueprint.version}. Expected: MAJOR.MINOR.PATCH`,
+        value: blueprint.version,
       });
     }
 
     if (!blueprint.root) {
-      errors.push({ field: 'blueprint.root', message: 'Blueprint root is required', value: blueprint.root });
+      errors.push({
+        field: 'blueprint.root',
+        message: 'Blueprint root is required',
+        value: blueprint.root,
+      });
     }
 
     // Validate properties
@@ -183,7 +208,7 @@ export class NotationSanitizer {
       class: this.sanitizeString(notation.class),
       ref: this.sanitizeString(notation.ref),
       blueprint: this.sanitizeString(notation.blueprint),
-      root: this.sanitizeString(notation.root)
+      root: this.sanitizeString(notation.root),
     };
   }
 

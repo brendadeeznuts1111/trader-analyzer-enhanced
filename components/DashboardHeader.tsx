@@ -26,6 +26,8 @@ type ViewMode =
   | 'prediction'
   | 'profile'
   | 'pipeline'
+  | 'pipeline-flow'
+  | 'enhanced'
   | 'telegram';
 
 interface DashboardHeaderProps {

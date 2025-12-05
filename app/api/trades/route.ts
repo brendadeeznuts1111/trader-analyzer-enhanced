@@ -1,17 +1,30 @@
+/**
+ * Trades API Routes
+ * Comprehensive trading data endpoints for charts, statistics, sessions, and trade history
+ *
+ * GET /api/trades - Main trading data endpoint with multiple data types
+ *
+ * Query Parameters:
+ * - chart=true: Returns OHLCV candle data for charting
+ * - type=stats: Returns trading statistics and performance metrics
+ * - type=equity: Returns equity curve data
+ * - type=funding: Returns funding payment history
+ * - type=sessions: Returns position sessions grouped by trades
+ * - sessionId=<id>: Returns detailed trade data for a specific session
+ * - symbol=<symbol>: Filter by trading symbol (default: btc-usd-perp)
+ * - timeframe=<1h|4h|1d|1w>: Chart timeframe (default: 1d)
+ * - page=<number>: Pagination page number (default: 1)
+ * - limit=<number>: Results per page (default: 50)
+ */
+
 import { NextResponse } from 'next/server';
 import { buildApiHeaders, headersToObject, createErrorResponse } from '@/lib/api-headers';
 import { API_CONFIG } from '@/lib/constants';
+import { createPreflightResponse } from '@/lib/security/profiles';
 
 // CORS preflight handler
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Telegram-Init-Data',
-    },
-  });
+export async function OPTIONS(request: Request) {
+  return createPreflightResponse(request);
 }
 
 // Adapter layer: Next.js dashboard ↔ Bun unified pipeline
@@ -25,6 +38,16 @@ const MARKET_TO_SYMBOL_MAP: Record<string, string> = {
   'fed-rate-cut-2024': 'FED24',
 };
 
+/**
+ * GET /api/trades
+ * Main trading data endpoint supporting multiple data types and formats
+ *
+ * Supports chart data, trading statistics, equity curves, funding history,
+ * position sessions, and individual trade records.
+ *
+ * @param request - The incoming HTTP request with query parameters
+ * @returns Response with requested trading data or error response
+ */
 export async function GET(request: Request) {
   const startTime = Date.now();
   const { searchParams } = new URL(request.url);

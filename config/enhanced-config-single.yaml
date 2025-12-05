@@ -1,0 +1,194 @@
+# Enhanced Trader Analyzer Configuration (Single Document)
+# Demonstrates advanced Bun YAML features including anchors, aliases, and environment variables
+
+# Default configuration anchor for reuse
+defaults: &defaults
+  timeout: 5000
+  retries: 3
+  cache:
+    enabled: true
+    ttl: 3600
+
+# Environment-specific configurations
+development:
+  <<: *defaults
+  threadManager:
+    # Path to persistence file relative to project root
+    persistenceFile: ".thread-manager.json"
+    # Automatically save state changes to disk
+    autoSave: true
+    # Maximum number of topics allowed per chat (0 = unlimited)
+    maxTopicsPerChat: 100
+    # Cleanup interval in milliseconds (0 = disabled)
+    cleanupIntervalMs: 300000
+
+    topics: &topics
+      # Default purpose for new topics when none specified
+      defaultPurpose: "general"
+      # How long to keep pin information in hours (0 = forever)
+      pinRetentionHours: 24
+      # Maximum topic name length
+      maxTopicNameLength: 100
+      # Whether to automatically create topics when registering
+      autoCreateTopics: true
+
+    telegram: &telegram
+      # List of super group chat IDs to manage
+      superGroups: [8013171035, 8429650235]
+      # Default topic purposes to initialize for each chat
+      defaultPurposes: ["alerts", "trades", "analytics", "general", "system"]
+      # Rate limiting for topic operations (operations per second)
+      rateLimitPerSecond: 10
+      # Maximum message length for topic names
+      maxMessageLength: 4000
+
+    pinning: &pinning
+      # Enable automatic pinning of new messages for their purpose
+      autoPinNewMessages: false
+      # Maximum number of pinned topics per purpose (0 = unlimited)
+      maxPinsPerPurpose: 1
+      # Whether to unpin older messages when newer ones arrive
+      autoUnpinOlder: true
+      # Delay in milliseconds before auto-pinning (0 = immediate)
+      autoPinDelayMs: 1000
+
+    debug: &debug
+      # Enable debug logging for thread operations
+      enableDebugLogging: true
+      # Log topic creation, deletion, and pin changes
+      logTopicChanges: true
+      # Log performance metrics
+      logPerformanceMetrics: false
+
+  server:
+    port: \${SERVER_PORT:-3030}
+    hostname: \${SERVER_HOST:-0.0.0.0}
+    development: true
+
+  # Database configuration
+  database:
+    type: postgres
+    host: \${DB_HOST:-localhost}
+    port: \${DB_PORT:-5432}
+    database: \${DB_NAME:-trader_analyzer_dev}
+    username: \${DB_USER:-postgres}
+    password: \${DB_PASS}
+
+  # Feature flags
+  features:
+    analytics: true
+    telegramBot: true
+    realTimeData: true
+    debugMode: true
+
+staging:
+  <<: *defaults
+  threadManager:
+    persistenceFile: ".thread-manager-staging.json"
+    autoSave: true
+    maxTopicsPerChat: 200
+    cleanupIntervalMs: 600000
+    topics: *topics
+    telegram: *telegram
+    pinning: *pinning
+    debug: *debug
+
+  server:
+    port: \${SERVER_PORT:-3031}
+    hostname: \${SERVER_HOST:-0.0.0.0}
+    development: false
+
+  database:
+    type: postgres
+    host: \${DB_HOST:-staging-db.example.com}
+    port: \${DB_PORT:-5432}
+    database: \${DB_NAME:-trader_analyzer_staging}
+    username: \${DB_USER:-staging_user}
+    password: \${STAGING_DB_PASS}
+
+  features:
+    analytics: true
+    telegramBot: true
+    realTimeData: true
+    debugMode: false
+
+production:
+  <<: *defaults
+  threadManager:
+    persistenceFile: "/app/data/.thread-manager.json"
+    autoSave: true
+    maxTopicsPerChat: 500
+    cleanupIntervalMs: 900000
+    topics: *topics
+    telegram: *telegram
+    pinning:
+      autoPinNewMessages: true
+      maxPinsPerPurpose: 3
+      autoUnpinOlder: true
+      autoPinDelayMs: 500
+    debug:
+      enableDebugLogging: false
+      logTopicChanges: false
+      logPerformanceMetrics: true
+
+  server:
+    port: \${SERVER_PORT:-80}
+    hostname: \${SERVER_HOST:-0.0.0.0}
+    development: false
+
+  database:
+    type: postgres
+    host: \${DB_HOST:-prod-db.example.com}
+    port: \${DB_PORT:-5432}
+    database: \${DB_NAME:-trader_analyzer}
+    username: \${DB_USER:-prod_user}
+    password: \${PROD_DB_PASS}
+
+  features:
+    analytics: true
+    telegramBot: true
+    realTimeData: true
+    debugMode: false
+
+# Monitoring configuration
+monitoring:
+  metrics:
+    enabled: true
+    endpoint: "/metrics"
+    interval: 30000
+
+  health:
+    enabled: true
+    endpoint: "/health"
+    checks:
+      - database
+      - redis
+      - telegram
+
+  alerts:
+    email: \${ALERT_EMAIL:-admin@example.com}
+    webhook: \${ALERT_WEBHOOK}
+    thresholds:
+      errorRate: 0.05
+      responseTime: 2000
+
+# Logging configuration
+logging:
+  level: \${LOG_LEVEL:-info}
+  format: \${LOG_FORMAT:-json}
+  
+  transports:
+    console:
+      enabled: true
+      colorize: true
+    
+    file:
+      enabled: true
+      filename: "app.log"
+      maxSize: "10MB"
+      maxFiles: 5
+    
+    external:
+      enabled: false
+      service: \${LOG_SERVICE}
+      apiKey: \${LOG_API_KEY}

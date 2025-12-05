@@ -1,2 +1,14 @@
 [console]
 depth = 5
+
+[install.scope.paths]
+"@/*" = "./*"
+"@/lib/*" = "lib/*"
+"@app/*" = "app/*"
+"@components/*" = "components/*"
+"@lib/*" = "lib/*"
+"@src/*" = "src/*"
+"@types/*" = "types/*"
+"@scripts/*" = "scripts/*"
+"@data/*" = "data/*"
+"@docs/*" = "docs/*"

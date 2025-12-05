@@ -43,10 +43,7 @@ class BlueprintRegistry {
   /**
    * Create an instance from a blueprint
    */
-  createInstance(
-    blueprintId: string,
-    overrides: Record<string, any> = {}
-  ): BlueprintInstance {
+  createInstance(blueprintId: string, overrides: Record<string, any> = {}): BlueprintInstance {
     const blueprint = this.getBlueprint(blueprintId);
     if (!blueprint) {
       throw new Error(`Blueprint not found: ${blueprintId}`);
@@ -67,7 +64,7 @@ class BlueprintRegistry {
       version: blueprint.version,
       properties,
       overrides,
-      createdAt: Date.now()
+      createdAt: Date.now(),
     };
 
     // Register with resolver
@@ -95,8 +92,9 @@ class BlueprintRegistry {
    * Get all instances for a blueprint
    */
   getInstancesForBlueprint(blueprintId: string): BlueprintInstance[] {
-    return Array.from(this.instances.values())
-      .filter(inst => inst.blueprintId === blueprintId || inst.blueprintId.startsWith(blueprintId));
+    return Array.from(this.instances.values()).filter(
+      inst => inst.blueprintId === blueprintId || inst.blueprintId.startsWith(blueprintId)
+    );
   }
 
   /**
@@ -113,14 +111,14 @@ class BlueprintRegistry {
     // Return unique blueprints (filter out version shortcuts)
     const seen = new Set<string>();
     const unique: Blueprint[] = [];
-    
+
     for (const [key, bp] of this.blueprints) {
       if (key.includes('@') && !seen.has(bp.id)) {
         seen.add(bp.id);
         unique.push(bp);
       }
     }
-    
+
     return unique;
   }
 
@@ -135,7 +133,7 @@ class BlueprintRegistry {
     return {
       blueprints: this.listBlueprints().length,
       instances: this.instances.size,
-      cacheStats: this.resolver.getCacheStats()
+      cacheStats: this.resolver.getCacheStats(),
     };
   }
 
@@ -171,7 +169,7 @@ class BlueprintRegistry {
   } {
     return {
       blueprints: this.listBlueprints(),
-      instances: Array.from(this.instances.values())
+      instances: Array.from(this.instances.values()),
     };
   }
 

@@ -11,15 +11,31 @@
 
 import type { CanonicalMarket } from '../canonical';
 
-// Bun-native SHA-1 implementation
-const encoder = new TextEncoder();
-function sha1(str: string): string {
-  const hash = new Bun.CryptoHasher('sha1').update(encoder.encode(str)).digest('hex');
-  return hash.substring(0, 16);
-}
-
 // Check if running in Bun
 const isBun = typeof globalThis.Bun !== 'undefined';
+
+// Cross-runtime SHA-1 implementation
+const encoder = new TextEncoder();
+
+// Simple hash function that works in both Bun and Node/browser
+function sha1(str: string): string {
+  if (isBun) {
+    // Use Bun's native hasher
+    const hash = new (globalThis.Bun as any).CryptoHasher('sha1')
+      .update(encoder.encode(str))
+      .digest('hex');
+    return hash.substring(0, 16);
+  } else {
+    // Fallback: simple hash for non-Bun environments (not cryptographic, just for cache keys)
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash).toString(16).padStart(16, '0').substring(0, 16);
+  }
+}
 
 // Environment detection
 const IS_DEV = process.env.DEV === 'true' || process.env.NODE_ENV === 'development';
@@ -37,6 +53,24 @@ export interface CacheEntry {
   tags: string;
   hitCount: number;
   lastAccessed: string;
+}
+
+/**
+ * SQLite row format (snake_case column names)
+ */
+interface SQLiteCacheRow {
+  canonical_uuid: string;
+  exchange: string;
+  endpoint: string;
+  method: string;
+  headers_hash: string;
+  response: string;
+  status: number;
+  cached_at: string;
+  expires_at: string;
+  tags: string;
+  hit_count: number;
+  last_accessed: string;
 }
 
 export interface CacheConfig {
@@ -93,21 +127,28 @@ export class APICacheManager {
   constructor(dbPath?: string, configs?: Record<string, CacheConfig>) {
     this.configs = { ...DEFAULT_CONFIGS, ...configs };
 
-    if (isBun) {
-      try {
-        // Dynamic require for Bun's SQLite
-        const { Database } = require('bun:sqlite');
-        const path = dbPath || (IS_DEV ? ':memory:' : './data/api-cache.db');
-        this.db = new Database(path);
-        this.initSchema();
-        this.usingSQLite = true;
-        if (IS_DEV) console.log(`Cache Manager initialized (${IS_DEV ? 'memory' : 'WAL'} mode)`);
-      } catch (e) {
-        console.warn('SQLite not available, using in-memory cache');
-        this.usingSQLite = false;
-      }
-    } else {
-      if (IS_DEV) console.log('Cache Manager initialized (in-memory mode for Next.js)');
+    // Initialization is now async - use initAsync() after construction if SQLite is needed
+    this.initSync(dbPath);
+  }
+
+  private initSync(dbPath?: string): void {
+    if (!isBun) {
+      // Non-Bun environment uses in-memory cache
+      this.usingSQLite = false;
+      return;
+    }
+
+    // In Bun, try to initialize SQLite synchronously using eval to hide from bundlers
+    try {
+      // Use eval to prevent webpack from seeing the require
+      const sqliteModule = (0, eval)('require("bun:sqlite")');
+      const Database = sqliteModule.Database;
+      const path = dbPath || (IS_DEV ? ':memory:' : './data/api-cache.db');
+      this.db = new Database(path);
+      this.initSchema();
+      this.usingSQLite = true;
+    } catch {
+      // SQLite not available, fall back to in-memory
       this.usingSQLite = false;
     }
   }
@@ -250,7 +291,7 @@ export class APICacheManager {
     const now = new Date();
 
     if (this.usingSQLite && this.db) {
-      let cached: CacheEntry | undefined;
+      let cached: SQLiteCacheRow | undefined;
 
       if (endpoint) {
         const stmt = this.db.prepare(`
@@ -261,7 +302,7 @@ export class APICacheManager {
             AND method = ?
           LIMIT 1
         `);
-        cached = stmt.get(canonicalUUID, endpoint, method) as CacheEntry | undefined;
+        cached = stmt.get(canonicalUUID, endpoint, method) as SQLiteCacheRow | undefined;
       } else {
         const stmt = this.db.prepare(`
           SELECT * FROM api_cache 
@@ -270,7 +311,7 @@ export class APICacheManager {
             AND method = ?
           LIMIT 1
         `);
-        cached = stmt.get(canonicalUUID, method) as CacheEntry | undefined;
+        cached = stmt.get(canonicalUUID, method) as SQLiteCacheRow | undefined;
       }
 
       if (!cached) {
@@ -287,11 +328,10 @@ export class APICacheManager {
       memoryCacheMetrics.hits++;
 
       // SQLite uses snake_case column names
-      const row = cached as any;
       return {
-        data: JSON.parse(row.response),
-        cachedAt: row.cached_at,
-        hitCount: (row.hit_count || 0) + 1,
+        data: JSON.parse(cached.response),
+        cachedAt: cached.cached_at,
+        hitCount: (cached.hit_count || 0) + 1,
       };
     } else {
       // In-memory cache

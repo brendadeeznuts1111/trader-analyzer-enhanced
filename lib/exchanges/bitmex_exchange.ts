@@ -160,6 +160,7 @@ export class BitmexExchange implements BaseExchange {
       return {
         total: balance.total || 0,
         available: balance.free || 0,
+        used: balance.used || 0,
         currencies,
         timestamp: new Date().toISOString(),
       };
@@ -209,6 +210,8 @@ export class BitmexExchange implements BaseExchange {
         side: order.side,
         type: order.type,
         amount: order.amount,
+        filled: order.filled || 0,
+        remaining: order.remaining || order.amount,
         price: order.price,
         status: order.status,
         timestamp: new Date(order.timestamp || Date.now()).toISOString(),
@@ -310,8 +313,9 @@ export class BitmexExchange implements BaseExchange {
       }));
     } catch (error) {
       this.updateStatistics(false, Date.now() - startTime);
-      logger.error('Failed to fetch BitMEX trade history', { params, error: error.message });
-      throw new Error(`Failed to fetch trade history: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error('Failed to fetch BitMEX trade history', { params, error: errorMessage });
+      throw new Error(`Failed to fetch trade history: ${errorMessage}`);
     }
   }
 
@@ -337,6 +341,8 @@ export class BitmexExchange implements BaseExchange {
 
       return {
         status: 'online',
+        circuitBreaker: 'closed',
+        loadStatus: 'low',
         responseTimeMs: responseTime,
         lastChecked: new Date().toISOString(),
         errorRate: this.calculateErrorRate(),
@@ -346,14 +352,18 @@ export class BitmexExchange implements BaseExchange {
           marketData: 'operational',
           trading: 'operational',
           account: 'operational',
+          websocket: 'connected',
         },
       };
     } catch (error) {
       this.updateStatistics(false, Date.now() - startTime);
-      logger.error('BitMEX health check failed', { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error('BitMEX health check failed', { error: errorMessage });
       
       return {
         status: 'offline',
+        circuitBreaker: 'open',
+        loadStatus: 'critical',
         responseTimeMs: Date.now() - startTime,
         lastChecked: new Date().toISOString(),
         errorRate: this.calculateErrorRate(),
@@ -363,6 +373,7 @@ export class BitmexExchange implements BaseExchange {
           marketData: 'down',
           trading: 'down',
           account: 'down',
+          websocket: 'disconnected',
         },
       };
     }
@@ -392,6 +403,8 @@ export class BitmexExchange implements BaseExchange {
     return {
       name: 'BitMEX',
       type: 'crypto',
+      version: '1.0.0',
+      environment: 'production',
       supportsTestnet: true,
       rateLimits: {
         requestsPerSecond: 10,
@@ -408,6 +421,8 @@ export class BitmexExchange implements BaseExchange {
         optionsTrading: false,
         sportsTrading: false,
         p2pTrading: false,
+        wsBubbles: true,
+        ohlcv: true,
       },
     };
   }

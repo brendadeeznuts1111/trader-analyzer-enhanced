@@ -1,19 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { sportsExchange, SportType } from '@/lib/exchanges/sports_exchange';
-import { headerManager, headersToObject } from '@/lib/api/header-manager';
-
-// Bot state with trading activity
-const botState = {
-  running: false,
-  startedAt: null as number | null,
-  botId
-
-// CORS headers for Telegram Mini App
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, X-Telegram-Init-Data',
-};
+import { createPreflightResponse } from '@/lib/security/profiles';
 
 // Bot state with trading activity
 const botState = {
@@ -37,9 +24,8 @@ const tradingConfig = {
 };
 
 // Handle CORS preflight requests
-export async function OPTIONS() {
-  const headers = headerManager.buildHeaders({ exchange: 'sports' });
-  return new NextResponse(null, { status: 204, headers: headersToObject(headers) });
+export async function OPTIONS(request: Request) {
+  return createPreflightResponse(request);
 }
 
 export async function GET() {
@@ -83,7 +69,10 @@ export async function POST(request: Request) {
   }
 
   if (!action || !['start', 'stop'].includes(action)) {
-    return NextResponse.json({ error: 'Invalid action. Must be "start" or "stop"' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Invalid action. Must be "start" or "stop"' },
+      { status: 400 }
+    );
   }
 
   if (action === 'start') {
@@ -110,7 +99,7 @@ export async function POST(request: Request) {
           success: true,
           running: true,
           uptime: 0,
-          botId: botResult.botId
+          botId: botResult.botId,
         });
       } else {
         return NextResponse.json({ error: 'Failed to start trading bot' }, { status: 500 });
@@ -123,7 +112,9 @@ export async function POST(request: Request) {
     if (!botState.running) {
       return NextResponse.json({ error: 'Bot not running' }, { status: 400 });
     }
-    const finalUptime = botState.startedAt ? Math.floor((Date.now() - botState.startedAt) / 1000) : 0;
+    const finalUptime = botState.startedAt
+      ? Math.floor((Date.now() - botState.startedAt) / 1000)
+      : 0;
     botState.running = false;
     botState.startedAt = null;
     botState.botId = null;
@@ -134,7 +125,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       running: false,
-      uptime: finalUptime
+      uptime: finalUptime,
     });
   } else {
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

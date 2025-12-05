@@ -1,0 +1,50 @@
+# Thread Manager Configuration
+# Controls Telegram super group topic management and pinning behavior
+
+[threadManager]
+# Path to persistence file relative to project root
+persistenceFile = ".thread-manager.json"
+# Automatically save state changes to disk
+autoSave = true
+# Maximum number of topics allowed per chat (0 = unlimited)
+maxTopicsPerChat = 100
+# Cleanup interval in milliseconds (0 = disabled)
+cleanupIntervalMs = 300000
+
+[threadManager.topics]
+# Default purpose for new topics when none specified
+defaultPurpose = "general"
+# How long to keep pin information in hours (0 = forever)
+pinRetentionHours = 24
+# Maximum topic name length
+maxTopicNameLength = 100
+# Whether to automatically create topics when registering
+autoCreateTopics = true
+
+[threadManager.telegram]
+# List of super group chat IDs to manage
+superGroups = [8013171035, 8429650235]
+# Default topic purposes to initialize for each chat
+defaultPurposes = ["alerts", "trades", "analytics", "general", "system"]
+# Rate limiting for topic operations (operations per second)
+rateLimitPerSecond = 10
+# Maximum message length for topic names
+maxMessageLength = 4000
+
+[threadManager.pinning]
+# Enable automatic pinning of new messages for their purpose
+autoPinNewMessages = false
+# Maximum number of pinned topics per purpose (0 = unlimited)
+maxPinsPerPurpose = 1
+# Whether to unpin older messages when newer ones arrive
+autoUnpinOlder = true
+# Delay in milliseconds before auto-pinning (0 = immediate)
+autoPinDelayMs = 1000
+
+[threadManager.debug]
+# Enable debug logging for thread operations
+enableDebugLogging = true
+# Log topic creation, deletion, and pin changes
+logTopicChanges = true
+# Log performance metrics
+logPerformanceMetrics = false

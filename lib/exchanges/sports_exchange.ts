@@ -762,6 +762,7 @@ ${propsText}
     return {
       total: 50000,
       available: 40000,
+      used: 10000,
       currencies: {
         USD: { total: 50000, available: 40000, reserved: 10000 },
         USDT: { total: 25000, available: 20000, reserved: 5000 },
@@ -783,6 +784,8 @@ ${propsText}
       side: params.side,
       type: params.type,
       amount: params.amount,
+      filled: 0,
+      remaining: params.amount,
       price: params.price || 0,
       status: 'open',
       timestamp: new Date().toISOString(),
@@ -873,6 +876,8 @@ ${propsText}
     return {
       name: 'Sports Trading',
       type: 'sports',
+      version: '2.0.0',
+      environment: 'production',
       supportsTestnet: false,
       rateLimits: {
         requestsPerSecond: 5,
@@ -889,6 +894,8 @@ ${propsText}
         optionsTrading: false,
         sportsTrading: true,
         p2pTrading: false,
+        wsBubbles: true,
+        ohlcv: false,
       },
     };
   }

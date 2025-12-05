@@ -88,7 +88,9 @@ export class PropertyQueryEngine {
 
     const elapsed = performance.now() - start;
     if (elapsed > 3) {
-      console.warn(`Property resolution exceeded 3ms target: ${elapsed.toFixed(2)}ms for ${propertyKey}`);
+      console.warn(
+        `Property resolution exceeded 3ms target: ${elapsed.toFixed(2)}ms for ${propertyKey}`
+      );
     }
 
     return resolved;
@@ -193,7 +195,7 @@ export class PropertyQueryEngine {
       blueprintId: instance.blueprintId,
       properties,
       timestamp: Date.now(),
-      hash: this.hashProperties(properties)
+      hash: this.hashProperties(properties),
     };
 
     this.snapshots.set(instanceId, snapshot);
@@ -203,7 +205,10 @@ export class PropertyQueryEngine {
   /**
    * Compare snapshots for drift detection
    */
-  compareSnapshots(snapshot1: PropertySnapshot, snapshot2: PropertySnapshot): {
+  compareSnapshots(
+    snapshot1: PropertySnapshot,
+    snapshot2: PropertySnapshot
+  ): {
     identical: boolean;
     diffs: string[];
   } {
@@ -236,7 +241,7 @@ export class PropertyQueryEngine {
 
     return {
       identical: diffs.length === 0,
-      diffs
+      diffs,
     };
   }
 
@@ -248,7 +253,7 @@ export class PropertyQueryEngine {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash;
     }
     return Math.abs(hash).toString(16).padStart(8, '0');
@@ -268,7 +273,7 @@ export class PropertyQueryEngine {
     return {
       size: this.cache.size,
       instances: this.instances.size,
-      blueprints: this.blueprints.size
+      blueprints: this.blueprints.size,
     };
   }
 }

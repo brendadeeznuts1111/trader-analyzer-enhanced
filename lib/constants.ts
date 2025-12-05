@@ -498,8 +498,9 @@ export function buildApiUrl(endpoint: string, useBackend = false): string {
 // APPLICATION METADATA [#REF:APP-META]
 // =============================================================================
 
-/** Application version - update this when releasing new versions */
-export const APP_VERSION = '0.2.0' as const;
+/** Application version - sourced from build-info for consistency */
+import { getBuildVersion } from './build-info';
+export const APP_VERSION = getBuildVersion();
 
 /** Application name */
 export const APP_NAME = 'Trader Analyzer' as const;

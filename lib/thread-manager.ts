@@ -6,7 +6,8 @@
  * for Telegram forum groups.
  */
 
-import { Logger } from './logger';
+import { logger } from './logger';
+import type { ThreadManagerConfig } from '../src/config/yaml-config-loader';
 
 // ═══════════════════════════════════════════════════════════════
 // TYPES
@@ -45,13 +46,105 @@ export interface ChatTopics {
 class ThreadManagerClass {
   private chats: Map<number, ChatTopics> = new Map();
   private persistPath: string | null = null;
+  private config: ThreadManagerConfig;
+  private cleanupTimer: NodeJS.Timeout | null = null;
 
   /**
-   * Initialize with optional persistence file
+   * Initialize with configuration object
    */
-  constructor(persistPath?: string) {
-    this.persistPath = persistPath || null;
+  constructor(config?: Partial<ThreadManagerConfig>) {
+    // Use provided config or defaults
+    this.config = {
+      persistenceFile: '.thread-manager.json',
+      autoSave: true,
+      maxTopicsPerChat: 100,
+      cleanupIntervalMs: 300000,
+      topics: {
+        defaultPurpose: 'general',
+        pinRetentionHours: 24,
+        maxTopicNameLength: 100,
+        autoCreateTopics: true
+      },
+      telegram: {
+        superGroups: [8013171035, 8429650235],
+        defaultPurposes: ['alerts', 'trades', 'analytics', 'general', 'system'],
+        rateLimitPerSecond: 10,
+        maxMessageLength: 4000
+      },
+      pinning: {
+        autoPinNewMessages: false,
+        maxPinsPerPurpose: 1,
+        autoUnpinOlder: true,
+        autoPinDelayMs: 1000
+      },
+      debug: {
+        enableDebugLogging: true,
+        logTopicChanges: true,
+        logPerformanceMetrics: false
+      },
+      ...config
+    };
+
+    this.persistPath = this.config.persistenceFile;
     this.load();
+    this.startCleanupTimer();
+    
+    if (this.config.debug.enableDebugLogging) {
+      logger.debug('Thread Manager initialized with config', {
+        persistenceFile: this.persistPath,
+        autoSave: this.config.autoSave,
+        maxTopicsPerChat: this.config.maxTopicsPerChat
+      });
+    }
+  }
+
+  /**
+   * Get configuration
+   */
+  getConfig(): ThreadManagerConfig {
+    return { ...this.config };
+  }
+
+  /**
+   * Start cleanup timer if configured
+   */
+  private startCleanupTimer(): void {
+    if (this.config.cleanupIntervalMs > 0) {
+      this.cleanupTimer = setInterval(() => {
+        this.performCleanup();
+      }, this.config.cleanupIntervalMs);
+    }
+  }
+
+  /**
+   * Perform periodic cleanup of old topics
+   */
+  private performCleanup(): void {
+    if (!this.config.debug.logPerformanceMetrics) return;
+    
+    const now = Date.now();
+    const retentionMs = this.config.topics.pinRetentionHours * 60 * 60 * 1000;
+    let cleanedCount = 0;
+    
+    for (const [chatId, chat] of this.chats.entries()) {
+      const topicsToRemove: (number | 'general')[] = [];
+      
+      for (const [key, topic] of chat.topics.entries()) {
+        if (now - topic.lastUsed > retentionMs && !topic.isPinned) {
+          topicsToRemove.push(key);
+        }
+      }
+      
+      topicsToRemove.forEach(key => {
+        chat.topics.delete(key);
+        cleanedCount++;
+      });
+    }
+    
+    if (cleanedCount > 0 && this.config.debug.logTopicChanges) {
+      logger.debug(`Cleaned up ${cleanedCount} old topics`);
+      this.save();
+    }
   }
 
   /**
@@ -185,6 +278,35 @@ class ThreadManagerClass {
   }
 
   /**
+   * Get topic for chat by purpose (specification-compliant method)
+   */
+  public async getTopicForChat(chatId: number, purpose: string): Promise<TopicInfo | undefined> {
+    const threadId = this.getThreadForPurpose(chatId, purpose as TopicPurpose);
+    if (threadId === undefined || threadId === null) {
+      return undefined;
+    }
+    return this.getTopic(chatId, threadId);
+  }
+
+  /**
+   * Set topic for chat by purpose (specification-compliant method)
+   */
+  public async setTopicForChat(chatId: number, purpose: string, topic: Partial<TopicInfo>): Promise<TopicInfo> {
+    const threadId = topic.threadId ?? null;
+    const name = topic.name ?? `Topic ${purpose}`;
+    
+    // Register or update the topic
+    const registeredTopic = this.register(chatId, threadId, name, purpose as TopicPurpose);
+    
+    // If it should be pinned, pin it
+    if (topic.isPinned) {
+      this.setPinned(chatId, threadId, purpose as TopicPurpose);
+    }
+    
+    return registeredTopic;
+  }
+
+  /**
    * Get the thread ID for a specific purpose
    */
   getThreadForPurpose(chatId: number, purpose: TopicPurpose): number | null | undefined {
@@ -273,10 +395,10 @@ class ThreadManagerClass {
   }
 
   /**
-   * Save state to file (if persistence enabled)
+   * Save state to file (if persistence enabled and autoSave is true)
    */
   private save(): void {
-    if (!this.persistPath) return;
+    if (!this.persistPath || !this.config.autoSave) return;
 
     try {
       const data: Record<string, any> = {};
@@ -296,8 +418,15 @@ class ThreadManagerClass {
       });
 
       Bun.write(this.persistPath, JSON.stringify(data, null, 2));
+      
+      if (this.config.debug.logTopicChanges) {
+        logger.debug('Thread manager state saved', { 
+          chats: this.chats.size,
+          persistenceFile: this.persistPath 
+        });
+      }
     } catch (error) {
-      Logger.error('Failed to save thread manager state', error);
+      logger.error('Failed to save thread manager state', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 
@@ -332,7 +461,7 @@ class ThreadManagerClass {
       }
     } catch {
       // File doesn't exist or is invalid - start fresh
-      Logger.debug('Starting with fresh thread manager state');
+      logger.debug('Starting with fresh thread manager state');
     }
   }
 
@@ -351,14 +480,25 @@ class ThreadManagerClass {
     this.chats.clear();
     this.save();
   }
+
+  /**
+   * Destroy thread manager and cleanup resources
+   */
+  destroy(): void {
+    if (this.cleanupTimer) {
+      clearInterval(this.cleanupTimer);
+      this.cleanupTimer = null;
+    }
+    
+    if (this.config.debug.enableDebugLogging) {
+      logger.debug('Thread Manager destroyed');
+    }
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
-// SINGLETON EXPORT
+// EXPORTS
 // ═══════════════════════════════════════════════════════════════
 
-// Create singleton with persistence
-export const ThreadManager = new ThreadManagerClass('.thread-manager.json');
-
-// Also export class for testing or custom instances
+// Export class for creating configured instances
 export { ThreadManagerClass };

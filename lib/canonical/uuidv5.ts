@@ -18,22 +18,28 @@ async function getExchangeApiKey(exchange: string): Promise<string | null> {
     return apiKeyCache.get(cacheKey)!;
   }
 
-  try {
-    const { secrets } = await import('bun');
-    const apiKey = await secrets.get({
-      service: 'trader-analyzer',
-      name: `${exchange.toLowerCase()}-api-key`,
-    });
-    apiKeyCache.set(cacheKey, apiKey);
-    return apiKey;
-  } catch {
-    // Fallback to env vars
-    const envKey =
-      process.env[`${exchange.toUpperCase()}_API_KEY`] ||
-      process.env[`ORCA_${exchange.toUpperCase()}_APIKEY`];
-    apiKeyCache.set(cacheKey, envKey || null);
-    return envKey || null;
+  // Try Bun secrets first (only in Bun runtime)
+  if (typeof globalThis.Bun !== 'undefined') {
+    try {
+      // Use eval to prevent Next.js bundler from seeing the import
+      const bunModule = await (0, eval)('import("bun")');
+      const apiKey = await bunModule.secrets.get({
+        service: 'trader-analyzer',
+        name: `${exchange.toLowerCase()}-api-key`,
+      });
+      apiKeyCache.set(cacheKey, apiKey);
+      return apiKey;
+    } catch {
+      // Bun secrets not available, fall through to env vars
+    }
   }
+
+  // Fallback to env vars
+  const envKey =
+    process.env[`${exchange.toUpperCase()}_API_KEY`] ||
+    process.env[`ORCA_${exchange.toUpperCase()}_APIKEY`];
+  apiKeyCache.set(cacheKey, envKey || null);
+  return envKey || null;
 }
 
 import { createHash } from 'crypto';

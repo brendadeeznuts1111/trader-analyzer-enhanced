@@ -42,11 +42,13 @@ console.log(result.pathname.groups.id); // '123'
 Create a new URLPattern instance.
 
 **Syntax:**
+
 ```typescript
 new URLPattern(input: URLPatternInput, baseURL?: string)
 ```
 
 **Parameters:**
+
 - `input` (string | URLPatternInit) - Pattern specification
 - `baseURL` (optional string) - Base URL for relative patterns
 
@@ -63,7 +65,7 @@ const p2 = new URLPattern('https://api.example.com/products/:id/reviews');
 const p3 = new URLPattern({
   protocol: 'https',
   hostname: 'example.com',
-  pathname: '/api/:version/items/:id'
+  pathname: '/api/:version/items/:id',
 });
 
 // With base URL
@@ -79,17 +81,20 @@ const p4 = new URLPattern('/api/items', 'https://api.example.com');
 Test if a URL matches the pattern. Returns a boolean.
 
 **Syntax:**
+
 ```typescript
 pattern.test(input?: URLPatternInput, baseURL?: string): boolean
 ```
 
 **Parameters:**
+
 - `input` - URL string or URLPatternInit to test
 - `baseURL` (optional) - Base URL for relative URLs
 
 **Returns:** `true` if URL matches pattern, `false` otherwise
 
 **Example:**
+
 ```typescript
 const userPattern = new URLPattern('/users/:id');
 
@@ -100,7 +105,7 @@ userPattern.test('https://example.com/users/abc/posts'); // false
 userPattern.test({
   protocol: 'https',
   hostname: 'example.com',
-  pathname: '/users/123'
+  pathname: '/users/123',
 }); // true
 ```
 
@@ -109,6 +114,7 @@ userPattern.test({
 Execute the pattern against a URL and extract matched groups. Returns a result object or null if no match.
 
 **Syntax:**
+
 ```typescript
 pattern.exec(input?: URLPatternInput, baseURL?: string): URLPatternResult | null
 ```
@@ -116,6 +122,7 @@ pattern.exec(input?: URLPatternInput, baseURL?: string): URLPatternResult | null
 **Returns:** `URLPatternResult` object or `null`
 
 **Example:**
+
 ```typescript
 const ohlcvPattern = new URLPattern('/api/ohlcv/:exchange/:symbol/:timeframe');
 
@@ -135,7 +142,7 @@ if (result) {
 All pattern components are available as read-only properties:
 
 - `protocol` - Protocol pattern (e.g., 'https')
-- `hostname` - Hostname pattern (e.g., '*.example.com')
+- `hostname` - Hostname pattern (e.g., '\*.example.com')
 - `port` - Port pattern
 - `pathname` - Pathname pattern (e.g., '/users/:id')
 - `search` - Query string pattern
@@ -145,6 +152,7 @@ All pattern components are available as read-only properties:
 - `hasRegExpGroups` - Boolean indicating if pattern has named groups or wildcards
 
 **Example:**
+
 ```typescript
 const pattern = new URLPattern('/api/users/:id');
 
@@ -210,10 +218,11 @@ const pattern = new URLPattern('/api/v1/users');
 Create a pattern for pathname matching:
 
 ```typescript
-export function createPathPattern(pathname: string): IURLPattern
+export function createPathPattern(pathname: string): IURLPattern;
 ```
 
 **Example:**
+
 ```typescript
 const userPattern = createPathPattern('/users/:id');
 userPattern.test('https://example.com/users/123'); // true
@@ -224,10 +233,11 @@ userPattern.test('https://example.com/users/123'); // true
 Create a pattern for API routes with a base URL:
 
 ```typescript
-export function createAPIPattern(pathname: string, baseURL?: string): IURLPattern
+export function createAPIPattern(pathname: string, baseURL?: string): IURLPattern;
 ```
 
 **Example:**
+
 ```typescript
 const apiPattern = createAPIPattern('/api/markets/:exchange/:symbol', 'https://api.example.com');
 apiPattern.test('https://api.example.com/api/markets/binance/BTC-USDT'); // true
@@ -241,15 +251,16 @@ Find the first pattern that matches a URL:
 export function matchPatterns(
   url: string,
   patterns: IURLPattern[]
-): { pattern: IURLPattern; result: URLPatternResult } | null
+): { pattern: IURLPattern; result: URLPatternResult } | null;
 ```
 
 **Example:**
+
 ```typescript
 const patterns = [
   createPathPattern('/users/:id'),
   createPathPattern('/products/:productId'),
-  createPathPattern('/api/*')
+  createPathPattern('/api/*'),
 ];
 
 const match = matchPatterns('/users/123', patterns);
@@ -265,17 +276,18 @@ Create an Express-like router using patterns:
 ```typescript
 export function createPatternRouter<T>(
   routes: Array<{ pattern: IURLPattern; handler: T }>
-): (url: string) => { handler: T; params: Record<string, string | undefined> } | null
+): (url: string) => { handler: T; params: Record<string, string | undefined> } | null;
 ```
 
 **Example:**
+
 ```typescript
 type Handler = (params: Record<string, string | undefined>) => void;
 
 const router = createPatternRouter<Handler>([
   { pattern: createPathPattern('/users/:id'), handler: handleUser },
   { pattern: createPathPattern('/products/:id'), handler: handleProduct },
-  { pattern: createPathPattern('/api/*'), handler: handleAPI }
+  { pattern: createPathPattern('/api/*'), handler: handleAPI },
 ]);
 
 const route = router('/users/123');
@@ -292,10 +304,11 @@ Extract parameters from a URL using a pattern:
 export function extractRouteParams(
   pattern: IURLPattern,
   url: string
-): Record<string, string | undefined> | null
+): Record<string, string | undefined> | null;
 ```
 
 **Example:**
+
 ```typescript
 const pattern = createPathPattern('/api/:version/:resource/:id');
 const params = extractRouteParams(pattern, '/api/v1/users/123');
@@ -307,15 +320,16 @@ console.log(params); // { version: 'v1', resource: 'users', id: '123' }
 Check if a URL matches any pattern in a list:
 
 ```typescript
-export function matchesAny(url: string, patterns: IURLPattern[]): boolean
+export function matchesAny(url: string, patterns: IURLPattern[]): boolean;
 ```
 
 **Example:**
+
 ```typescript
 const apiPatterns = [
   createPathPattern('/api/users/*'),
   createPathPattern('/api/products/*'),
-  createPathPattern('/api/orders/*')
+  createPathPattern('/api/orders/*'),
 ];
 
 if (matchesAny('/api/users/123', apiPatterns)) {
@@ -333,41 +347,42 @@ The `APIPatterns` object provides common patterns for trader-analyzer:
 import { APIPatterns } from 'lib/url-pattern';
 
 // Market patterns
-APIPatterns.markets     // /api/markets
-APIPatterns.marketById  // /api/markets/:id
-APIPatterns.marketBySymbol // /api/markets/:exchange/:symbol
+APIPatterns.markets; // /api/markets
+APIPatterns.marketById; // /api/markets/:id
+APIPatterns.marketBySymbol; // /api/markets/:exchange/:symbol
 
 // Trade patterns
-APIPatterns.trades      // /api/trades
-APIPatterns.tradeById   // /api/trades/:id
+APIPatterns.trades; // /api/trades
+APIPatterns.tradeById; // /api/trades/:id
 
 // OHLCV patterns
-APIPatterns.ohlcv       // /api/ohlcv/:exchange/:symbol/:timeframe
+APIPatterns.ohlcv; // /api/ohlcv/:exchange/:symbol/:timeframe
 
 // Exchange patterns
-APIPatterns.exchanges   // /api/exchanges
-APIPatterns.exchangeById // /api/exchanges/:id
+APIPatterns.exchanges; // /api/exchanges
+APIPatterns.exchangeById; // /api/exchanges/:id
 
 // Profile patterns
-APIPatterns.profile     // /api/profile
-APIPatterns.profileById // /api/profile/:id
+APIPatterns.profile; // /api/profile
+APIPatterns.profileById; // /api/profile/:id
 
 // Health check
-APIPatterns.health      // /api/health
+APIPatterns.health; // /api/health
 
 // Telegram patterns
-APIPatterns.telegram           // /api/telegram
-APIPatterns.telegramWebhook    // /api/telegram/webhook
+APIPatterns.telegram; // /api/telegram
+APIPatterns.telegramWebhook; // /api/telegram/webhook
 
 // Pipeline patterns
-APIPatterns.pipeline           // /api/pipeline
-APIPatterns.pipelineById       // /api/pipeline/:id
+APIPatterns.pipeline; // /api/pipeline
+APIPatterns.pipelineById; // /api/pipeline/:id
 
 // Wildcard
-APIPatterns.anyAPI      // /api/*
+APIPatterns.anyAPI; // /api/*
 ```
 
 **Usage:**
+
 ```typescript
 // Test if URL is an OHLCV request
 if (APIPatterns.ohlcv.test('https://api.example.com/api/ohlcv/binance/BTC-USDT/1h')) {
@@ -392,15 +407,15 @@ Dictionary for specifying URL patterns:
 
 ```typescript
 interface URLPatternInit {
-  protocol?: string;      // e.g., 'https', 'http'
-  username?: string;      // URL username
-  password?: string;      // URL password
-  hostname?: string;      // e.g., 'example.com', '*.example.com'
-  port?: string;         // e.g., '8080'
-  pathname?: string;     // e.g., '/users/:id'
-  search?: string;       // Query string pattern
-  hash?: string;         // Fragment pattern
-  baseURL?: string;      // Base URL for relative patterns
+  protocol?: string; // e.g., 'https', 'http'
+  username?: string; // URL username
+  password?: string; // URL password
+  hostname?: string; // e.g., 'example.com', '*.example.com'
+  port?: string; // e.g., '8080'
+  pathname?: string; // e.g., '/users/:id'
+  search?: string; // Query string pattern
+  hash?: string; // Fragment pattern
+  baseURL?: string; // Base URL for relative patterns
 }
 ```
 
@@ -443,7 +458,7 @@ if (userRoute.test(request.url)) {
   // Extract the user ID
   const result = userRoute.exec(request.url);
   const userId = result?.pathname.groups.id;
-  
+
   // Fetch and return user data
   const user = await fetchUser(userId);
   return user;
@@ -460,24 +475,24 @@ type ApiHandler = (params: Record<string, string | undefined>) => Promise<Respon
 const router = createPatternRouter<ApiHandler>([
   {
     pattern: createPathPattern('/api/users/:id'),
-    handler: async (params) => {
+    handler: async params => {
       const user = await fetchUser(params.id);
       return new Response(JSON.stringify(user));
-    }
+    },
   },
   {
     pattern: createPathPattern('/api/products/:productId/reviews/:reviewId'),
-    handler: async (params) => {
+    handler: async params => {
       const review = await fetchReview(params.productId, params.reviewId);
       return new Response(JSON.stringify(review));
-    }
+    },
   },
   {
     pattern: createPathPattern('/api/*'),
     handler: async () => {
       return new Response(JSON.stringify({ error: 'Not Found' }), { status: 404 });
-    }
-  }
+    },
+  },
 ]);
 
 // Use the router
@@ -495,15 +510,15 @@ import { APIPatterns, extractRouteParams } from 'lib/url-pattern';
 // Handle OHLCV requests
 if (APIPatterns.ohlcv.test(request.url)) {
   const params = extractRouteParams(APIPatterns.ohlcv, request.url);
-  
+
   const { exchange, symbol, timeframe } = params;
-  
+
   const ohlcv = await fetchOHLCV({
     exchange,
     symbol,
-    timeframe: timeframe as '1h' | '4h' | '1d'
+    timeframe: timeframe as '1h' | '4h' | '1d',
   });
-  
+
   return new Response(JSON.stringify(ohlcv));
 }
 ```
@@ -515,6 +530,7 @@ if (APIPatterns.ohlcv.test(request.url)) {
 ### From String Matching
 
 **Before:**
+
 ```typescript
 if (url.includes('/api/users/') && url.match(/\/api\/users\/\d+/)) {
   const id = url.split('/').pop();
@@ -523,6 +539,7 @@ if (url.includes('/api/users/') && url.match(/\/api\/users\/\d+/)) {
 ```
 
 **After:**
+
 ```typescript
 import { createPathPattern } from 'lib/url-pattern';
 
@@ -537,6 +554,7 @@ if (pattern.test(url)) {
 ### From Express Routes
 
 **Before:**
+
 ```typescript
 app.get('/users/:id', (req, res) => {
   const userId = req.params.id;
@@ -545,6 +563,7 @@ app.get('/users/:id', (req, res) => {
 ```
 
 **After:**
+
 ```typescript
 import { createPathPattern } from 'lib/url-pattern';
 
@@ -565,13 +584,16 @@ function handleRequest(url: string): Response {
 ## Browser & Runtime Compatibility
 
 ### Native Support
+
 - ✅ Bun 1.2+
 - ✅ Chrome/Edge 125+
 - ✅ Firefox (upcoming)
 - ✅ Safari (upcoming)
 
 ### Polyfill
+
 This implementation includes an automatic polyfill for environments without native URLPattern support. It handles:
+
 - ✅ Named groups
 - ✅ Wildcard matching
 - ✅ Protocol/hostname/port matching
@@ -587,6 +609,7 @@ This implementation includes an automatic polyfill for environments without nati
 - Memory overhead is minimal (one regex per pattern)
 
 ### Benchmarks
+
 - Pattern construction: < 1ms
 - test() execution: < 0.1ms
 - exec() execution: < 0.5ms
@@ -599,11 +622,13 @@ This implementation includes an automatic polyfill for environments without nati
 ### Pattern Not Matching
 
 **Issues:**
+
 - Pattern is too specific or uses wrong syntax
 - Base URL mismatch with test URL
 - Protocol or hostname mismatch
 
 **Solution:**
+
 ```typescript
 // Debug the pattern
 const pattern = new URLPattern('/api/users/:id');
@@ -618,17 +643,19 @@ console.log('Path only:', pattern.test('/api/users/123'));
 ### Group Extraction Returning Undefined
 
 **Issues:**
+
 - Named group doesn't match in URL
 - Wildcard used instead of named group
 - Case sensitivity mismatch
 
 **Solution:**
+
 ```typescript
 const result = pattern.exec(url);
 if (result) {
   // Check all groups
   console.log('All groups:', result.pathname.groups);
-  
+
   // Use optional chaining
   const id = result?.pathname.groups.id ?? 'default';
 }
@@ -639,6 +666,7 @@ if (result) {
 ## API Standards
 
 This implementation follows the WHATWG URLPattern standard:
+
 - https://urlpattern.spec.whatwg.org/
 - https://developer.mozilla.org/en-US/docs/Web/API/URLPattern
 

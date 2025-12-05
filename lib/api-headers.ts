@@ -5,10 +5,12 @@
  */
 
 import { md5 } from './crypto-utils';
+import { buildSecurityHeaders, type SecurityProfileConfig } from './security/profiles';
+import { getBuildVersion } from './build-info';
 
 // Server identification
 const SERVER_NAME = process.env.SERVER_NAME || 'trader-analyzer';
-const SERVER_VERSION = process.env.npm_package_version || '0.2.0';
+const SERVER_VERSION = getBuildVersion();
 const SERVER_PORT = process.env.PORT || '3002';
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -30,6 +32,8 @@ export interface HeaderOptions {
   responseTime?: number;
   /** Custom headers to merge */
   custom?: Record<string, string>;
+  /** Security profile configuration */
+  securityProfile?: SecurityProfileConfig;
 }
 
 // Cache duration presets (seconds)
@@ -52,12 +56,38 @@ function generateETag(content: string | object): string {
 
 /**
  * Generate unique request ID for tracing
+ * Format: {timestamp_base36}-{counter_base36}
+ * Example: mirxkx8o-0001
  */
 function generateRequestId(): string {
   requestCounter = (requestCounter + 1) % 1000000;
   const timestamp = Date.now().toString(36);
   const counter = requestCounter.toString(36).padStart(4, '0');
   return `${timestamp}-${counter}`;
+}
+
+/**
+ * Generate correlation ID using UUIDv7
+ * - Time-sortable for chronological tracing
+ * - Globally unique across services
+ * - Uses Bun's native randomUUIDv7
+ */
+function generateCorrelationId(): string {
+  return Bun.randomUUIDv7();
+}
+
+/**
+ * Extract or generate correlation ID from request
+ * Propagates existing correlation ID or creates new one
+ */
+export function getOrCreateCorrelationId(request?: Request): string {
+  if (request) {
+    const existing = request.headers.get('X-Correlation-Id') 
+      || request.headers.get('X-Request-Id')
+      || request.headers.get('Traceparent')?.split('-')[1]; // W3C Trace Context
+    if (existing) return existing;
+  }
+  return generateCorrelationId();
 }
 
 /**
@@ -138,6 +168,7 @@ export function buildApiHeaders(options: HeaderOptions = {}): Headers {
     request,
     responseTime,
     custom = {},
+    securityProfile,
   } = options;
 
   const headers = new Headers();
@@ -185,6 +216,7 @@ export function buildApiHeaders(options: HeaderOptions = {}): Headers {
   // REQUEST TRACING
   // ═══════════════════════════════════════════════════════════════
   headers.set('X-Request-Id', requestId);
+  headers.set('X-Correlation-Id', getOrCreateCorrelationId(request));
   headers.set('X-Response-Timestamp', timestamp);
 
   if (responseTime !== undefined) {
@@ -219,32 +251,12 @@ export function buildApiHeaders(options: HeaderOptions = {}): Headers {
   headers.set('X-DNS-Prefetch-Control', 'on');
 
   // ═══════════════════════════════════════════════════════════════
-  // SECURITY HEADERS
+  // SECURITY HEADERS (from profile)
   // ═══════════════════════════════════════════════════════════════
-  headers.set('X-Content-Type-Options', 'nosniff');
-  headers.set('X-Frame-Options', 'DENY');
-  headers.set('X-XSS-Protection', '1; mode=block');
-
-  // CORS headers
-  headers.set('Access-Control-Allow-Origin', '*');
-  headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Request-Id');
-  headers.set(
-    'Access-Control-Expose-Headers',
-    [
-      'X-Request-Id',
-      'X-Response-Time',
-      'X-Server-Name',
-      'X-Server-Version',
-      'X-Cache-Status',
-      'ETag',
-    ].join(', ')
-  );
-
-  // ═══════════════════════════════════════════════════════════════
-  // VARY HEADER (for proper caching)
-  // ═══════════════════════════════════════════════════════════════
-  headers.set('Vary', 'Accept-Encoding, Origin');
+  const securityHeaders = buildSecurityHeaders(request, securityProfile);
+  for (const [key, value] of Object.entries(securityHeaders)) {
+    headers.set(key, value);
+  }
 
   // ═══════════════════════════════════════════════════════════════
   // CUSTOM HEADERS

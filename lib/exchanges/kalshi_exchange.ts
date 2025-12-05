@@ -303,6 +303,7 @@ export class KalshiExchange implements BaseExchange {
       return {
         total: data.balance || 0,
         available: data.available_balance || 0,
+        used: (data.balance || 0) - (data.available_balance || 0),
         currencies: {
           USD: {
             total: data.balance || 0,
@@ -317,6 +318,7 @@ export class KalshiExchange implements BaseExchange {
       return {
         total: 10000,
         available: 8000,
+        used: 2000,
         currencies: {
           USD: { total: 10000, available: 8000, reserved: 2000 },
         },
@@ -374,6 +376,8 @@ export class KalshiExchange implements BaseExchange {
         side: params.side,
         type: params.type,
         amount: params.amount,
+        filled: data.order?.filled_count || 0,
+        remaining: params.amount - (data.order?.filled_count || 0),
         price: params.price || 0,
         status: data.order?.status || 'pending',
         timestamp: new Date().toISOString(),
@@ -391,6 +395,8 @@ export class KalshiExchange implements BaseExchange {
         side: params.side,
         type: params.type,
         amount: params.amount,
+        filled: 0,
+        remaining: params.amount,
         price: params.price || 50,
         status: 'open', // Mock orders start as open
         timestamp: new Date().toISOString(),
@@ -469,6 +475,8 @@ export class KalshiExchange implements BaseExchange {
     return {
       name: 'Kalshi',
       type: 'prediction',
+      version: '1.0.0',
+      environment: 'production',
       supportsTestnet: true,
       rateLimits: {
         requestsPerSecond: KALSHI_CONFIG.rateLimit.requests,
@@ -485,6 +493,8 @@ export class KalshiExchange implements BaseExchange {
         optionsTrading: false,
         sportsTrading: false,
         p2pTrading: false,
+        wsBubbles: false,
+        ohlcv: false,
       },
     };
   }

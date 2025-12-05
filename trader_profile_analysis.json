@@ -94,5 +94,8 @@
     "avg_win_btc": 0.07082919,
     "avg_loss_btc": 0.02927053,
     "profit_factor": 2.42
+  },
+  "exchange_config": {
+    "polymarket": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
   }
 }

@@ -5,7 +5,6 @@
  */
 
 import { NextResponse } from 'next/server';
-import { secrets } from 'bun';
 
 const SERVICE_NAME = 'trader-analyzer';
 
@@ -14,38 +13,52 @@ interface SecretsHealthStatus {
   service: string;
   secretsFound: number;
   issues: string[];
+  runtime: 'bun' | 'node';
 }
 
 async function checkSecretsHealth(): Promise<SecretsHealthStatus> {
+  const isBun = typeof globalThis.Bun !== 'undefined';
+
   const status: SecretsHealthStatus = {
     healthy: true,
     service: SERVICE_NAME,
     secretsFound: 0,
     issues: [],
+    runtime: isBun ? 'bun' : 'node',
   };
 
+  // Only check Bun secrets if running in Bun
+  if (!isBun) {
+    status.issues.push('Not running in Bun runtime - secrets service unavailable');
+    return status;
+  }
+
   try {
+    // Use eval to prevent bundler from seeing the import
+    const bunModule = await (0, eval)('import("bun")');
+    const secrets = bunModule.secrets;
+
     // Try to access a test secret to verify service is working
     const testSecret = await secrets.get({ service: SERVICE_NAME, name: 'test-connection' });
     if (testSecret) {
       status.secretsFound++;
     }
+
+    // Check for common expected secrets
+    const expectedSecrets = ['telegram-bot-token', 'telegram-chat-id'];
+    for (const secretName of expectedSecrets) {
+      try {
+        const secret = await secrets.get({ service: SERVICE_NAME, name: secretName });
+        if (secret) {
+          status.secretsFound++;
+        }
+      } catch {
+        // Secret doesn't exist, which is OK
+      }
+    }
   } catch (error) {
     // Service might not exist yet, which is OK for development
     status.issues.push('Secrets service not initialized (this is normal for first run)');
-  }
-
-  // Check for common expected secrets
-  const expectedSecrets = ['telegram-bot-token', 'telegram-chat-id'];
-  for (const secretName of expectedSecrets) {
-    try {
-      const secret = await secrets.get({ service: SERVICE_NAME, name: secretName });
-      if (secret) {
-        status.secretsFound++;
-      }
-    } catch {
-      // Secret doesn't exist, which is OK
-    }
   }
 
   return status;

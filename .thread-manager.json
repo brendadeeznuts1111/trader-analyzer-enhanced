@@ -4,25 +4,11 @@
     "topics": {
       "general": {
         "threadId": null,
-        "name": "Topic General",
+        "name": "YAML Demo Topic",
         "purpose": "general",
         "isPinned": false,
-        "lastUsed": 1764816676620,
-        "createdAt": 1764816676620
-      }
-    },
-    "pinnedPurposes": {}
-  },
-  "8429650235": {
-    "chatId": 8429650235,
-    "topics": {
-      "general": {
-        "threadId": null,
-        "name": "Topic General",
-        "purpose": "general",
-        "isPinned": false,
-        "lastUsed": 1764816677028,
-        "createdAt": 1764816677028
+        "lastUsed": 1764891178535,
+        "createdAt": 1764891178535
       }
     },
     "pinnedPurposes": {}

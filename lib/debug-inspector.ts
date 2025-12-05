@@ -39,6 +39,27 @@ interface TimingStats {
   label: string;
 }
 
+interface TableOptions {
+  /** Column names to display and their order */
+  columns?: string[];
+  /** Enable/disable colors (default: true) */
+  colors?: boolean;
+  /** Maximum number of rows to display (default: all) */
+  maxRows?: number;
+  /** Column width overrides { columnName: width } */
+  columnWidths?: Record<string, number>;
+  /** Column formatters { columnName: (value) => string } */
+  formatters?: Record<string, (value: any) => string>;
+  /** Sort by column name and direction */
+  sortBy?: { column: string; direction?: 'asc' | 'desc' };
+  /** Show row numbers (default: true) */
+  showRowNumbers?: boolean;
+  /** Footer text to display below table */
+  footer?: string;
+  /** Header text to display above table */
+  header?: string;
+}
+
 // =============================================================================
 // DEBUG INSPECTOR CLASS
 // =============================================================================
@@ -62,24 +83,85 @@ export class DebugInspector {
   }
 
   /**
-   * Format tabular data using Bun.inspect.table
-   * Returns a string - use console.log() to print
+   * Enhanced tabular data formatting using Bun.inspect.table
+   * Returns a formatted string with advanced options
    */
-  static table(data: unknown[], columns?: string[], colors = true): string {
+  static table(data: unknown[], options: TableOptions | string[] = {}): string {
+    // Handle legacy string[] format for backward compatibility
+    let opts: TableOptions;
+    if (Array.isArray(options)) {
+      opts = { columns: options, colors: true };
+    } else {
+      opts = { colors: true, showRowNumbers: true, ...options };
+    }
+
     if (!data || data.length === 0) {
-      return Bun.inspect.table([{ '(empty)': 'no data' }], { colors });
+      const emptyTable = opts.header ? `${opts.header}\n` : '';
+      return emptyTable + Bun.inspect.table([{ '(empty)': 'no data' }], { colors: opts.colors });
     }
-    if (columns) {
-      return Bun.inspect.table(data, columns, { colors });
+
+    // Apply row limit
+    let displayData = data;
+    if (opts.maxRows && data.length > opts.maxRows) {
+      displayData = data.slice(0, opts.maxRows);
     }
-    return Bun.inspect.table(data, { colors });
+
+    // Apply sorting
+    if (opts.sortBy && displayData.length > 0) {
+      const { column, direction = 'asc' } = opts.sortBy;
+      displayData = [...displayData].sort((a, b) => {
+        const aVal = (a as any)[column];
+        const bVal = (b as any)[column];
+        
+        if (aVal === bVal) return 0;
+        const comparison = aVal > bVal ? 1 : -1;
+        return direction === 'desc' ? -comparison : comparison;
+      });
+    }
+
+    // Apply column formatters
+    if (opts.formatters) {
+      displayData = displayData.map(row => {
+        const formattedRow = { ...row };
+        for (const [column, formatter] of Object.entries(opts.formatters!)) {
+          if (column in formattedRow) {
+            (formattedRow as any)[column] = formatter((formattedRow as any)[column]);
+          }
+        }
+        return formattedRow;
+      });
+    }
+
+    // Generate table
+    let result = '';
+    if (opts.header) {
+      result += `${opts.header}\n`;
+    }
+
+    const tableOutput = opts.columns 
+      ? Bun.inspect.table(displayData, opts.columns, { colors: opts.colors })
+      : Bun.inspect.table(displayData, { colors: opts.colors });
+
+    result += tableOutput;
+
+    // Add footer
+    if (opts.footer) {
+      result += `\n${opts.footer}`;
+    }
+
+    // Add truncation notice if data was limited
+    if (opts.maxRows && data.length > opts.maxRows) {
+      result += `\n... and ${data.length - opts.maxRows} more rows (showing first ${opts.maxRows})`;
+    }
+
+    return result;
   }
 
   /**
-   * Print a table directly to console
+   * Print a table directly to console with enhanced options
    */
-  static printTable(data: unknown[], columns?: string[]): void {
-    console.log(this.table(data, columns));
+  static printTable(data: unknown[], options: TableOptions | string[] = {}): void {
+    console.log(this.table(data, options));
   }
 
   /**
@@ -223,9 +305,9 @@ export class DebugInspector {
   }
 
   /**
-   * Get timing statistics as a formatted table
+   * Get timing statistics as a formatted table with enhanced options
    */
-  getStats(): string {
+  getStats(options: { maxRows?: number; sortBy?: 'calls' | 'avg' | 'total' } = {}): string {
     const rows = Array.from(this.timings.values()).map(stats => ({
       Label: stats.label,
       Calls: stats.count,
@@ -239,16 +321,35 @@ export class DebugInspector {
       return 'No timing data collected';
     }
 
-    return Bun.inspect.table(rows, ['Label', 'Calls', 'Avg (ms)', 'Min (μs)', 'Max (μs)'], {
+    // Apply sorting
+    let sortBy;
+    if (options.sortBy === 'calls') {
+      sortBy = { column: 'Calls', direction: 'desc' as const };
+    } else if (options.sortBy === 'avg') {
+      sortBy = { column: 'Avg (ms)', direction: 'desc' as const };
+    } else if (options.sortBy === 'total') {
+      sortBy = { column: 'Total (ms)', direction: 'desc' as const };
+    }
+
+    return DebugInspector.table(rows, {
+      columns: ['Label', 'Calls', 'Avg (ms)', 'Min (μs)', 'Max (μs)'],
       colors: true,
+      header: '📊 Timing Statistics',
+      footer: `Total operations: ${rows.reduce((sum, row) => sum + row.Calls, 0)} calls`,
+      maxRows: options.maxRows,
+      sortBy,
+      formatters: {
+        'Calls': (val) => val.toString(),
+        'Avg (ms)': (val) => `${val}ms`,
+        'Min (μs)': (val) => `${val}μs`,
+        'Max (μs)': (val) => `${val}μs`,
+      }
     });
   }
-
-  /**
+      /**
    * Print timing statistics
    */
   printStats(): void {
-    console.log('\n📊 Timing Statistics:');
     console.log(this.getStats());
   }
 

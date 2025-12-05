@@ -6,7 +6,7 @@ export interface MetaProperty {
 }
 
 export interface PropertyDefinition {
-  value: any;  // Can be string, number, object, array, etc.
+  value: any; // Can be string, number, object, array, etc.
   type?: string;
   constraints?: string;
   inherit?: string;

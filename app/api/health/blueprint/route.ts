@@ -13,6 +13,7 @@ import {
   monitoringConfig,
 } from '../../../../deploy/feature-flags';
 import { buildApiHeaders, headersToObject } from '../../../../lib/api-headers';
+import { getBuildVersion } from '../../../../lib/build-info';
 
 export interface HealthCheckResult {
   status: 'healthy' | 'degraded' | 'unhealthy';
@@ -88,7 +89,7 @@ export async function GET(request: Request): Promise<NextResponse<HealthCheckRes
       },
       rollbackConditions,
       timestamp: new Date().toISOString(),
-      version: '0.1.9',
+      version: getBuildVersion(),
     };
 
     const headers = buildApiHeaders({
@@ -121,7 +122,7 @@ export async function GET(request: Request): Promise<NextResponse<HealthCheckRes
       },
       rollbackConditions,
       timestamp: new Date().toISOString(),
-      version: '0.1.9',
+      version: getBuildVersion(),
     };
 
     const headers = buildApiHeaders({

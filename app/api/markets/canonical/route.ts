@@ -5,17 +5,11 @@ import { createCanonicalErrorResponse, headerManager } from '../../../../lib/api
 import { headersToObject } from '../../../../lib/api-headers';
 import { exchangeManager } from '../../../../lib/exchanges/exchange_manager';
 import { PolymarketExchange } from '../../../../lib/exchanges/polymarket_exchange';
+import { createPreflightResponse } from '../../../../lib/security/profiles';
 
 // CORS preflight handler
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Telegram-Init-Data',
-    },
-  });
+export async function OPTIONS(request: Request) {
+  return createPreflightResponse(request);
 }
 
 /**
@@ -67,7 +61,7 @@ export async function GET(request: Request) {
     let rawMarkets: any[] = [];
 
     if (exchange === 'polymarket') {
-      const polyExchange = exchangeManager.getExchange('polymarket') as PolymarketExchange;
+      const polyExchange = exchangeManager.getExchange('polymarket') as unknown as PolymarketExchange;
       // Initialize if needed
       try {
         await polyExchange.initialize({});

@@ -1,0 +1,45 @@
+# MASTER BLUEPRINT REGISTRY - v2.0.0
+version = "2.0.0"
+lastUpdated = "2025-12-04"
+description = "Central registry for all exchange blueprint configurations"
+
+[registry]
+totalBlueprints = 4
+activeVersions = ["2.0.0"]
+namespace = "ORCA-BP"
+root = "ROOT-API-CLIENT"
+
+[blueprintCategories]
+crypto = ["BP-EXCHANGE-BINANCE"]
+prediction = ["BP-EXCHANGE-POLYMARKET", "BP-EXCHANGE-METACULUS"]
+sports = ["BP-EXCHANGE-PINNACLE", "BP-EXCHANGE-NANOSPORTS"]
+p2p = []  # For future expansion
+
+[marketTypes]
+spot = ["crypto"]
+prediction = ["prediction"]
+sports = ["sports"]
+p2p = ["p2p"]
+margin = ["crypto"]
+futures = ["crypto"]
+options = ["crypto"]
+
+[versioning]
+latest = "2.0.0"
+supported = ["2.0.0", "1.5.0"]
+deprecated = ["1.0.0"]
+maintenance = ["1.5.0"]
+
+[compatibility]
+crossExchange = true
+canonicalMarkets = true
+healthMonitoring = true
+binaryStreams = true
+streamTeeing = true
+
+[features]
+realTimeData = true
+highFrequency = true
+binaryOptimization = true
+circuitBreakers = true
+uuidv5Canonical = true

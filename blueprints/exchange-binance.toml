@@ -1,0 +1,149 @@
+# BINANCE EXCHANGE BLUEPRINT - BP-EXCHANGE-BINANCE@2.0.0
+blueprint = "BP-EXCHANGE-BINANCE"
+version = "2.0.0"
+instanceId = "ORCA-BINANCE-001"
+category = "crypto"
+priority = "high"
+root = "ROOT-API-CLIENT"
+
+[metadata]
+name = "Binance Exchange"
+description = "High-volume crypto exchange with advanced binary stream processing and real-time data"
+author = "ORCA Team"
+created = "2025-12-04"
+documentation = "https://binance-docs.github.io/apidocs/"
+tags = ["crypto", "spot", "futures", "binary-streams", "high-frequency"]
+
+[capabilities]
+marketData = true
+trading = true
+account = true
+websocket = true
+binaryStreams = true
+ohlcv = true
+margin = true
+futures = true
+options = false  # Available but complex
+spot = true
+streamTeeing = true
+
+[api]
+baseUrl = "https://api.binance.com"
+testnetUrl = "https://testnet.binance.vision"
+websocketUrl = "wss://stream.binance.com:9443"
+testnetWebsocketUrl = "https://testnet.binance.vision"
+docs = "https://binance-docs.github.io/apidocs/"
+authentication = "HMAC_SHA256"
+compression = "gzip"
+
+[rateLimit]
+requestsPerSecond = 10
+requestsPerMinute = 600
+requestsPerHour = 1200
+ordersPerSecond = 10
+ordersPerDay = 200000
+websocketStreams = 1024
+
+[auth]
+type = "HMAC_SHA256"
+required = ["apiKey", "secretKey"]
+headers = ["X-MBX-APIKEY"]
+parameters = ["timestamp", "signature"]
+signatureMethod = "hex"
+timestampRequired = true
+
+[security]
+vaultPath = "secret/binance/prod"
+encryption = "AES256"
+keyRotation = 90
+tokenization = true
+auditLogging = true
+
+[features]
+# Core trading features
+marketOrders = true
+limitOrders = true
+stopOrders = true
+stopLimitOrders = true
+ocoOrders = true
+icebergOrders = true
+
+# Account features
+balances = true
+positions = true
+orderHistory = true
+tradeHistory = true
+
+# Market data features
+tickers = true
+orderbook = true
+trades = true
+klines = true
+statistics24h = true
+
+[streamConfig]
+type = "websocket"
+compression = "gzip"
+reconnect = true
+reconnectDelay = 1000
+maxRetries = 5
+heartbeat = 30000
+bufferSize = 65536  # 64KB buffer
+
+[consumers]
+cache = true
+processor = true
+ui = true
+analytics = true
+alerts = true
+
+[binaryHandling]
+typedArrays = ["Uint8Array", "Float64Array"]
+endianness = "big-endian"
+compression = "gzip"
+chunkSize = 8192  # 8KB chunks
+streamTee = true
+
+[implementation]
+baseClass = "BaseExchange"
+binaryOptimization = true
+streamProcessing = true
+productionReady = true
+testCoverage = 85
+performanceBenchmarked = true
+
+[health]
+circuitBreaker = true
+circuitBreakerThreshold = 5
+circuitBreakerTimeout = 30000
+responseTimeMonitoring = true
+errorRateMonitoring = true
+loadBalancing = false
+
+[canonicalConfig]
+uuidv5Namespace = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+canonicalUrlPattern = "binance:{symbol}:{interval}:{limit}"
+marketIdFormat = "binance:{baseAsset}{quoteAsset}"
+tickerFormat = "{baseAsset}/{quoteAsset}"
+
+[dependencies]
+ccxt = "^4.0.0"
+node = ">=18.0.0"
+bun = ">=1.0.0"
+
+# Binary processing dependencies
+"pako" = "^2.1.0"  # Gzip compression
+"ws" = "^8.13.0"   # WebSocket client
+
+[symbols]
+# High-volume cryptocurrency pairs
+spot = [
+  "BTCUSDT", "ETHUSDT", "BNBUSDT", "ADAUSDT", "XRPUSDT",
+  "SOLUSDT", "DOTUSDT", "DOGEUSDT", "AVAXUSDT", "SHIBUSDT"
+]
+futures = [
+  "BTCUSDT", "ETHUSDT", "BNBUSDT", "ADAUSDT", "XRPUSDT"
+]
+
+[intervals]
+klines = ["1s", "1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "6h", "8h", "12h", "1d", "3d", "1w", "1M"]

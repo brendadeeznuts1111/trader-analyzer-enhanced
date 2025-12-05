@@ -6,17 +6,12 @@
 import { NextResponse } from 'next/server';
 import { featureFlags } from '../../../deploy/feature-flags';
 import { buildApiHeaders, headersToObject } from '../../../lib/api-headers';
+import { createPreflightResponse } from '../../../lib/security/profiles';
+import { getBuildVersion } from '../../../lib/build-info';
 
 // CORS preflight handler
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Telegram-Init-Data',
-    },
-  });
+export async function OPTIONS(request: Request) {
+  return createPreflightResponse(request);
 }
 
 export async function GET(request: Request) {
@@ -24,7 +19,7 @@ export async function GET(request: Request) {
 
   const data = {
     status: 'ok',
-    version: '0.2.0',
+    version: getBuildVersion(),
     timestamp: new Date().toISOString(),
     features: {
       polymarket: featureFlags.polyEnabled,

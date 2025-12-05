@@ -1,0 +1,20 @@
+# Bun Configuration - YAML Console Demo
+# 
+# SECTIONS:
+# - CONSOLE: Object inspection options
+# - INSTALL: Package installation settings  
+# - BUNDLE: Build optimization settings
+
+# === CONSOLE ===
+[console]
+depth = 4
+
+# === INSTALL ===
+[install]
+cache = true
+optional = true
+
+# === BUNDLE ===
+[bundle]
+target = "bun"
+minify = true

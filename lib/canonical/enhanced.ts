@@ -15,11 +15,7 @@ import { Database } from 'bun:sqlite';
 import { serve, Server } from 'bun';
 import { logger } from '../logger';
 import { formatNs, formatBytes, inspector } from '../debug-inspector';
-import {
-  MarketCanonicalizer,
-  MarketIdentifier,
-  CanonicalMarket,
-} from './uuidv5';
+import { MarketCanonicalizer, MarketIdentifier, CanonicalMarket } from './uuidv5';
 
 // =============================================================================
 // TYPES & INTERFACES

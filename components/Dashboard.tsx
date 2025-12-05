@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { PositionSession } from '@/lib/types';
 import { DashboardHeader } from './DashboardHeader';
 import { OverviewDashboard } from './OverviewDashboard';
@@ -11,6 +11,11 @@ import { AIPrediction } from './AIPrediction';
 import { TraderProfile } from './TraderProfile';
 import { DataPipelineVisualization } from './DataPipelineVisualization';
 import TelegramTopics from './TelegramTopics';
+import { Loader2 } from 'lucide-react';
+
+// Lazy load heavy components for better initial load
+const PipelineFlowVisualization = lazy(() => import('./PipelineFlowVisualization'));
+const EnhancedDashboard = lazy(() => import('./EnhancedDashboard'));
 
 type ViewMode =
   | 'overview'
@@ -20,6 +25,8 @@ type ViewMode =
   | 'prediction'
   | 'profile'
   | 'pipeline'
+  | 'pipeline-flow'
+  | 'enhanced'
   | 'telegram';
 
 interface APIConfig {
@@ -127,6 +134,36 @@ export function Dashboard() {
         {viewMode === 'telegram' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <TelegramTopics />
+          </div>
+        )}
+
+        {/* Pipeline Flow Mode - Interactive React Flow visualization */}
+        {viewMode === 'pipeline-flow' && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center min-h-[400px]">
+                  <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
+                </div>
+              }
+            >
+              <PipelineFlowVisualization />
+            </Suspense>
+          </div>
+        )}
+
+        {/* Enhanced Dashboard Mode - Real-time charts, filters, export */}
+        {viewMode === 'enhanced' && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center min-h-[400px]">
+                  <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
+                </div>
+              }
+            >
+              <EnhancedDashboard />
+            </Suspense>
           </div>
         )}
 

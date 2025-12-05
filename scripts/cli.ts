@@ -571,10 +571,8 @@ async function cmdTest(): Promise<void> {
 
   // Test 2: Logger
   await timed('Import logger', async () => {
-    const { Logger } = await import('../lib/logger');
-    Logger.setSilent(true);
-    Logger.info('Test');
-    Logger.setSilent(false);
+    const { logger } = await import('../lib/logger');
+    logger.info('Test');
     results.push({
       test: 'Logger',
       status: colorize('PASS', 'green'),

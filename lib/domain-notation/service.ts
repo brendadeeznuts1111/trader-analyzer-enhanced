@@ -1,11 +1,11 @@
-import { 
-  DomainNotationParser, 
-  DefaultBlueprintResolver, 
+import {
+  DomainNotationParser,
+  DefaultBlueprintResolver,
   DefaultPropertyResolver,
   DomainNotationValidator,
   ALL_BLUEPRINTS,
   EXAMPLE_INSTANCES,
-  ParsedNotation
+  ParsedNotation,
 } from '../domain-notation';
 
 // Initialize the domain notation system
@@ -34,15 +34,15 @@ export class DomainNotationService {
           blueprint,
           notation.components.root
         );
-        
+
         return {
           ...notation,
           blueprint,
-          resolvedProperties
+          resolvedProperties,
         };
       }
     }
-    
+
     return notation;
   }
 
@@ -67,6 +67,6 @@ export const useDomainNotation = () => {
     validate: DomainNotationService.validate,
     resolveProperties: DomainNotationService.resolveProperties,
     getBlueprint: DomainNotationService.getBlueprint,
-    getExamples: DomainNotationService.getExamples
+    getExamples: DomainNotationService.getExamples,
   };
 };

@@ -1,0 +1,5602 @@
+[
+  {
+    "id": "basketball-mia-cle-2025-12-02",
+    "canonicalId": "46b68fd6-ad93-5a4c-b3c2-639c21687599",
+    "sport": "basketball",
+    "league": "NBA",
+    "homeTeam": {
+      "id": "mia",
+      "name": "Heat",
+      "abbreviation": "MIA",
+      "city": "Miami"
+    },
+    "awayTeam": {
+      "id": "cle",
+      "name": "Cavaliers",
+      "abbreviation": "CLE",
+      "city": "Cleveland"
+    },
+    "startTime": "2025-12-02T11:22:26.289Z",
+    "status": "final",
+    "venue": "Chase Center",
+    "markets": [
+      {
+        "id": "ml-1764843746289-5449",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.99,
+        "awayOdds": 1.2906976744186047,
+        "volume": 160039,
+        "liquidityScore": 84
+      },
+      {
+        "id": "sp-1764843746289-8795",
+        "type": "spread",
+        "name": "Spread +14",
+        "homeOdds": 1.96,
+        "awayOdds": 1.95,
+        "line": 14,
+        "volume": 1461759,
+        "liquidityScore": 87
+      },
+      {
+        "id": "tot-1764843746289-5075",
+        "type": "total",
+        "name": "Total 211.9",
+        "homeOdds": 1.89,
+        "awayOdds": 2,
+        "line": 211.9,
+        "overOdds": 1.86,
+        "underOdds": 1.93,
+        "volume": 2499405,
+        "liquidityScore": 87
+      }
+    ],
+    "createdAt": "2025-11-25T11:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "mma-asp-poa-2025-12-02",
+    "canonicalId": "b36a3d67-6e74-5fa1-a9fb-d562f3435201",
+    "sport": "mma",
+    "league": "UFC",
+    "homeTeam": {
+      "id": "aspinall",
+      "name": "Tom Aspinall",
+      "abbreviation": "ASP",
+      "city": "UK"
+    },
+    "awayTeam": {
+      "id": "poatan",
+      "name": "Alex Pereira",
+      "abbreviation": "POA",
+      "city": "Brazil"
+    },
+    "startTime": "2025-12-02T12:22:26.288Z",
+    "status": "final",
+    "venue": "Abu Dhabi Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746288-2126",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.02,
+        "awayOdds": 1.3846153846153846,
+        "volume": 1852575,
+        "liquidityScore": 91
+      },
+      {
+        "id": "sp-1764843746288-9565",
+        "type": "spread",
+        "name": "Spread +8",
+        "homeOdds": 1.91,
+        "awayOdds": 1.92,
+        "line": 8,
+        "volume": 126845,
+        "liquidityScore": 89
+      },
+      {
+        "id": "tot-1764843746288-9439",
+        "type": "total",
+        "name": "Total 2.3",
+        "homeOdds": 1.94,
+        "awayOdds": 1.88,
+        "line": 2.3,
+        "overOdds": 1.88,
+        "underOdds": 1.98,
+        "volume": 1992045,
+        "liquidityScore": 77
+      }
+    ],
+    "createdAt": "2025-11-25T12:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "tennis-alc-med-2025-12-02",
+    "canonicalId": "2e8af4d8-1cab-506f-b2f6-b63c74599e9a",
+    "sport": "tennis",
+    "league": "ATP",
+    "homeTeam": {
+      "id": "alcaraz",
+      "name": "Carlos Alcaraz",
+      "abbreviation": "ALC",
+      "city": "Spain"
+    },
+    "awayTeam": {
+      "id": "medvedev",
+      "name": "Daniil Medvedev",
+      "abbreviation": "MED",
+      "city": "Russia"
+    },
+    "startTime": "2025-12-02T12:22:26.289Z",
+    "status": "final",
+    "venue": "Indian Wells",
+    "markets": [
+      {
+        "id": "ml-1764843746289-6440",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.5681818181818183,
+        "awayOdds": 2.74,
+        "volume": 1978461,
+        "liquidityScore": 97
+      },
+      {
+        "id": "sp-1764843746289-5909",
+        "type": "spread",
+        "name": "Spread -13.5",
+        "homeOdds": 1.87,
+        "awayOdds": 1.96,
+        "line": -13.5,
+        "volume": 1696851,
+        "liquidityScore": 89
+      },
+      {
+        "id": "tot-1764843746289-1374",
+        "type": "total",
+        "name": "Total 19.3",
+        "homeOdds": 1.96,
+        "awayOdds": 1.99,
+        "line": 19.3,
+        "overOdds": 1.93,
+        "underOdds": 1.87,
+        "volume": 1821503,
+        "liquidityScore": 80
+      }
+    ],
+    "createdAt": "2025-11-25T12:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "basketball-bos-lal-2025-12-02",
+    "canonicalId": "adb1d8aa-725e-5674-b207-c1fb83df11b4",
+    "sport": "basketball",
+    "league": "NBA",
+    "homeTeam": {
+      "id": "bos",
+      "name": "Celtics",
+      "abbreviation": "BOS",
+      "city": "Boston"
+    },
+    "awayTeam": {
+      "id": "lal",
+      "name": "Lakers",
+      "abbreviation": "LAL",
+      "city": "Los Angeles"
+    },
+    "startTime": "2025-12-02T13:22:26.288Z",
+    "status": "final",
+    "venue": "Chase Center",
+    "markets": [
+      {
+        "id": "ml-1764843746288-4125",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.12,
+        "awayOdds": 1.3424657534246576,
+        "volume": 465072,
+        "liquidityScore": 82
+      },
+      {
+        "id": "sp-1764843746288-2076",
+        "type": "spread",
+        "name": "Spread -9.1",
+        "homeOdds": 1.92,
+        "awayOdds": 1.97,
+        "line": -9.1,
+        "volume": 2409998,
+        "liquidityScore": 89
+      },
+      {
+        "id": "tot-1764843746288-2896",
+        "type": "total",
+        "name": "Total 210.3",
+        "homeOdds": 1.98,
+        "awayOdds": 1.91,
+        "line": 210.3,
+        "overOdds": 1.86,
+        "underOdds": 1.91,
+        "volume": 1928090,
+        "liquidityScore": 73
+      }
+    ],
+    "createdAt": "2025-11-25T13:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "cricket-eng-ind-2025-12-02",
+    "canonicalId": "c8f2e977-030e-5bec-9b64-14cc8370650b",
+    "sport": "cricket",
+    "league": "ICC",
+    "homeTeam": {
+      "id": "eng",
+      "name": "England",
+      "abbreviation": "ENG",
+      "city": "London"
+    },
+    "awayTeam": {
+      "id": "ind",
+      "name": "India",
+      "abbreviation": "IND",
+      "city": "Mumbai"
+    },
+    "startTime": "2025-12-02T14:22:26.289Z",
+    "status": "final",
+    "venue": "Lords",
+    "markets": [
+      {
+        "id": "ml-1764843746289-4372",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.75,
+        "awayOdds": 1.5025125628140703,
+        "volume": 994819,
+        "liquidityScore": 77
+      },
+      {
+        "id": "sp-1764843746289-9758",
+        "type": "spread",
+        "name": "Spread -7.1",
+        "homeOdds": 1.89,
+        "awayOdds": 1.97,
+        "line": -7.1,
+        "volume": 657082,
+        "liquidityScore": 75
+      },
+      {
+        "id": "tot-1764843746289-1231",
+        "type": "total",
+        "name": "Total 332.1",
+        "homeOdds": 1.96,
+        "awayOdds": 1.88,
+        "line": 332.1,
+        "overOdds": 1.89,
+        "underOdds": 1.91,
+        "volume": 620880,
+        "liquidityScore": 80
+      }
+    ],
+    "createdAt": "2025-11-25T14:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "soccer-int-ars-2025-12-02",
+    "canonicalId": "ba9eabe6-b3bb-57e8-88a3-ee6dee618de0",
+    "sport": "soccer",
+    "league": "Premier League",
+    "homeTeam": {
+      "id": "int",
+      "name": "Inter Milan",
+      "abbreviation": "INT",
+      "city": "Milan"
+    },
+    "awayTeam": {
+      "id": "ars",
+      "name": "Arsenal",
+      "abbreviation": "ARS",
+      "city": "London"
+    },
+    "startTime": "2025-12-02T16:22:26.287Z",
+    "status": "final",
+    "venue": "Santiago Bernabeu",
+    "markets": [
+      {
+        "id": "ml-1764843746287-1548",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.5714285714285714,
+        "awayOdds": 2.6,
+        "volume": 1144734,
+        "liquidityScore": 74
+      },
+      {
+        "id": "sp-1764843746288-1852",
+        "type": "spread",
+        "name": "Spread +3.4",
+        "homeOdds": 1.99,
+        "awayOdds": 1.92,
+        "line": 3.4,
+        "volume": 2602865,
+        "liquidityScore": 98
+      },
+      {
+        "id": "tot-1764843746288-2907",
+        "type": "total",
+        "name": "Total 3.3",
+        "homeOdds": 2,
+        "awayOdds": 1.87,
+        "line": 3.3,
+        "overOdds": 1.97,
+        "underOdds": 1.89,
+        "volume": 1097867,
+        "liquidityScore": 91
+      }
+    ],
+    "createdAt": "2025-11-25T16:22:26.287Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "baseball-sd-nyy-2025-12-02",
+    "canonicalId": "be759b99-4b25-5cad-9e26-7a6ad622f2f5",
+    "sport": "baseball",
+    "league": "MLB",
+    "homeTeam": {
+      "id": "sd",
+      "name": "Padres",
+      "abbreviation": "SD",
+      "city": "San Diego"
+    },
+    "awayTeam": {
+      "id": "nyy",
+      "name": "Yankees",
+      "abbreviation": "NYY",
+      "city": "New York"
+    },
+    "startTime": "2025-12-02T16:22:26.288Z",
+    "status": "final",
+    "venue": "Truist Park",
+    "markets": [
+      {
+        "id": "ml-1764843746288-9043",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.4385964912280702,
+        "awayOdds": 3.86,
+        "volume": 842442,
+        "liquidityScore": 87
+      },
+      {
+        "id": "sp-1764843746289-7898",
+        "type": "spread",
+        "name": "Spread +11.7",
+        "homeOdds": 1.85,
+        "awayOdds": 1.96,
+        "line": 11.7,
+        "volume": 2702305,
+        "liquidityScore": 86
+      },
+      {
+        "id": "tot-1764843746289-6548",
+        "type": "total",
+        "name": "Total 10",
+        "homeOdds": 1.93,
+        "awayOdds": 1.96,
+        "line": 10,
+        "overOdds": 1.91,
+        "underOdds": 1.96,
+        "volume": 92191,
+        "liquidityScore": 71
+      }
+    ],
+    "createdAt": "2025-11-25T16:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "baseball-hou-lad-2025-12-02",
+    "canonicalId": "19a762f6-e1e5-59ec-8380-12034870d320",
+    "sport": "baseball",
+    "league": "MLB",
+    "homeTeam": {
+      "id": "hou",
+      "name": "Astros",
+      "abbreviation": "HOU",
+      "city": "Houston"
+    },
+    "awayTeam": {
+      "id": "lad",
+      "name": "Dodgers",
+      "abbreviation": "LAD",
+      "city": "Los Angeles"
+    },
+    "startTime": "2025-12-02T23:22:26.289Z",
+    "status": "final",
+    "venue": "Yankee Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746289-9428",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.8,
+        "awayOdds": 1.3703703703703702,
+        "volume": 275313,
+        "liquidityScore": 93
+      },
+      {
+        "id": "sp-1764843746289-3592",
+        "type": "spread",
+        "name": "Spread +7.9",
+        "homeOdds": 1.85,
+        "awayOdds": 1.86,
+        "line": 7.9,
+        "volume": 2380015,
+        "liquidityScore": 100
+      },
+      {
+        "id": "tot-1764843746289-6950",
+        "type": "total",
+        "name": "Total 8.5",
+        "homeOdds": 2,
+        "awayOdds": 1.86,
+        "line": 8.5,
+        "overOdds": 1.87,
+        "underOdds": 1.91,
+        "volume": 2072678,
+        "liquidityScore": 81
+      }
+    ],
+    "createdAt": "2025-11-25T23:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "golf-sch-spi-2025-12-03",
+    "canonicalId": "5c28f4ef-14ae-5e9f-9916-a1948ab83641",
+    "sport": "golf",
+    "league": "PGA",
+    "homeTeam": {
+      "id": "scheffler",
+      "name": "Scottie Scheffler",
+      "abbreviation": "SCH",
+      "city": "USA"
+    },
+    "awayTeam": {
+      "id": "spieth",
+      "name": "Jordan Spieth",
+      "abbreviation": "SPI",
+      "city": "USA"
+    },
+    "startTime": "2025-12-03T00:22:26.289Z",
+    "status": "final",
+    "venue": "St Andrews",
+    "markets": [
+      {
+        "id": "ml-1764843746289-9404",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.98,
+        "awayOdds": 1.5025125628140703,
+        "volume": 104466,
+        "liquidityScore": 71
+      },
+      {
+        "id": "sp-1764843746289-4116",
+        "type": "spread",
+        "name": "Spread +5.9",
+        "homeOdds": 1.87,
+        "awayOdds": 1.94,
+        "line": 5.9,
+        "volume": 2037221,
+        "liquidityScore": 76
+      },
+      {
+        "id": "tot-1764843746289-4422",
+        "type": "total",
+        "name": "Total 266.6",
+        "homeOdds": 1.89,
+        "awayOdds": 1.88,
+        "line": 266.6,
+        "overOdds": 1.92,
+        "underOdds": 1.98,
+        "volume": 721733,
+        "liquidityScore": 94
+      }
+    ],
+    "createdAt": "2025-11-26T00:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "boxing-can-fur-2025-12-03",
+    "canonicalId": "6b4aeb0f-5c9f-5028-9cb5-c920bf21f2a6",
+    "sport": "boxing",
+    "league": "WBC/WBA",
+    "homeTeam": {
+      "id": "canelo",
+      "name": "Canelo Alvarez",
+      "abbreviation": "CAN",
+      "city": "Mexico"
+    },
+    "awayTeam": {
+      "id": "fury",
+      "name": "Tyson Fury",
+      "abbreviation": "FUR",
+      "city": "UK"
+    },
+    "startTime": "2025-12-03T03:22:26.288Z",
+    "status": "final",
+    "venue": "AT&T Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746288-9917",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.2,
+        "awayOdds": 1.5649717514124295,
+        "volume": 1621221,
+        "liquidityScore": 77
+      },
+      {
+        "id": "sp-1764843746288-8555",
+        "type": "spread",
+        "name": "Spread +3.4",
+        "homeOdds": 1.98,
+        "awayOdds": 1.87,
+        "line": 3.4,
+        "volume": 462862,
+        "liquidityScore": 93
+      },
+      {
+        "id": "tot-1764843746288-8894",
+        "type": "total",
+        "name": "Total 12.1",
+        "homeOdds": 1.96,
+        "awayOdds": 1.87,
+        "line": 12.1,
+        "overOdds": 1.99,
+        "underOdds": 1.88,
+        "volume": 2108645,
+        "liquidityScore": 73
+      }
+    ],
+    "createdAt": "2025-11-26T03:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "baseball-phi-lad-2025-12-03",
+    "canonicalId": "bd7c11b3-5383-5033-a492-d46d14b27754",
+    "sport": "baseball",
+    "league": "MLB",
+    "homeTeam": {
+      "id": "phi",
+      "name": "Phillies",
+      "abbreviation": "PHI",
+      "city": "Philadelphia"
+    },
+    "awayTeam": {
+      "id": "lad",
+      "name": "Dodgers",
+      "abbreviation": "LAD",
+      "city": "Los Angeles"
+    },
+    "startTime": "2025-12-03T04:22:26.290Z",
+    "status": "final",
+    "venue": "Wrigley Field",
+    "markets": [
+      {
+        "id": "ml-1764843746290-5970",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.01,
+        "awayOdds": 1.343642611683849,
+        "volume": 1452697,
+        "liquidityScore": 99
+      },
+      {
+        "id": "sp-1764843746290-4442",
+        "type": "spread",
+        "name": "Spread -9.9",
+        "homeOdds": 1.9,
+        "awayOdds": 1.88,
+        "line": -9.9,
+        "volume": 1125494,
+        "liquidityScore": 89
+      },
+      {
+        "id": "tot-1764843746290-2320",
+        "type": "total",
+        "name": "Total 6",
+        "homeOdds": 1.89,
+        "awayOdds": 1.88,
+        "line": 6,
+        "overOdds": 1.95,
+        "underOdds": 1.9,
+        "volume": 1798709,
+        "liquidityScore": 84
+      }
+    ],
+    "createdAt": "2025-11-26T04:22:26.290Z",
+    "updatedAt": "2025-12-04T10:22:26.290Z"
+  },
+  {
+    "id": "golf-tho-koe-2025-12-03",
+    "canonicalId": "2df9bd55-8e8c-5de1-9857-fbd5034c2bd7",
+    "sport": "golf",
+    "league": "PGA",
+    "homeTeam": {
+      "id": "thomas",
+      "name": "Justin Thomas",
+      "abbreviation": "THO",
+      "city": "USA"
+    },
+    "awayTeam": {
+      "id": "koepka",
+      "name": "Brooks Koepka",
+      "abbreviation": "KOE",
+      "city": "USA"
+    },
+    "startTime": "2025-12-03T07:22:26.289Z",
+    "status": "final",
+    "venue": "Royal Liverpool",
+    "markets": [
+      {
+        "id": "ml-1764843746289-8563",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.5952380952380953,
+        "awayOdds": 3.9,
+        "volume": 1813550,
+        "liquidityScore": 88
+      },
+      {
+        "id": "sp-1764843746289-3181",
+        "type": "spread",
+        "name": "Spread -11.4",
+        "homeOdds": 1.92,
+        "awayOdds": 1.89,
+        "line": -11.4,
+        "volume": 1583404,
+        "liquidityScore": 88
+      },
+      {
+        "id": "tot-1764843746289-6507",
+        "type": "total",
+        "name": "Total 283.2",
+        "homeOdds": 1.89,
+        "awayOdds": 1.92,
+        "line": 283.2,
+        "overOdds": 1.86,
+        "underOdds": 1.92,
+        "volume": 1566073,
+        "liquidityScore": 82
+      }
+    ],
+    "createdAt": "2025-11-26T07:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "hockey-dal-col-2025-12-03",
+    "canonicalId": "4996694b-0521-59a7-80a3-473f004c4dcb",
+    "sport": "hockey",
+    "league": "NHL",
+    "homeTeam": {
+      "id": "dal",
+      "name": "Stars",
+      "abbreviation": "DAL",
+      "city": "Dallas"
+    },
+    "awayTeam": {
+      "id": "col",
+      "name": "Avalanche",
+      "abbreviation": "COL",
+      "city": "Colorado"
+    },
+    "startTime": "2025-12-03T07:22:26.290Z",
+    "status": "final",
+    "venue": "T-Mobile Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746290-5494",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.15,
+        "awayOdds": 1.390625,
+        "volume": 74992,
+        "liquidityScore": 89
+      },
+      {
+        "id": "sp-1764843746290-4369",
+        "type": "spread",
+        "name": "Spread -2.9",
+        "homeOdds": 1.92,
+        "awayOdds": 1.96,
+        "line": -2.9,
+        "volume": 1209376,
+        "liquidityScore": 78
+      },
+      {
+        "id": "tot-1764843746290-5650",
+        "type": "total",
+        "name": "Total 4.8",
+        "homeOdds": 1.95,
+        "awayOdds": 1.89,
+        "line": 4.8,
+        "overOdds": 1.85,
+        "underOdds": 1.97,
+        "volume": 2183031,
+        "liquidityScore": 77
+      }
+    ],
+    "createdAt": "2025-11-26T07:22:26.290Z",
+    "updatedAt": "2025-12-04T10:22:26.290Z"
+  },
+  {
+    "id": "tennis-zve-djo-2025-12-03",
+    "canonicalId": "8c9132b6-9858-5ddc-800a-d56f31d321d5",
+    "sport": "tennis",
+    "league": "ATP",
+    "homeTeam": {
+      "id": "zverev",
+      "name": "Alexander Zverev",
+      "abbreviation": "ZVE",
+      "city": "Germany"
+    },
+    "awayTeam": {
+      "id": "djokovic",
+      "name": "Novak Djokovic",
+      "abbreviation": "DJO",
+      "city": "Serbia"
+    },
+    "startTime": "2025-12-03T09:22:26.289Z",
+    "status": "final",
+    "venue": "Indian Wells",
+    "markets": [
+      {
+        "id": "ml-1764843746289-3209",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.378787878787879,
+        "awayOdds": 2.08,
+        "volume": 1269696,
+        "liquidityScore": 91
+      },
+      {
+        "id": "sp-1764843746289-8767",
+        "type": "spread",
+        "name": "Spread -8.9",
+        "homeOdds": 1.99,
+        "awayOdds": 1.95,
+        "line": -8.9,
+        "volume": 100577,
+        "liquidityScore": 86
+      },
+      {
+        "id": "tot-1764843746289-4720",
+        "type": "total",
+        "name": "Total 25.8",
+        "homeOdds": 1.97,
+        "awayOdds": 1.98,
+        "line": 25.8,
+        "overOdds": 1.89,
+        "underOdds": 1.91,
+        "volume": 1516921,
+        "liquidityScore": 78
+      }
+    ],
+    "createdAt": "2025-11-26T09:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "football-mia-phi-2025-12-03",
+    "canonicalId": "3788b33a-b12c-54c7-b188-eb1aee8dac9c",
+    "sport": "football",
+    "league": "NFL",
+    "homeTeam": {
+      "id": "mia",
+      "name": "Dolphins",
+      "abbreviation": "MIA",
+      "city": "Miami"
+    },
+    "awayTeam": {
+      "id": "phi",
+      "name": "Eagles",
+      "abbreviation": "PHI",
+      "city": "Philadelphia"
+    },
+    "startTime": "2025-12-03T12:22:26.289Z",
+    "status": "final",
+    "venue": "AT&T Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746289-1253",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.74,
+        "awayOdds": 1.352112676056338,
+        "volume": 424295,
+        "liquidityScore": 78
+      },
+      {
+        "id": "sp-1764843746289-8157",
+        "type": "spread",
+        "name": "Spread +11.7",
+        "homeOdds": 1.88,
+        "awayOdds": 1.98,
+        "line": 11.7,
+        "volume": 2538517,
+        "liquidityScore": 80
+      },
+      {
+        "id": "tot-1764843746289-9135",
+        "type": "total",
+        "name": "Total 35.5",
+        "homeOdds": 1.93,
+        "awayOdds": 1.88,
+        "line": 35.5,
+        "overOdds": 1.99,
+        "underOdds": 1.88,
+        "volume": 1558434,
+        "liquidityScore": 90
+      }
+    ],
+    "createdAt": "2025-11-26T12:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "basketball-den-mil-2025-12-03",
+    "canonicalId": "b7e01fa8-cb82-5ab5-af6c-a59742cb2dde",
+    "sport": "basketball",
+    "league": "NBA",
+    "homeTeam": {
+      "id": "den",
+      "name": "Nuggets",
+      "abbreviation": "DEN",
+      "city": "Denver"
+    },
+    "awayTeam": {
+      "id": "mil",
+      "name": "Bucks",
+      "abbreviation": "MIL",
+      "city": "Milwaukee"
+    },
+    "startTime": "2025-12-03T12:22:26.289Z",
+    "status": "final",
+    "venue": "Ball Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-8890",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.381679389312977,
+        "awayOdds": 3.85,
+        "volume": 1436015,
+        "liquidityScore": 79
+      },
+      {
+        "id": "sp-1764843746289-7732",
+        "type": "spread",
+        "name": "Spread +7.5",
+        "homeOdds": 1.93,
+        "awayOdds": 1.94,
+        "line": 7.5,
+        "volume": 2811279,
+        "liquidityScore": 90
+      },
+      {
+        "id": "tot-1764843746289-8139",
+        "type": "total",
+        "name": "Total 215.4",
+        "homeOdds": 1.93,
+        "awayOdds": 1.97,
+        "line": 215.4,
+        "overOdds": 1.89,
+        "underOdds": 1.85,
+        "volume": 1218683,
+        "liquidityScore": 81
+      }
+    ],
+    "createdAt": "2025-11-26T12:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "football-gb-bal-2025-12-03",
+    "canonicalId": "764c06ef-2fd8-5fee-9f94-d8a438ef9dbd",
+    "sport": "football",
+    "league": "NFL",
+    "homeTeam": {
+      "id": "gb",
+      "name": "Packers",
+      "abbreviation": "GB",
+      "city": "Green Bay"
+    },
+    "awayTeam": {
+      "id": "bal",
+      "name": "Ravens",
+      "abbreviation": "BAL",
+      "city": "Baltimore"
+    },
+    "startTime": "2025-12-03T12:22:26.289Z",
+    "status": "final",
+    "venue": "Levis Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746289-8430",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.2985074626865671,
+        "awayOdds": 2.67,
+        "volume": 373240,
+        "liquidityScore": 76
+      },
+      {
+        "id": "sp-1764843746289-1625",
+        "type": "spread",
+        "name": "Spread -5.9",
+        "homeOdds": 1.92,
+        "awayOdds": 1.87,
+        "line": -5.9,
+        "volume": 1181156,
+        "liquidityScore": 93
+      },
+      {
+        "id": "tot-1764843746289-7911",
+        "type": "total",
+        "name": "Total 45.6",
+        "homeOdds": 1.91,
+        "awayOdds": 1.95,
+        "line": 45.6,
+        "overOdds": 1.89,
+        "underOdds": 1.89,
+        "volume": 299831,
+        "liquidityScore": 89
+      }
+    ],
+    "createdAt": "2025-11-26T12:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "hockey-bos-car-2025-12-03",
+    "canonicalId": "51ee9f36-f42b-55dd-be2a-bab97b36c92a",
+    "sport": "hockey",
+    "league": "NHL",
+    "homeTeam": {
+      "id": "bos",
+      "name": "Bruins",
+      "abbreviation": "BOS",
+      "city": "Boston"
+    },
+    "awayTeam": {
+      "id": "car",
+      "name": "Hurricanes",
+      "abbreviation": "CAR",
+      "city": "Carolina"
+    },
+    "startTime": "2025-12-03T14:22:26.288Z",
+    "status": "final",
+    "venue": "Scotiabank Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746288-6300",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.3125,
+        "awayOdds": 3.29,
+        "volume": 109820,
+        "liquidityScore": 98
+      },
+      {
+        "id": "sp-1764843746288-8234",
+        "type": "spread",
+        "name": "Spread +8.9",
+        "homeOdds": 1.85,
+        "awayOdds": 1.88,
+        "line": 8.9,
+        "volume": 1887568,
+        "liquidityScore": 76
+      },
+      {
+        "id": "tot-1764843746288-4451",
+        "type": "total",
+        "name": "Total 5.8",
+        "homeOdds": 1.97,
+        "awayOdds": 1.99,
+        "line": 5.8,
+        "overOdds": 1.86,
+        "underOdds": 1.86,
+        "volume": 1144275,
+        "liquidityScore": 95
+      }
+    ],
+    "createdAt": "2025-11-26T14:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "baseball-tex-nym-2025-12-03",
+    "canonicalId": "3199e421-85b2-5922-b4f3-78ae471ddd1a",
+    "sport": "baseball",
+    "league": "MLB",
+    "homeTeam": {
+      "id": "tex",
+      "name": "Rangers",
+      "abbreviation": "TEX",
+      "city": "Texas"
+    },
+    "awayTeam": {
+      "id": "nym",
+      "name": "Mets",
+      "abbreviation": "NYM",
+      "city": "New York"
+    },
+    "startTime": "2025-12-03T15:22:26.288Z",
+    "status": "final",
+    "venue": "Fenway Park",
+    "markets": [
+      {
+        "id": "ml-1764843746288-3398",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.2941176470588236,
+        "awayOdds": 3.64,
+        "volume": 556283,
+        "liquidityScore": 99
+      },
+      {
+        "id": "sp-1764843746288-2782",
+        "type": "spread",
+        "name": "Spread -2.2",
+        "homeOdds": 2,
+        "awayOdds": 1.91,
+        "line": -2.2,
+        "volume": 458710,
+        "liquidityScore": 89
+      },
+      {
+        "id": "tot-1764843746288-7120",
+        "type": "total",
+        "name": "Total 6.3",
+        "homeOdds": 1.91,
+        "awayOdds": 1.85,
+        "line": 6.3,
+        "overOdds": 1.87,
+        "underOdds": 1.98,
+        "volume": 2234990,
+        "liquidityScore": 93
+      }
+    ],
+    "createdAt": "2025-11-26T15:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "tennis-med-zve-2025-12-03",
+    "canonicalId": "69f95b04-8f84-5b4d-8f84-a888e71c5d28",
+    "sport": "tennis",
+    "league": "ATP",
+    "homeTeam": {
+      "id": "medvedev",
+      "name": "Daniil Medvedev",
+      "abbreviation": "MED",
+      "city": "Russia"
+    },
+    "awayTeam": {
+      "id": "zverev",
+      "name": "Alexander Zverev",
+      "abbreviation": "ZVE",
+      "city": "Germany"
+    },
+    "startTime": "2025-12-03T18:22:26.288Z",
+    "status": "final",
+    "venue": "Indian Wells",
+    "markets": [
+      {
+        "id": "ml-1764843746288-6357",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.01,
+        "awayOdds": 1.348432055749129,
+        "volume": 1305230,
+        "liquidityScore": 78
+      },
+      {
+        "id": "sp-1764843746288-3698",
+        "type": "spread",
+        "name": "Spread +9.8",
+        "homeOdds": 1.91,
+        "awayOdds": 1.96,
+        "line": 9.8,
+        "volume": 108096,
+        "liquidityScore": 79
+      },
+      {
+        "id": "tot-1764843746288-9592",
+        "type": "total",
+        "name": "Total 30.5",
+        "homeOdds": 1.87,
+        "awayOdds": 1.99,
+        "line": 30.5,
+        "overOdds": 1.88,
+        "underOdds": 1.96,
+        "volume": 1914757,
+        "liquidityScore": 82
+      }
+    ],
+    "createdAt": "2025-11-26T18:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "tennis-djo-med-2025-12-03",
+    "canonicalId": "be9f7d1d-fb3b-559c-b227-3636a1a04795",
+    "sport": "tennis",
+    "league": "ATP",
+    "homeTeam": {
+      "id": "djokovic",
+      "name": "Novak Djokovic",
+      "abbreviation": "DJO",
+      "city": "Serbia"
+    },
+    "awayTeam": {
+      "id": "medvedev",
+      "name": "Daniil Medvedev",
+      "abbreviation": "MED",
+      "city": "Russia"
+    },
+    "startTime": "2025-12-03T19:22:26.289Z",
+    "status": "final",
+    "venue": "Indian Wells",
+    "markets": [
+      {
+        "id": "ml-1764843746289-9129",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.8333333333333335,
+        "awayOdds": 2.65,
+        "volume": 74043,
+        "liquidityScore": 97
+      },
+      {
+        "id": "sp-1764843746289-2902",
+        "type": "spread",
+        "name": "Spread -11.6",
+        "homeOdds": 1.88,
+        "awayOdds": 1.87,
+        "line": -11.6,
+        "volume": 2855824,
+        "liquidityScore": 77
+      },
+      {
+        "id": "tot-1764843746289-9791",
+        "type": "total",
+        "name": "Total 32.7",
+        "homeOdds": 1.91,
+        "awayOdds": 1.97,
+        "line": 32.7,
+        "overOdds": 2,
+        "underOdds": 1.98,
+        "volume": 741330,
+        "liquidityScore": 75
+      }
+    ],
+    "createdAt": "2025-11-26T19:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "football-phi-sf-2025-12-03",
+    "canonicalId": "1a1e025d-376f-5167-90f5-cf0a2971b1d3",
+    "sport": "football",
+    "league": "NFL",
+    "homeTeam": {
+      "id": "phi",
+      "name": "Eagles",
+      "abbreviation": "PHI",
+      "city": "Philadelphia"
+    },
+    "awayTeam": {
+      "id": "sf",
+      "name": "49ers",
+      "abbreviation": "SF",
+      "city": "San Francisco"
+    },
+    "startTime": "2025-12-03T20:22:26.288Z",
+    "status": "final",
+    "venue": "Levis Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746288-2848",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.6100000000000003,
+        "awayOdds": 1.3610108303249098,
+        "volume": 1905218,
+        "liquidityScore": 79
+      },
+      {
+        "id": "sp-1764843746288-6645",
+        "type": "spread",
+        "name": "Spread +8.4",
+        "homeOdds": 1.99,
+        "awayOdds": 1.94,
+        "line": 8.4,
+        "volume": 1267997,
+        "liquidityScore": 80
+      },
+      {
+        "id": "tot-1764843746288-6417",
+        "type": "total",
+        "name": "Total 51.1",
+        "homeOdds": 1.89,
+        "awayOdds": 1.9,
+        "line": 51.1,
+        "overOdds": 1.85,
+        "underOdds": 1.9,
+        "volume": 1991192,
+        "liquidityScore": 93
+      }
+    ],
+    "createdAt": "2025-11-26T20:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "boxing-ino-usy-2025-12-03",
+    "canonicalId": "03f52c12-46e5-5dda-9020-b2a330372c4f",
+    "sport": "boxing",
+    "league": "WBC/WBA",
+    "homeTeam": {
+      "id": "inoue",
+      "name": "Naoya Inoue",
+      "abbreviation": "INO",
+      "city": "Japan"
+    },
+    "awayTeam": {
+      "id": "usyk",
+      "name": "Oleksandr Usyk",
+      "abbreviation": "USY",
+      "city": "Ukraine"
+    },
+    "startTime": "2025-12-03T20:22:26.289Z",
+    "status": "final",
+    "venue": "T-Mobile Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-6390",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.4081632653061225,
+        "awayOdds": 2.9699999999999998,
+        "volume": 916037,
+        "liquidityScore": 89
+      },
+      {
+        "id": "sp-1764843746289-1969",
+        "type": "spread",
+        "name": "Spread -3.4",
+        "homeOdds": 1.91,
+        "awayOdds": 1.92,
+        "line": -3.4,
+        "volume": 2295792,
+        "liquidityScore": 85
+      },
+      {
+        "id": "tot-1764843746289-6295",
+        "type": "total",
+        "name": "Total 11",
+        "homeOdds": 1.93,
+        "awayOdds": 1.86,
+        "line": 11,
+        "overOdds": 1.86,
+        "underOdds": 1.96,
+        "volume": 1787802,
+        "liquidityScore": 76
+      }
+    ],
+    "createdAt": "2025-11-26T20:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "basketball-phi-mia-2025-12-03",
+    "canonicalId": "0ae196fc-61c6-58fb-9c2f-316c2f554f25",
+    "sport": "basketball",
+    "league": "NBA",
+    "homeTeam": {
+      "id": "phi",
+      "name": "76ers",
+      "abbreviation": "PHI",
+      "city": "Philadelphia"
+    },
+    "awayTeam": {
+      "id": "mia",
+      "name": "Heat",
+      "abbreviation": "MIA",
+      "city": "Miami"
+    },
+    "startTime": "2025-12-03T20:22:26.290Z",
+    "status": "final",
+    "venue": "Kaseya Center",
+    "markets": [
+      {
+        "id": "ml-1764843746290-9372",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.73,
+        "awayOdds": 1.3636363636363638,
+        "volume": 665539,
+        "liquidityScore": 91
+      },
+      {
+        "id": "sp-1764843746290-6288",
+        "type": "spread",
+        "name": "Spread +9.5",
+        "homeOdds": 1.9,
+        "awayOdds": 1.97,
+        "line": 9.5,
+        "volume": 784276,
+        "liquidityScore": 91
+      },
+      {
+        "id": "tot-1764843746290-7289",
+        "type": "total",
+        "name": "Total 235.8",
+        "homeOdds": 1.91,
+        "awayOdds": 1.85,
+        "line": 235.8,
+        "overOdds": 1.9,
+        "underOdds": 1.87,
+        "volume": 568954,
+        "liquidityScore": 91
+      }
+    ],
+    "createdAt": "2025-11-26T20:22:26.290Z",
+    "updatedAt": "2025-12-04T10:22:26.290Z"
+  },
+  {
+    "id": "mma-jon-poa-2025-12-03",
+    "canonicalId": "d8fddff8-1d9d-551b-8015-a7cea2c08c1c",
+    "sport": "mma",
+    "league": "UFC",
+    "homeTeam": {
+      "id": "jones",
+      "name": "Jon Jones",
+      "abbreviation": "JON",
+      "city": "USA"
+    },
+    "awayTeam": {
+      "id": "poatan",
+      "name": "Alex Pereira",
+      "abbreviation": "POA",
+      "city": "Brazil"
+    },
+    "startTime": "2025-12-03T21:22:26.288Z",
+    "status": "final",
+    "venue": "O2 Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746288-6494",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2,
+        "awayOdds": 1.2941176470588236,
+        "volume": 1532685,
+        "liquidityScore": 93
+      },
+      {
+        "id": "sp-1764843746288-1484",
+        "type": "spread",
+        "name": "Spread +10.3",
+        "homeOdds": 1.88,
+        "awayOdds": 1.98,
+        "line": 10.3,
+        "volume": 325457,
+        "liquidityScore": 90
+      },
+      {
+        "id": "tot-1764843746288-4160",
+        "type": "total",
+        "name": "Total 3.4",
+        "homeOdds": 1.95,
+        "awayOdds": 1.92,
+        "line": 3.4,
+        "overOdds": 1.99,
+        "underOdds": 1.97,
+        "volume": 890361,
+        "liquidityScore": 93
+      }
+    ],
+    "createdAt": "2025-11-26T21:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "baseball-hou-lad-2025-12-04",
+    "canonicalId": "3fb477fb-9fee-59c0-8fb9-b709ddf81635",
+    "sport": "baseball",
+    "league": "MLB",
+    "homeTeam": {
+      "id": "hou",
+      "name": "Astros",
+      "abbreviation": "HOU",
+      "city": "Houston"
+    },
+    "awayTeam": {
+      "id": "lad",
+      "name": "Dodgers",
+      "abbreviation": "LAD",
+      "city": "Los Angeles"
+    },
+    "startTime": "2025-12-04T01:22:26.289Z",
+    "status": "final",
+    "venue": "Yankee Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746289-5387",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.819672131147541,
+        "awayOdds": 3.79,
+        "volume": 356423,
+        "liquidityScore": 95
+      },
+      {
+        "id": "sp-1764843746289-5993",
+        "type": "spread",
+        "name": "Spread -0.1",
+        "homeOdds": 1.91,
+        "awayOdds": 1.94,
+        "line": -0.1,
+        "volume": 1467680,
+        "liquidityScore": 88
+      },
+      {
+        "id": "tot-1764843746289-3787",
+        "type": "total",
+        "name": "Total 6.8",
+        "homeOdds": 1.93,
+        "awayOdds": 1.91,
+        "line": 6.8,
+        "overOdds": 1.98,
+        "underOdds": 1.99,
+        "volume": 310744,
+        "liquidityScore": 94
+      }
+    ],
+    "createdAt": "2025-11-27T01:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "soccer-mci-bay-2025-12-04",
+    "canonicalId": "c6794d1d-a231-5496-ba12-59c09baf6c73",
+    "sport": "soccer",
+    "league": "Premier League",
+    "homeTeam": {
+      "id": "mci",
+      "name": "Manchester City",
+      "abbreviation": "MCI",
+      "city": "Manchester"
+    },
+    "awayTeam": {
+      "id": "bay",
+      "name": "Bayern Munich",
+      "abbreviation": "BAY",
+      "city": "Munich"
+    },
+    "startTime": "2025-12-04T03:22:26.289Z",
+    "status": "final",
+    "venue": "Camp Nou",
+    "markets": [
+      {
+        "id": "ml-1764843746289-5084",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.6493506493506493,
+        "awayOdds": 2.27,
+        "volume": 1646179,
+        "liquidityScore": 78
+      },
+      {
+        "id": "sp-1764843746289-6448",
+        "type": "spread",
+        "name": "Spread -5.5",
+        "homeOdds": 1.92,
+        "awayOdds": 1.86,
+        "line": -5.5,
+        "volume": 1269349,
+        "liquidityScore": 83
+      },
+      {
+        "id": "tot-1764843746289-8754",
+        "type": "total",
+        "name": "Total 3.1",
+        "homeOdds": 1.98,
+        "awayOdds": 1.89,
+        "line": 3.1,
+        "overOdds": 1.93,
+        "underOdds": 1.88,
+        "volume": 527474,
+        "liquidityScore": 88
+      }
+    ],
+    "createdAt": "2025-11-27T03:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "f1-sai-ham-2025-12-04",
+    "canonicalId": "6fdca014-6d12-5f41-9d85-c8995d67171f",
+    "sport": "f1",
+    "league": "F1",
+    "homeTeam": {
+      "id": "sainz",
+      "name": "Carlos Sainz",
+      "abbreviation": "SAI",
+      "city": "Spain"
+    },
+    "awayTeam": {
+      "id": "hamilton",
+      "name": "Lewis Hamilton",
+      "abbreviation": "HAM",
+      "city": "UK"
+    },
+    "startTime": "2025-12-04T08:22:26.288Z",
+    "status": "final",
+    "venue": "Spa-Francorchamps",
+    "markets": [
+      {
+        "id": "ml-1764843746288-8026",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.1,
+        "awayOdds": 1.8130081300813008,
+        "volume": 932841,
+        "liquidityScore": 90
+      },
+      {
+        "id": "sp-1764843746288-7219",
+        "type": "spread",
+        "name": "Spread +3.9",
+        "homeOdds": 1.92,
+        "awayOdds": 1.91,
+        "line": 3.9,
+        "volume": 2923825,
+        "liquidityScore": 100
+      },
+      {
+        "id": "tot-1764843746288-5194",
+        "type": "total",
+        "name": "Total 17.6",
+        "homeOdds": 1.95,
+        "awayOdds": 1.94,
+        "line": 17.6,
+        "overOdds": 1.85,
+        "underOdds": 1.88,
+        "volume": 786382,
+        "liquidityScore": 92
+      }
+    ],
+    "createdAt": "2025-11-27T08:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "football-mia-phi-2025-12-04",
+    "canonicalId": "f48751cc-0a86-5960-9710-0271b9c292e7",
+    "sport": "football",
+    "league": "NFL",
+    "homeTeam": {
+      "id": "mia",
+      "name": "Dolphins",
+      "abbreviation": "MIA",
+      "city": "Miami"
+    },
+    "awayTeam": {
+      "id": "phi",
+      "name": "Eagles",
+      "abbreviation": "PHI",
+      "city": "Philadelphia"
+    },
+    "startTime": "2025-12-04T10:22:26.288Z",
+    "status": "live",
+    "venue": "Highmark Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746288-8260",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.5,
+        "awayOdds": 1.5376344086021505,
+        "volume": 1083992,
+        "liquidityScore": 85
+      },
+      {
+        "id": "sp-1764843746288-7228",
+        "type": "spread",
+        "name": "Spread +7.9",
+        "homeOdds": 1.85,
+        "awayOdds": 1.96,
+        "line": 7.9,
+        "volume": 483501,
+        "liquidityScore": 76
+      },
+      {
+        "id": "tot-1764843746288-3238",
+        "type": "total",
+        "name": "Total 39.8",
+        "homeOdds": 1.94,
+        "awayOdds": 1.94,
+        "line": 39.8,
+        "overOdds": 1.89,
+        "underOdds": 1.96,
+        "volume": 203963,
+        "liquidityScore": 77
+      }
+    ],
+    "createdAt": "2025-11-27T10:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "esports-g2-gen-2025-12-04",
+    "canonicalId": "59e8b61f-458b-59fa-bb93-ec9ce875e237",
+    "sport": "esports",
+    "league": "LCK/LEC",
+    "homeTeam": {
+      "id": "g2",
+      "name": "G2 Esports",
+      "abbreviation": "G2",
+      "city": "Berlin"
+    },
+    "awayTeam": {
+      "id": "geng",
+      "name": "Gen.G",
+      "abbreviation": "GEN",
+      "city": "Seoul"
+    },
+    "startTime": "2025-12-04T16:22:26.288Z",
+    "status": "scheduled",
+    "venue": "LoL Park",
+    "markets": [
+      {
+        "id": "ml-1764843746288-6717",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.33,
+        "awayOdds": 1.5813953488372094,
+        "volume": 1377127,
+        "liquidityScore": 81
+      },
+      {
+        "id": "sp-1764843746288-7739",
+        "type": "spread",
+        "name": "Spread +0.7",
+        "homeOdds": 1.93,
+        "awayOdds": 1.9,
+        "line": 0.7,
+        "volume": 2521570,
+        "liquidityScore": 93
+      },
+      {
+        "id": "tot-1764843746288-3211",
+        "type": "total",
+        "name": "Total 4.3",
+        "homeOdds": 1.9,
+        "awayOdds": 1.91,
+        "line": 4.3,
+        "overOdds": 1.87,
+        "underOdds": 2,
+        "volume": 160313,
+        "liquidityScore": 85
+      }
+    ],
+    "createdAt": "2025-11-27T16:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "boxing-ino-usy-2025-12-04",
+    "canonicalId": "70069661-dfb4-57f5-83c8-e56bbfeb40f8",
+    "sport": "boxing",
+    "league": "WBC/WBA",
+    "homeTeam": {
+      "id": "inoue",
+      "name": "Naoya Inoue",
+      "abbreviation": "INO",
+      "city": "Japan"
+    },
+    "awayTeam": {
+      "id": "usyk",
+      "name": "Oleksandr Usyk",
+      "abbreviation": "USY",
+      "city": "Ukraine"
+    },
+    "startTime": "2025-12-04T19:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Wembley Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746289-5426",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.06,
+        "awayOdds": 1.4524886877828054,
+        "volume": 1543107,
+        "liquidityScore": 70
+      },
+      {
+        "id": "sp-1764843746289-8418",
+        "type": "spread",
+        "name": "Spread +0.8",
+        "homeOdds": 1.95,
+        "awayOdds": 1.93,
+        "line": 0.8,
+        "volume": 2199012,
+        "liquidityScore": 94
+      },
+      {
+        "id": "tot-1764843746289-9730",
+        "type": "total",
+        "name": "Total 7.6",
+        "homeOdds": 1.85,
+        "awayOdds": 1.88,
+        "line": 7.6,
+        "overOdds": 1.99,
+        "underOdds": 1.93,
+        "volume": 1882366,
+        "liquidityScore": 83
+      }
+    ],
+    "createdAt": "2025-11-27T19:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "mma-pan-ade-2025-12-04",
+    "canonicalId": "0c93c458-ec26-5c67-9839-eb2a2de0a7ca",
+    "sport": "mma",
+    "league": "UFC",
+    "homeTeam": {
+      "id": "pantoja",
+      "name": "Alexandre Pantoja",
+      "abbreviation": "PAN",
+      "city": "Brazil"
+    },
+    "awayTeam": {
+      "id": "adesanya",
+      "name": "Israel Adesanya",
+      "abbreviation": "ADE",
+      "city": "Nigeria"
+    },
+    "startTime": "2025-12-04T23:22:26.288Z",
+    "status": "scheduled",
+    "venue": "O2 Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746288-7459",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.21,
+        "awayOdds": 1.6993006993006992,
+        "volume": 771149,
+        "liquidityScore": 79
+      },
+      {
+        "id": "sp-1764843746288-3393",
+        "type": "spread",
+        "name": "Spread -12.6",
+        "homeOdds": 1.99,
+        "awayOdds": 1.9,
+        "line": -12.6,
+        "volume": 2596571,
+        "liquidityScore": 76
+      },
+      {
+        "id": "tot-1764843746288-5172",
+        "type": "total",
+        "name": "Total 2.2",
+        "homeOdds": 1.96,
+        "awayOdds": 1.99,
+        "line": 2.2,
+        "overOdds": 1.96,
+        "underOdds": 1.97,
+        "volume": 915722,
+        "liquidityScore": 83
+      }
+    ],
+    "createdAt": "2025-11-27T23:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "football-gb-det-2025-12-04",
+    "canonicalId": "47c3d9b6-0003-54e7-8df2-691d2f000b4d",
+    "sport": "football",
+    "league": "NFL",
+    "homeTeam": {
+      "id": "gb",
+      "name": "Packers",
+      "abbreviation": "GB",
+      "city": "Green Bay"
+    },
+    "awayTeam": {
+      "id": "det",
+      "name": "Lions",
+      "abbreviation": "DET",
+      "city": "Detroit"
+    },
+    "startTime": "2025-12-04T23:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Arrowhead Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746289-5860",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.99,
+        "awayOdds": 1.3333333333333333,
+        "volume": 998487,
+        "liquidityScore": 77
+      },
+      {
+        "id": "sp-1764843746289-2872",
+        "type": "spread",
+        "name": "Spread +10.1",
+        "homeOdds": 1.86,
+        "awayOdds": 1.98,
+        "line": 10.1,
+        "volume": 2194290,
+        "liquidityScore": 75
+      },
+      {
+        "id": "tot-1764843746289-5494",
+        "type": "total",
+        "name": "Total 41.7",
+        "homeOdds": 1.86,
+        "awayOdds": 1.95,
+        "line": 41.7,
+        "overOdds": 1.98,
+        "underOdds": 1.9,
+        "volume": 1911141,
+        "liquidityScore": 93
+      }
+    ],
+    "createdAt": "2025-11-27T23:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "f1-rus-lec-2025-12-05",
+    "canonicalId": "a1eff538-5579-5065-a60e-e93bf136e1d2",
+    "sport": "f1",
+    "league": "F1",
+    "homeTeam": {
+      "id": "russell",
+      "name": "George Russell",
+      "abbreviation": "RUS",
+      "city": "UK"
+    },
+    "awayTeam": {
+      "id": "leclerc",
+      "name": "Charles Leclerc",
+      "abbreviation": "LEC",
+      "city": "Monaco"
+    },
+    "startTime": "2025-12-05T05:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Monaco",
+    "markets": [
+      {
+        "id": "ml-1764843746288-2437",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.5,
+        "awayOdds": 1.8064516129032258,
+        "volume": 920889,
+        "liquidityScore": 96
+      },
+      {
+        "id": "sp-1764843746288-6657",
+        "type": "spread",
+        "name": "Spread -11.2",
+        "homeOdds": 1.98,
+        "awayOdds": 1.92,
+        "line": -11.2,
+        "volume": 1581207,
+        "liquidityScore": 86
+      },
+      {
+        "id": "tot-1764843746288-4158",
+        "type": "total",
+        "name": "Total 17.2",
+        "homeOdds": 1.97,
+        "awayOdds": 1.91,
+        "line": 17.2,
+        "overOdds": 1.87,
+        "underOdds": 1.97,
+        "volume": 1795679,
+        "liquidityScore": 74
+      }
+    ],
+    "createdAt": "2025-11-28T05:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "tennis-zve-sin-2025-12-05",
+    "canonicalId": "d29da7f4-63f3-5f7f-b363-ea3c3d56043b",
+    "sport": "tennis",
+    "league": "ATP",
+    "homeTeam": {
+      "id": "zverev",
+      "name": "Alexander Zverev",
+      "abbreviation": "ZVE",
+      "city": "Germany"
+    },
+    "awayTeam": {
+      "id": "sinner",
+      "name": "Jannik Sinner",
+      "abbreviation": "SIN",
+      "city": "Italy"
+    },
+    "startTime": "2025-12-05T05:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Rod Laver Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-1933",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.3448275862068966,
+        "awayOdds": 2.8899999999999997,
+        "volume": 1637778,
+        "liquidityScore": 86
+      },
+      {
+        "id": "sp-1764843746289-5435",
+        "type": "spread",
+        "name": "Spread +3.2",
+        "homeOdds": 1.94,
+        "awayOdds": 1.96,
+        "line": 3.2,
+        "volume": 482703,
+        "liquidityScore": 75
+      },
+      {
+        "id": "tot-1764843746289-8924",
+        "type": "total",
+        "name": "Total 25.5",
+        "homeOdds": 1.95,
+        "awayOdds": 1.9,
+        "line": 25.5,
+        "overOdds": 1.99,
+        "underOdds": 1.91,
+        "volume": 1142849,
+        "liquidityScore": 74
+      }
+    ],
+    "createdAt": "2025-11-28T05:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "golf-rah-sch-2025-12-05",
+    "canonicalId": "16ec0cc3-9d29-5cbf-9873-592412e8012f",
+    "sport": "golf",
+    "league": "PGA",
+    "homeTeam": {
+      "id": "rahm",
+      "name": "Jon Rahm",
+      "abbreviation": "RAH",
+      "city": "Spain"
+    },
+    "awayTeam": {
+      "id": "scheffler",
+      "name": "Scottie Scheffler",
+      "abbreviation": "SCH",
+      "city": "USA"
+    },
+    "startTime": "2025-12-05T07:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Valhalla",
+    "markets": [
+      {
+        "id": "ml-1764843746288-4902",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.8,
+        "awayOdds": 1.3472222222222223,
+        "volume": 1987216,
+        "liquidityScore": 74
+      },
+      {
+        "id": "sp-1764843746288-4522",
+        "type": "spread",
+        "name": "Spread -5.9",
+        "homeOdds": 1.97,
+        "awayOdds": 1.99,
+        "line": -5.9,
+        "volume": 1193315,
+        "liquidityScore": 94
+      },
+      {
+        "id": "tot-1764843746288-4478",
+        "type": "total",
+        "name": "Total 265.7",
+        "homeOdds": 1.96,
+        "awayOdds": 1.91,
+        "line": 265.7,
+        "overOdds": 2,
+        "underOdds": 1.98,
+        "volume": 1790685,
+        "liquidityScore": 95
+      }
+    ],
+    "createdAt": "2025-11-28T07:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "soccer-mci-bar-2025-12-05",
+    "canonicalId": "3954d6c4-38bc-58a4-9023-96c688077e71",
+    "sport": "soccer",
+    "league": "Premier League",
+    "homeTeam": {
+      "id": "mci",
+      "name": "Manchester City",
+      "abbreviation": "MCI",
+      "city": "Manchester"
+    },
+    "awayTeam": {
+      "id": "bar",
+      "name": "Barcelona",
+      "abbreviation": "BAR",
+      "city": "Barcelona"
+    },
+    "startTime": "2025-12-05T09:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Anfield",
+    "markets": [
+      {
+        "id": "ml-1764843746289-2929",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.462962962962963,
+        "awayOdds": 3.91,
+        "volume": 1345920,
+        "liquidityScore": 99
+      },
+      {
+        "id": "sp-1764843746289-9650",
+        "type": "spread",
+        "name": "Spread +13.7",
+        "homeOdds": 1.95,
+        "awayOdds": 1.99,
+        "line": 13.7,
+        "volume": 1527572,
+        "liquidityScore": 87
+      },
+      {
+        "id": "tot-1764843746289-3004",
+        "type": "total",
+        "name": "Total 2.5",
+        "homeOdds": 1.96,
+        "awayOdds": 1.99,
+        "line": 2.5,
+        "overOdds": 1.99,
+        "underOdds": 1.93,
+        "volume": 1934894,
+        "liquidityScore": 86
+      }
+    ],
+    "createdAt": "2025-11-28T09:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "esports-t1-navi-2025-12-05",
+    "canonicalId": "4f03ba21-cab9-52ee-a2c1-b4de48ca6433",
+    "sport": "esports",
+    "league": "LCK/LEC",
+    "homeTeam": {
+      "id": "t1",
+      "name": "T1",
+      "abbreviation": "T1",
+      "city": "Seoul"
+    },
+    "awayTeam": {
+      "id": "navi",
+      "name": "Natus Vincere",
+      "abbreviation": "NAVI",
+      "city": "Kyiv"
+    },
+    "startTime": "2025-12-05T09:22:26.289Z",
+    "status": "scheduled",
+    "venue": "PGL Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-1756",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.3205128205128205,
+        "awayOdds": 2.49,
+        "volume": 1240572,
+        "liquidityScore": 88
+      },
+      {
+        "id": "sp-1764843746289-8284",
+        "type": "spread",
+        "name": "Spread +5.5",
+        "homeOdds": 1.96,
+        "awayOdds": 1.94,
+        "line": 5.5,
+        "volume": 1540347,
+        "liquidityScore": 82
+      },
+      {
+        "id": "tot-1764843746289-4852",
+        "type": "total",
+        "name": "Total 3.5",
+        "homeOdds": 1.88,
+        "awayOdds": 1.9,
+        "line": 3.5,
+        "overOdds": 1.96,
+        "underOdds": 1.93,
+        "volume": 105477,
+        "liquidityScore": 76
+      }
+    ],
+    "createdAt": "2025-11-28T09:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "esports-g2-fnc-2025-12-05",
+    "canonicalId": "a70e153d-e237-546c-97da-1862eded1143",
+    "sport": "esports",
+    "league": "LCK/LEC",
+    "homeTeam": {
+      "id": "g2",
+      "name": "G2 Esports",
+      "abbreviation": "G2",
+      "city": "Berlin"
+    },
+    "awayTeam": {
+      "id": "fnc",
+      "name": "Fnatic",
+      "abbreviation": "FNC",
+      "city": "London"
+    },
+    "startTime": "2025-12-05T12:22:26.289Z",
+    "status": "scheduled",
+    "venue": "PGL Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-6939",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.38,
+        "awayOdds": 1.33003300330033,
+        "volume": 1178073,
+        "liquidityScore": 86
+      },
+      {
+        "id": "sp-1764843746289-2037",
+        "type": "spread",
+        "name": "Spread +14.5",
+        "homeOdds": 1.89,
+        "awayOdds": 1.92,
+        "line": 14.5,
+        "volume": 838619,
+        "liquidityScore": 83
+      },
+      {
+        "id": "tot-1764843746289-1219",
+        "type": "total",
+        "name": "Total 4.5",
+        "homeOdds": 1.96,
+        "awayOdds": 1.87,
+        "line": 4.5,
+        "overOdds": 1.97,
+        "underOdds": 1.93,
+        "volume": 1222024,
+        "liquidityScore": 82
+      }
+    ],
+    "createdAt": "2025-11-28T12:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "cricket-aus-ind-2025-12-05",
+    "canonicalId": "a99ee0df-978f-5149-ad6a-28ae63906aa5",
+    "sport": "cricket",
+    "league": "ICC",
+    "homeTeam": {
+      "id": "aus",
+      "name": "Australia",
+      "abbreviation": "AUS",
+      "city": "Sydney"
+    },
+    "awayTeam": {
+      "id": "ind",
+      "name": "India",
+      "abbreviation": "IND",
+      "city": "Mumbai"
+    },
+    "startTime": "2025-12-05T12:22:26.290Z",
+    "status": "scheduled",
+    "venue": "Eden Gardens",
+    "markets": [
+      {
+        "id": "ml-1764843746290-7254",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.3236245954692556,
+        "awayOdds": 2.63,
+        "volume": 647539,
+        "liquidityScore": 70
+      },
+      {
+        "id": "sp-1764843746290-1002",
+        "type": "spread",
+        "name": "Spread +13.9",
+        "homeOdds": 1.89,
+        "awayOdds": 1.9,
+        "line": 13.9,
+        "volume": 1883065,
+        "liquidityScore": 96
+      },
+      {
+        "id": "tot-1764843746290-2854",
+        "type": "total",
+        "name": "Total 337.3",
+        "homeOdds": 1.86,
+        "awayOdds": 1.93,
+        "line": 337.3,
+        "overOdds": 1.87,
+        "underOdds": 1.92,
+        "volume": 784612,
+        "liquidityScore": 87
+      }
+    ],
+    "createdAt": "2025-11-28T12:22:26.290Z",
+    "updatedAt": "2025-12-04T10:22:26.290Z"
+  },
+  {
+    "id": "mma-ade-jon-2025-12-05",
+    "canonicalId": "7b88ab76-6059-523c-9aae-bcb795fa6240",
+    "sport": "mma",
+    "league": "UFC",
+    "homeTeam": {
+      "id": "adesanya",
+      "name": "Israel Adesanya",
+      "abbreviation": "ADE",
+      "city": "Nigeria"
+    },
+    "awayTeam": {
+      "id": "jones",
+      "name": "Jon Jones",
+      "abbreviation": "JON",
+      "city": "USA"
+    },
+    "startTime": "2025-12-05T13:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Abu Dhabi Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-4286",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.303030303030303,
+        "awayOdds": 3.98,
+        "volume": 1947155,
+        "liquidityScore": 97
+      },
+      {
+        "id": "sp-1764843746289-4324",
+        "type": "spread",
+        "name": "Spread -9.2",
+        "homeOdds": 1.98,
+        "awayOdds": 1.87,
+        "line": -9.2,
+        "volume": 2161935,
+        "liquidityScore": 99
+      },
+      {
+        "id": "tot-1764843746289-5659",
+        "type": "total",
+        "name": "Total 2.8",
+        "homeOdds": 1.96,
+        "awayOdds": 1.89,
+        "line": 2.8,
+        "overOdds": 1.94,
+        "underOdds": 1.95,
+        "volume": 1009567,
+        "liquidityScore": 82
+      }
+    ],
+    "createdAt": "2025-11-28T13:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "f1-nor-ham-2025-12-05",
+    "canonicalId": "ed88b777-cc10-50f5-b6e5-f4b304a2a8e3",
+    "sport": "f1",
+    "league": "F1",
+    "homeTeam": {
+      "id": "norris",
+      "name": "Lando Norris",
+      "abbreviation": "NOR",
+      "city": "UK"
+    },
+    "awayTeam": {
+      "id": "hamilton",
+      "name": "Lewis Hamilton",
+      "abbreviation": "HAM",
+      "city": "UK"
+    },
+    "startTime": "2025-12-05T19:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Circuit of the Americas",
+    "markets": [
+      {
+        "id": "ml-1764843746288-5491",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.3,
+        "awayOdds": 1.8333333333333335,
+        "volume": 1805399,
+        "liquidityScore": 88
+      },
+      {
+        "id": "sp-1764843746288-6410",
+        "type": "spread",
+        "name": "Spread -1.9",
+        "homeOdds": 1.87,
+        "awayOdds": 1.93,
+        "line": -1.9,
+        "volume": 1545457,
+        "liquidityScore": 92
+      },
+      {
+        "id": "tot-1764843746288-6967",
+        "type": "total",
+        "name": "Total 18.1",
+        "homeOdds": 1.99,
+        "awayOdds": 1.99,
+        "line": 18.1,
+        "overOdds": 1.97,
+        "underOdds": 1.95,
+        "volume": 2217993,
+        "liquidityScore": 77
+      }
+    ],
+    "createdAt": "2025-11-28T19:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "cricket-ind-sa-2025-12-05",
+    "canonicalId": "64e7c2ce-a4f8-57e5-9c26-21a198b62b9a",
+    "sport": "cricket",
+    "league": "ICC",
+    "homeTeam": {
+      "id": "ind",
+      "name": "India",
+      "abbreviation": "IND",
+      "city": "Mumbai"
+    },
+    "awayTeam": {
+      "id": "sa",
+      "name": "South Africa",
+      "abbreviation": "SA",
+      "city": "Johannesburg"
+    },
+    "startTime": "2025-12-05T19:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Eden Gardens",
+    "markets": [
+      {
+        "id": "ml-1764843746289-1551",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.1799999999999997,
+        "awayOdds": 1.341296928327645,
+        "volume": 985405,
+        "liquidityScore": 86
+      },
+      {
+        "id": "sp-1764843746289-3343",
+        "type": "spread",
+        "name": "Spread +2.8",
+        "homeOdds": 1.94,
+        "awayOdds": 1.96,
+        "line": 2.8,
+        "volume": 1638208,
+        "liquidityScore": 99
+      },
+      {
+        "id": "tot-1764843746289-9071",
+        "type": "total",
+        "name": "Total 315.2",
+        "homeOdds": 1.87,
+        "awayOdds": 1.98,
+        "line": 315.2,
+        "overOdds": 1.91,
+        "underOdds": 1.87,
+        "volume": 1491947,
+        "liquidityScore": 89
+      }
+    ],
+    "createdAt": "2025-11-28T19:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "cricket-eng-nz-2025-12-06",
+    "canonicalId": "69830627-89ed-5fd1-a9a8-f63757f32c5a",
+    "sport": "cricket",
+    "league": "ICC",
+    "homeTeam": {
+      "id": "eng",
+      "name": "England",
+      "abbreviation": "ENG",
+      "city": "London"
+    },
+    "awayTeam": {
+      "id": "nz",
+      "name": "New Zealand",
+      "abbreviation": "NZ",
+      "city": "Auckland"
+    },
+    "startTime": "2025-12-06T03:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Sydney Cricket Ground",
+    "markets": [
+      {
+        "id": "ml-1764843746288-2448",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.98,
+        "awayOdds": 1.6369426751592355,
+        "volume": 1673080,
+        "liquidityScore": 87
+      },
+      {
+        "id": "sp-1764843746288-8508",
+        "type": "spread",
+        "name": "Spread +9",
+        "homeOdds": 1.93,
+        "awayOdds": 1.87,
+        "line": 9,
+        "volume": 2983771,
+        "liquidityScore": 79
+      },
+      {
+        "id": "tot-1764843746288-3287",
+        "type": "total",
+        "name": "Total 343.2",
+        "homeOdds": 1.87,
+        "awayOdds": 1.89,
+        "line": 343.2,
+        "overOdds": 1.85,
+        "underOdds": 1.91,
+        "volume": 1463908,
+        "liquidityScore": 73
+      }
+    ],
+    "createdAt": "2025-11-29T03:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "cricket-eng-sa-2025-12-06",
+    "canonicalId": "5d35a07b-0483-5897-b3fe-9f27c39ce5e0",
+    "sport": "cricket",
+    "league": "ICC",
+    "homeTeam": {
+      "id": "eng",
+      "name": "England",
+      "abbreviation": "ENG",
+      "city": "London"
+    },
+    "awayTeam": {
+      "id": "sa",
+      "name": "South Africa",
+      "abbreviation": "SA",
+      "city": "Johannesburg"
+    },
+    "startTime": "2025-12-06T04:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Sydney Cricket Ground",
+    "markets": [
+      {
+        "id": "ml-1764843746288-7645",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.12,
+        "awayOdds": 1.526315789473684,
+        "volume": 250964,
+        "liquidityScore": 83
+      },
+      {
+        "id": "sp-1764843746288-1344",
+        "type": "spread",
+        "name": "Spread +3.6",
+        "homeOdds": 1.89,
+        "awayOdds": 1.87,
+        "line": 3.6,
+        "volume": 2886883,
+        "liquidityScore": 79
+      },
+      {
+        "id": "tot-1764843746288-8969",
+        "type": "total",
+        "name": "Total 321.3",
+        "homeOdds": 1.86,
+        "awayOdds": 1.87,
+        "line": 321.3,
+        "overOdds": 1.87,
+        "underOdds": 1.94,
+        "volume": 2084014,
+        "liquidityScore": 72
+      }
+    ],
+    "createdAt": "2025-11-29T04:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "hockey-tor-fla-2025-12-06",
+    "canonicalId": "627db5ce-45aa-59d5-aa4b-96218e354e26",
+    "sport": "hockey",
+    "league": "NHL",
+    "homeTeam": {
+      "id": "tor",
+      "name": "Maple Leafs",
+      "abbreviation": "TOR",
+      "city": "Toronto"
+    },
+    "awayTeam": {
+      "id": "fla",
+      "name": "Panthers",
+      "abbreviation": "FLA",
+      "city": "Florida"
+    },
+    "startTime": "2025-12-06T05:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Amerant Bank Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746288-7011",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.6100000000000003,
+        "awayOdds": 1.5847953216374269,
+        "volume": 1481105,
+        "liquidityScore": 93
+      },
+      {
+        "id": "sp-1764843746288-5068",
+        "type": "spread",
+        "name": "Spread +9",
+        "homeOdds": 2,
+        "awayOdds": 1.92,
+        "line": 9,
+        "volume": 1883768,
+        "liquidityScore": 100
+      },
+      {
+        "id": "tot-1764843746288-8492",
+        "type": "total",
+        "name": "Total 5.2",
+        "homeOdds": 1.87,
+        "awayOdds": 1.88,
+        "line": 5.2,
+        "overOdds": 1.88,
+        "underOdds": 1.98,
+        "volume": 1481860,
+        "liquidityScore": 89
+      }
+    ],
+    "createdAt": "2025-11-29T05:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "tennis-zve-djo-2025-12-06",
+    "canonicalId": "634e9a85-ee91-5221-bff3-b1e65a6c39a5",
+    "sport": "tennis",
+    "league": "ATP",
+    "homeTeam": {
+      "id": "zverev",
+      "name": "Alexander Zverev",
+      "abbreviation": "ZVE",
+      "city": "Germany"
+    },
+    "awayTeam": {
+      "id": "djokovic",
+      "name": "Novak Djokovic",
+      "abbreviation": "DJO",
+      "city": "Serbia"
+    },
+    "startTime": "2025-12-06T08:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Indian Wells",
+    "markets": [
+      {
+        "id": "ml-1764843746288-5099",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.4,
+        "awayOdds": 1.5649717514124295,
+        "volume": 402244,
+        "liquidityScore": 90
+      },
+      {
+        "id": "sp-1764843746288-7870",
+        "type": "spread",
+        "name": "Spread -12.2",
+        "homeOdds": 1.93,
+        "awayOdds": 1.95,
+        "line": -12.2,
+        "volume": 1801228,
+        "liquidityScore": 75
+      },
+      {
+        "id": "tot-1764843746288-5101",
+        "type": "total",
+        "name": "Total 28.5",
+        "homeOdds": 1.91,
+        "awayOdds": 1.86,
+        "line": 28.5,
+        "overOdds": 1.96,
+        "underOdds": 1.85,
+        "volume": 1226892,
+        "liquidityScore": 83
+      }
+    ],
+    "createdAt": "2025-11-29T08:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "golf-spi-rah-2025-12-06",
+    "canonicalId": "9d0b8604-187b-5828-bc10-643f7d18bfed",
+    "sport": "golf",
+    "league": "PGA",
+    "homeTeam": {
+      "id": "spieth",
+      "name": "Jordan Spieth",
+      "abbreviation": "SPI",
+      "city": "USA"
+    },
+    "awayTeam": {
+      "id": "rahm",
+      "name": "Jon Rahm",
+      "abbreviation": "RAH",
+      "city": "Spain"
+    },
+    "startTime": "2025-12-06T08:22:26.289Z",
+    "status": "scheduled",
+    "venue": "TPC Sawgrass",
+    "markets": [
+      {
+        "id": "ml-1764843746289-9530",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.5464480874316942,
+        "awayOdds": 3.48,
+        "volume": 1573536,
+        "liquidityScore": 85
+      },
+      {
+        "id": "sp-1764843746289-4427",
+        "type": "spread",
+        "name": "Spread +2.9",
+        "homeOdds": 1.96,
+        "awayOdds": 1.87,
+        "line": 2.9,
+        "volume": 1905716,
+        "liquidityScore": 78
+      },
+      {
+        "id": "tot-1764843746289-3267",
+        "type": "total",
+        "name": "Total 266.4",
+        "homeOdds": 1.87,
+        "awayOdds": 1.88,
+        "line": 266.4,
+        "overOdds": 1.96,
+        "underOdds": 1.95,
+        "volume": 1347940,
+        "liquidityScore": 94
+      }
+    ],
+    "createdAt": "2025-11-29T08:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "boxing-fur-cra-2025-12-06",
+    "canonicalId": "128494ee-4681-503b-b101-b92d92cff033",
+    "sport": "boxing",
+    "league": "WBC/WBA",
+    "homeTeam": {
+      "id": "fury",
+      "name": "Tyson Fury",
+      "abbreviation": "FUR",
+      "city": "UK"
+    },
+    "awayTeam": {
+      "id": "crawford",
+      "name": "Terence Crawford",
+      "abbreviation": "CRA",
+      "city": "USA"
+    },
+    "startTime": "2025-12-06T14:22:26.288Z",
+    "status": "scheduled",
+    "venue": "T-Mobile Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746288-4083",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.6944444444444444,
+        "awayOdds": 3.33,
+        "volume": 1864418,
+        "liquidityScore": 90
+      },
+      {
+        "id": "sp-1764843746288-9435",
+        "type": "spread",
+        "name": "Spread +1.7",
+        "homeOdds": 1.97,
+        "awayOdds": 1.97,
+        "line": 1.7,
+        "volume": 2059015,
+        "liquidityScore": 93
+      },
+      {
+        "id": "tot-1764843746288-8394",
+        "type": "total",
+        "name": "Total 10.9",
+        "homeOdds": 1.91,
+        "awayOdds": 1.91,
+        "line": 10.9,
+        "overOdds": 1.87,
+        "underOdds": 1.87,
+        "volume": 289399,
+        "liquidityScore": 94
+      }
+    ],
+    "createdAt": "2025-11-29T14:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "soccer-bar-rma-2025-12-06",
+    "canonicalId": "e488f400-71fc-5e0e-bde0-4e3912d78250",
+    "sport": "soccer",
+    "league": "Premier League",
+    "homeTeam": {
+      "id": "bar",
+      "name": "Barcelona",
+      "abbreviation": "BAR",
+      "city": "Barcelona"
+    },
+    "awayTeam": {
+      "id": "rma",
+      "name": "Real Madrid",
+      "abbreviation": "RMA",
+      "city": "Madrid"
+    },
+    "startTime": "2025-12-06T15:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Anfield",
+    "markets": [
+      {
+        "id": "ml-1764843746289-1711",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.4219409282700421,
+        "awayOdds": 2.8899999999999997,
+        "volume": 927715,
+        "liquidityScore": 75
+      },
+      {
+        "id": "sp-1764843746289-7059",
+        "type": "spread",
+        "name": "Spread -8",
+        "homeOdds": 1.85,
+        "awayOdds": 1.9,
+        "line": -8,
+        "volume": 2097572,
+        "liquidityScore": 81
+      },
+      {
+        "id": "tot-1764843746289-9648",
+        "type": "total",
+        "name": "Total 4.4",
+        "homeOdds": 1.95,
+        "awayOdds": 1.92,
+        "line": 4.4,
+        "overOdds": 1.87,
+        "underOdds": 1.96,
+        "volume": 1960278,
+        "liquidityScore": 86
+      }
+    ],
+    "createdAt": "2025-11-29T15:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "hockey-edm-car-2025-12-06",
+    "canonicalId": "ae597a29-9c3a-5bd2-a3ce-c5f604e47578",
+    "sport": "hockey",
+    "league": "NHL",
+    "homeTeam": {
+      "id": "edm",
+      "name": "Oilers",
+      "abbreviation": "EDM",
+      "city": "Edmonton"
+    },
+    "awayTeam": {
+      "id": "car",
+      "name": "Hurricanes",
+      "abbreviation": "CAR",
+      "city": "Carolina"
+    },
+    "startTime": "2025-12-06T16:22:26.289Z",
+    "status": "scheduled",
+    "venue": "T-Mobile Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-9414",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.9090909090909092,
+        "awayOdds": 2.5700000000000003,
+        "volume": 701096,
+        "liquidityScore": 92
+      },
+      {
+        "id": "sp-1764843746289-3686",
+        "type": "spread",
+        "name": "Spread -12.1",
+        "homeOdds": 1.91,
+        "awayOdds": 1.91,
+        "line": -12.1,
+        "volume": 350749,
+        "liquidityScore": 91
+      },
+      {
+        "id": "tot-1764843746289-4119",
+        "type": "total",
+        "name": "Total 7.3",
+        "homeOdds": 1.98,
+        "awayOdds": 1.93,
+        "line": 7.3,
+        "overOdds": 2,
+        "underOdds": 1.88,
+        "volume": 1725678,
+        "liquidityScore": 86
+      }
+    ],
+    "createdAt": "2025-11-29T16:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "basketball-phx-gsw-2025-12-06",
+    "canonicalId": "dc90154d-6de7-571a-87cb-004be024bd20",
+    "sport": "basketball",
+    "league": "NBA",
+    "homeTeam": {
+      "id": "phx",
+      "name": "Suns",
+      "abbreviation": "PHX",
+      "city": "Phoenix"
+    },
+    "awayTeam": {
+      "id": "gsw",
+      "name": "Warriors",
+      "abbreviation": "GSW",
+      "city": "Golden State"
+    },
+    "startTime": "2025-12-06T19:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Ball Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-2888",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.71,
+        "awayOdds": 1.5617977528089888,
+        "volume": 1796525,
+        "liquidityScore": 82
+      },
+      {
+        "id": "sp-1764843746289-1553",
+        "type": "spread",
+        "name": "Spread -10.3",
+        "homeOdds": 1.85,
+        "awayOdds": 1.89,
+        "line": -10.3,
+        "volume": 2136268,
+        "liquidityScore": 91
+      },
+      {
+        "id": "tot-1764843746289-9342",
+        "type": "total",
+        "name": "Total 203.7",
+        "homeOdds": 1.91,
+        "awayOdds": 1.96,
+        "line": 203.7,
+        "overOdds": 1.98,
+        "underOdds": 1.91,
+        "volume": 2412220,
+        "liquidityScore": 79
+      }
+    ],
+    "createdAt": "2025-11-29T19:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "baseball-lad-tex-2025-12-06",
+    "canonicalId": "4a3d39c3-6034-57b2-8715-8618e7a06c4f",
+    "sport": "baseball",
+    "league": "MLB",
+    "homeTeam": {
+      "id": "lad",
+      "name": "Dodgers",
+      "abbreviation": "LAD",
+      "city": "Los Angeles"
+    },
+    "awayTeam": {
+      "id": "tex",
+      "name": "Rangers",
+      "abbreviation": "TEX",
+      "city": "Texas"
+    },
+    "startTime": "2025-12-06T20:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Wrigley Field",
+    "markets": [
+      {
+        "id": "ml-1764843746289-2987",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.95,
+        "awayOdds": 1.7692307692307692,
+        "volume": 1714382,
+        "liquidityScore": 98
+      },
+      {
+        "id": "sp-1764843746289-8339",
+        "type": "spread",
+        "name": "Spread +11.1",
+        "homeOdds": 1.87,
+        "awayOdds": 1.92,
+        "line": 11.1,
+        "volume": 2344627,
+        "liquidityScore": 85
+      },
+      {
+        "id": "tot-1764843746289-6085",
+        "type": "total",
+        "name": "Total 11.5",
+        "homeOdds": 1.85,
+        "awayOdds": 1.93,
+        "line": 11.5,
+        "overOdds": 1.86,
+        "underOdds": 1.96,
+        "volume": 777176,
+        "liquidityScore": 73
+      }
+    ],
+    "createdAt": "2025-11-29T20:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "mma-jon-ade-2025-12-06",
+    "canonicalId": "15e51df2-b347-58e4-bee3-6c40b040e2a3",
+    "sport": "mma",
+    "league": "UFC",
+    "homeTeam": {
+      "id": "jones",
+      "name": "Jon Jones",
+      "abbreviation": "JON",
+      "city": "USA"
+    },
+    "awayTeam": {
+      "id": "adesanya",
+      "name": "Israel Adesanya",
+      "abbreviation": "ADE",
+      "city": "Nigeria"
+    },
+    "startTime": "2025-12-06T20:22:26.289Z",
+    "status": "scheduled",
+    "venue": "T-Mobile Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-3996",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.53,
+        "awayOdds": 1.7142857142857144,
+        "volume": 1053025,
+        "liquidityScore": 97
+      },
+      {
+        "id": "sp-1764843746289-1285",
+        "type": "spread",
+        "name": "Spread -7",
+        "homeOdds": 1.91,
+        "awayOdds": 1.95,
+        "line": -7,
+        "volume": 1505116,
+        "liquidityScore": 100
+      },
+      {
+        "id": "tot-1764843746289-4363",
+        "type": "total",
+        "name": "Total 2.2",
+        "homeOdds": 1.85,
+        "awayOdds": 1.94,
+        "line": 2.2,
+        "overOdds": 1.89,
+        "underOdds": 1.93,
+        "volume": 1050650,
+        "liquidityScore": 92
+      }
+    ],
+    "createdAt": "2025-11-29T20:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "tennis-djo-sin-2025-12-06",
+    "canonicalId": "5c340bc2-505f-512d-96d9-eb94883a4f9a",
+    "sport": "tennis",
+    "league": "ATP",
+    "homeTeam": {
+      "id": "djokovic",
+      "name": "Novak Djokovic",
+      "abbreviation": "DJO",
+      "city": "Serbia"
+    },
+    "awayTeam": {
+      "id": "sinner",
+      "name": "Jannik Sinner",
+      "abbreviation": "SIN",
+      "city": "Italy"
+    },
+    "startTime": "2025-12-06T23:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Wimbledon Centre Court",
+    "markets": [
+      {
+        "id": "ml-1764843746288-4297",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.08,
+        "awayOdds": 1.5617977528089888,
+        "volume": 1057111,
+        "liquidityScore": 87
+      },
+      {
+        "id": "sp-1764843746288-3692",
+        "type": "spread",
+        "name": "Spread -0.8",
+        "homeOdds": 1.95,
+        "awayOdds": 1.99,
+        "line": -0.8,
+        "volume": 786914,
+        "liquidityScore": 96
+      },
+      {
+        "id": "tot-1764843746288-2589",
+        "type": "total",
+        "name": "Total 28.4",
+        "homeOdds": 1.9,
+        "awayOdds": 1.96,
+        "line": 28.4,
+        "overOdds": 1.86,
+        "underOdds": 1.85,
+        "volume": 614604,
+        "liquidityScore": 91
+      }
+    ],
+    "createdAt": "2025-11-29T23:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "mma-ade-asp-2025-12-07",
+    "canonicalId": "78d049bf-a36c-52e9-bd1f-6715d08b54db",
+    "sport": "mma",
+    "league": "UFC",
+    "homeTeam": {
+      "id": "adesanya",
+      "name": "Israel Adesanya",
+      "abbreviation": "ADE",
+      "city": "Nigeria"
+    },
+    "awayTeam": {
+      "id": "aspinall",
+      "name": "Tom Aspinall",
+      "abbreviation": "ASP",
+      "city": "UK"
+    },
+    "startTime": "2025-12-07T07:22:26.289Z",
+    "status": "scheduled",
+    "venue": "UFC Apex",
+    "markets": [
+      {
+        "id": "ml-1764843746289-8492",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.44,
+        "awayOdds": 1.3311258278145695,
+        "volume": 198455,
+        "liquidityScore": 100
+      },
+      {
+        "id": "sp-1764843746289-7654",
+        "type": "spread",
+        "name": "Spread -12.8",
+        "homeOdds": 1.96,
+        "awayOdds": 1.9,
+        "line": -12.8,
+        "volume": 1034169,
+        "liquidityScore": 84
+      },
+      {
+        "id": "tot-1764843746289-5258",
+        "type": "total",
+        "name": "Total 1.9",
+        "homeOdds": 1.96,
+        "awayOdds": 1.95,
+        "line": 1.9,
+        "overOdds": 1.89,
+        "underOdds": 1.92,
+        "volume": 1997367,
+        "liquidityScore": 78
+      }
+    ],
+    "createdAt": "2025-11-30T07:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "f1-nor-sai-2025-12-07",
+    "canonicalId": "ca9fe359-8c5c-5fd5-8ae1-25555b611262",
+    "sport": "f1",
+    "league": "F1",
+    "homeTeam": {
+      "id": "norris",
+      "name": "Lando Norris",
+      "abbreviation": "NOR",
+      "city": "UK"
+    },
+    "awayTeam": {
+      "id": "sainz",
+      "name": "Carlos Sainz",
+      "abbreviation": "SAI",
+      "city": "Spain"
+    },
+    "startTime": "2025-12-07T12:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Circuit of the Americas",
+    "markets": [
+      {
+        "id": "ml-1764843746289-1507",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.2941176470588236,
+        "awayOdds": 2.02,
+        "volume": 952797,
+        "liquidityScore": 80
+      },
+      {
+        "id": "sp-1764843746289-2839",
+        "type": "spread",
+        "name": "Spread -13.3",
+        "homeOdds": 1.9,
+        "awayOdds": 1.94,
+        "line": -13.3,
+        "volume": 1477914,
+        "liquidityScore": 75
+      },
+      {
+        "id": "tot-1764843746289-7011",
+        "type": "total",
+        "name": "Total 19.2",
+        "homeOdds": 1.89,
+        "awayOdds": 1.86,
+        "line": 19.2,
+        "overOdds": 1.99,
+        "underOdds": 1.87,
+        "volume": 524054,
+        "liquidityScore": 90
+      }
+    ],
+    "createdAt": "2025-11-30T12:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "cricket-sa-pak-2025-12-07",
+    "canonicalId": "4712c2dc-ecb3-5dd3-887f-c8e61f1a43ab",
+    "sport": "cricket",
+    "league": "ICC",
+    "homeTeam": {
+      "id": "sa",
+      "name": "South Africa",
+      "abbreviation": "SA",
+      "city": "Johannesburg"
+    },
+    "awayTeam": {
+      "id": "pak",
+      "name": "Pakistan",
+      "abbreviation": "PAK",
+      "city": "Lahore"
+    },
+    "startTime": "2025-12-07T13:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Melbourne Cricket Ground",
+    "markets": [
+      {
+        "id": "ml-1764843746289-1677",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.6369426751592355,
+        "awayOdds": 2.75,
+        "volume": 1501094,
+        "liquidityScore": 70
+      },
+      {
+        "id": "sp-1764843746289-2460",
+        "type": "spread",
+        "name": "Spread -5.1",
+        "homeOdds": 1.95,
+        "awayOdds": 1.96,
+        "line": -5.1,
+        "volume": 2458629,
+        "liquidityScore": 89
+      },
+      {
+        "id": "tot-1764843746289-2008",
+        "type": "total",
+        "name": "Total 340.6",
+        "homeOdds": 1.91,
+        "awayOdds": 1.88,
+        "line": 340.6,
+        "overOdds": 1.9,
+        "underOdds": 1.87,
+        "volume": 1973614,
+        "liquidityScore": 91
+      }
+    ],
+    "createdAt": "2025-11-30T13:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "esports-gen-fnc-2025-12-07",
+    "canonicalId": "ec59b8ee-769b-5acf-ae2e-b83b7973db6d",
+    "sport": "esports",
+    "league": "LCK/LEC",
+    "homeTeam": {
+      "id": "geng",
+      "name": "Gen.G",
+      "abbreviation": "GEN",
+      "city": "Seoul"
+    },
+    "awayTeam": {
+      "id": "fnc",
+      "name": "Fnatic",
+      "abbreviation": "FNC",
+      "city": "London"
+    },
+    "startTime": "2025-12-07T14:22:26.289Z",
+    "status": "scheduled",
+    "venue": "PGL Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-7533",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.72,
+        "awayOdds": 1.326797385620915,
+        "volume": 1803290,
+        "liquidityScore": 76
+      },
+      {
+        "id": "sp-1764843746289-3158",
+        "type": "spread",
+        "name": "Spread -4.7",
+        "homeOdds": 1.96,
+        "awayOdds": 1.88,
+        "line": -4.7,
+        "volume": 857356,
+        "liquidityScore": 82
+      },
+      {
+        "id": "tot-1764843746289-2820",
+        "type": "total",
+        "name": "Total 3.8",
+        "homeOdds": 1.99,
+        "awayOdds": 1.97,
+        "line": 3.8,
+        "overOdds": 1.98,
+        "underOdds": 1.92,
+        "volume": 1047154,
+        "liquidityScore": 74
+      }
+    ],
+    "createdAt": "2025-11-30T14:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "baseball-nyy-sd-2025-12-07",
+    "canonicalId": "6058e985-b3dc-55f6-9443-d8f2868b4769",
+    "sport": "baseball",
+    "league": "MLB",
+    "homeTeam": {
+      "id": "nyy",
+      "name": "Yankees",
+      "abbreviation": "NYY",
+      "city": "New York"
+    },
+    "awayTeam": {
+      "id": "sd",
+      "name": "Padres",
+      "abbreviation": "SD",
+      "city": "San Diego"
+    },
+    "startTime": "2025-12-07T16:22:26.287Z",
+    "status": "scheduled",
+    "venue": "Yankee Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746287-5058",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.303030303030303,
+        "awayOdds": 3.76,
+        "volume": 846976,
+        "liquidityScore": 82
+      },
+      {
+        "id": "sp-1764843746287-2600",
+        "type": "spread",
+        "name": "Spread +2.9",
+        "homeOdds": 1.9,
+        "awayOdds": 1.98,
+        "line": 2.9,
+        "volume": 510275,
+        "liquidityScore": 77
+      },
+      {
+        "id": "tot-1764843746287-8564",
+        "type": "total",
+        "name": "Total 6.9",
+        "homeOdds": 1.92,
+        "awayOdds": 1.88,
+        "line": 6.9,
+        "overOdds": 1.94,
+        "underOdds": 1.9,
+        "volume": 1844720,
+        "liquidityScore": 84
+      }
+    ],
+    "createdAt": "2025-11-30T16:22:26.287Z",
+    "updatedAt": "2025-12-04T10:22:26.287Z"
+  },
+  {
+    "id": "soccer-mun-psg-2025-12-07",
+    "canonicalId": "d30fe100-e69c-5bdc-8c85-4cc97b8ace1a",
+    "sport": "soccer",
+    "league": "Premier League",
+    "homeTeam": {
+      "id": "mun",
+      "name": "Manchester United",
+      "abbreviation": "MUN",
+      "city": "Manchester"
+    },
+    "awayTeam": {
+      "id": "psg",
+      "name": "Paris Saint-Germain",
+      "abbreviation": "PSG",
+      "city": "Paris"
+    },
+    "startTime": "2025-12-07T19:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Allianz Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746288-7661",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.3676470588235294,
+        "awayOdds": 3.48,
+        "volume": 1553599,
+        "liquidityScore": 80
+      },
+      {
+        "id": "sp-1764843746288-6298",
+        "type": "spread",
+        "name": "Spread +11.6",
+        "homeOdds": 1.88,
+        "awayOdds": 1.9,
+        "line": 11.6,
+        "volume": 577330,
+        "liquidityScore": 94
+      },
+      {
+        "id": "tot-1764843746288-1797",
+        "type": "total",
+        "name": "Total 4",
+        "homeOdds": 1.89,
+        "awayOdds": 1.96,
+        "line": 4,
+        "overOdds": 1.9,
+        "underOdds": 1.95,
+        "volume": 704199,
+        "liquidityScore": 81
+      }
+    ],
+    "createdAt": "2025-11-30T19:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "basketball-bos-nyk-2025-12-07",
+    "canonicalId": "e3c25ffa-5ae3-5fe5-9b10-ff7c17a9ed4b",
+    "sport": "basketball",
+    "league": "NBA",
+    "homeTeam": {
+      "id": "bos",
+      "name": "Celtics",
+      "abbreviation": "BOS",
+      "city": "Boston"
+    },
+    "awayTeam": {
+      "id": "nyy",
+      "name": "Knicks",
+      "abbreviation": "NYK",
+      "city": "New York"
+    },
+    "startTime": "2025-12-07T22:22:26.286Z",
+    "status": "scheduled",
+    "venue": "Chase Center",
+    "markets": [
+      {
+        "id": "ml-1764843746287-9841",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.12,
+        "awayOdds": 1.4545454545454546,
+        "volume": 251112,
+        "liquidityScore": 90
+      },
+      {
+        "id": "sp-1764843746287-7001",
+        "type": "spread",
+        "name": "Spread -13.8",
+        "homeOdds": 1.97,
+        "awayOdds": 1.94,
+        "line": -13.8,
+        "volume": 676219,
+        "liquidityScore": 80
+      },
+      {
+        "id": "tot-1764843746287-6041",
+        "type": "total",
+        "name": "Total 228.4",
+        "homeOdds": 1.9,
+        "awayOdds": 1.85,
+        "line": 228.4,
+        "overOdds": 1.92,
+        "underOdds": 1.93,
+        "volume": 2261986,
+        "liquidityScore": 74
+      }
+    ],
+    "createdAt": "2025-11-30T22:22:26.286Z",
+    "updatedAt": "2025-12-04T10:22:26.287Z"
+  },
+  {
+    "id": "f1-nor-ver-2025-12-07",
+    "canonicalId": "3b01feae-89bf-5c35-ba5b-4d6f09f30102",
+    "sport": "f1",
+    "league": "F1",
+    "homeTeam": {
+      "id": "norris",
+      "name": "Lando Norris",
+      "abbreviation": "NOR",
+      "city": "UK"
+    },
+    "awayTeam": {
+      "id": "verstappen",
+      "name": "Max Verstappen",
+      "abbreviation": "VER",
+      "city": "Netherlands"
+    },
+    "startTime": "2025-12-07T23:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Monaco",
+    "markets": [
+      {
+        "id": "ml-1764843746289-2701",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.76,
+        "awayOdds": 1.4405286343612334,
+        "volume": 1611458,
+        "liquidityScore": 83
+      },
+      {
+        "id": "sp-1764843746289-8618",
+        "type": "spread",
+        "name": "Spread -1.1",
+        "homeOdds": 1.87,
+        "awayOdds": 1.86,
+        "line": -1.1,
+        "volume": 2194496,
+        "liquidityScore": 93
+      },
+      {
+        "id": "tot-1764843746289-8027",
+        "type": "total",
+        "name": "Total 19.8",
+        "homeOdds": 1.89,
+        "awayOdds": 1.87,
+        "line": 19.8,
+        "overOdds": 1.97,
+        "underOdds": 1.97,
+        "volume": 545672,
+        "liquidityScore": 87
+      }
+    ],
+    "createdAt": "2025-11-30T23:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "football-phi-det-2025-12-08",
+    "canonicalId": "44a44ac0-76a7-53df-b401-e85b523e1d62",
+    "sport": "football",
+    "league": "NFL",
+    "homeTeam": {
+      "id": "phi",
+      "name": "Eagles",
+      "abbreviation": "PHI",
+      "city": "Philadelphia"
+    },
+    "awayTeam": {
+      "id": "det",
+      "name": "Lions",
+      "abbreviation": "DET",
+      "city": "Detroit"
+    },
+    "startTime": "2025-12-08T03:22:26.288Z",
+    "status": "scheduled",
+    "venue": "AT&T Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746288-5996",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.373134328358209,
+        "awayOdds": 3.42,
+        "volume": 1023597,
+        "liquidityScore": 89
+      },
+      {
+        "id": "sp-1764843746288-5760",
+        "type": "spread",
+        "name": "Spread +3.6",
+        "homeOdds": 1.94,
+        "awayOdds": 1.9,
+        "line": 3.6,
+        "volume": 2019108,
+        "liquidityScore": 85
+      },
+      {
+        "id": "tot-1764843746288-2271",
+        "type": "total",
+        "name": "Total 48.4",
+        "homeOdds": 1.96,
+        "awayOdds": 1.93,
+        "line": 48.4,
+        "overOdds": 1.88,
+        "underOdds": 1.9,
+        "volume": 1402240,
+        "liquidityScore": 90
+      }
+    ],
+    "createdAt": "2025-12-01T03:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "baseball-phi-tex-2025-12-08",
+    "canonicalId": "c3230709-b446-53f5-bc38-8f46c56ac6cc",
+    "sport": "baseball",
+    "league": "MLB",
+    "homeTeam": {
+      "id": "phi",
+      "name": "Phillies",
+      "abbreviation": "PHI",
+      "city": "Philadelphia"
+    },
+    "awayTeam": {
+      "id": "tex",
+      "name": "Rangers",
+      "abbreviation": "TEX",
+      "city": "Texas"
+    },
+    "startTime": "2025-12-08T03:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Wrigley Field",
+    "markets": [
+      {
+        "id": "ml-1764843746289-3022",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.4608294930875576,
+        "awayOdds": 2.3899999999999997,
+        "volume": 307709,
+        "liquidityScore": 74
+      },
+      {
+        "id": "sp-1764843746289-1384",
+        "type": "spread",
+        "name": "Spread -2",
+        "homeOdds": 1.98,
+        "awayOdds": 1.91,
+        "line": -2,
+        "volume": 493452,
+        "liquidityScore": 92
+      },
+      {
+        "id": "tot-1764843746289-4001",
+        "type": "total",
+        "name": "Total 7.3",
+        "homeOdds": 1.99,
+        "awayOdds": 1.96,
+        "line": 7.3,
+        "overOdds": 1.97,
+        "underOdds": 1.9,
+        "volume": 1070953,
+        "liquidityScore": 76
+      }
+    ],
+    "createdAt": "2025-12-01T03:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "soccer-mun-che-2025-12-08",
+    "canonicalId": "c5657bee-6ef0-5ace-9670-5ff68fbe2014",
+    "sport": "soccer",
+    "league": "Premier League",
+    "homeTeam": {
+      "id": "mun",
+      "name": "Manchester United",
+      "abbreviation": "MUN",
+      "city": "Manchester"
+    },
+    "awayTeam": {
+      "id": "che",
+      "name": "Chelsea",
+      "abbreviation": "CHE",
+      "city": "London"
+    },
+    "startTime": "2025-12-08T03:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Etihad Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746289-2641",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.4699999999999998,
+        "awayOdds": 1.6993006993006992,
+        "volume": 1203369,
+        "liquidityScore": 86
+      },
+      {
+        "id": "sp-1764843746289-1795",
+        "type": "spread",
+        "name": "Spread +3.8",
+        "homeOdds": 1.92,
+        "awayOdds": 1.89,
+        "line": 3.8,
+        "volume": 102046,
+        "liquidityScore": 76
+      },
+      {
+        "id": "tot-1764843746289-3087",
+        "type": "total",
+        "name": "Total 3.6",
+        "homeOdds": 1.97,
+        "awayOdds": 1.97,
+        "line": 3.6,
+        "overOdds": 1.86,
+        "underOdds": 1.92,
+        "volume": 969221,
+        "liquidityScore": 91
+      }
+    ],
+    "createdAt": "2025-12-01T03:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "esports-t1-g2-2025-12-08",
+    "canonicalId": "f29f8116-8818-5f92-973b-f1d43544df9d",
+    "sport": "esports",
+    "league": "LCK/LEC",
+    "homeTeam": {
+      "id": "t1",
+      "name": "T1",
+      "abbreviation": "T1",
+      "city": "Seoul"
+    },
+    "awayTeam": {
+      "id": "g2",
+      "name": "G2 Esports",
+      "abbreviation": "G2",
+      "city": "Berlin"
+    },
+    "startTime": "2025-12-08T13:22:26.288Z",
+    "status": "scheduled",
+    "venue": "LEC Studio",
+    "markets": [
+      {
+        "id": "ml-1764843746288-9665",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.84,
+        "awayOdds": 1.5847953216374269,
+        "volume": 1100785,
+        "liquidityScore": 70
+      },
+      {
+        "id": "sp-1764843746288-7263",
+        "type": "spread",
+        "name": "Spread +12.7",
+        "homeOdds": 1.86,
+        "awayOdds": 1.87,
+        "line": 12.7,
+        "volume": 1997890,
+        "liquidityScore": 93
+      },
+      {
+        "id": "tot-1764843746288-1656",
+        "type": "total",
+        "name": "Total 3.6",
+        "homeOdds": 1.91,
+        "awayOdds": 1.88,
+        "line": 3.6,
+        "overOdds": 1.97,
+        "underOdds": 1.99,
+        "volume": 797403,
+        "liquidityScore": 84
+      }
+    ],
+    "createdAt": "2025-12-01T13:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "esports-gen-faze-2025-12-08",
+    "canonicalId": "bf0f8681-37ea-5ae6-9de8-29463a05f801",
+    "sport": "esports",
+    "league": "LCK/LEC",
+    "homeTeam": {
+      "id": "geng",
+      "name": "Gen.G",
+      "abbreviation": "GEN",
+      "city": "Seoul"
+    },
+    "awayTeam": {
+      "id": "faze",
+      "name": "FaZe Clan",
+      "abbreviation": "FAZE",
+      "city": "Los Angeles"
+    },
+    "startTime": "2025-12-08T13:22:26.288Z",
+    "status": "scheduled",
+    "venue": "LEC Studio",
+    "markets": [
+      {
+        "id": "ml-1764843746288-7253",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.04,
+        "awayOdds": 1.3610108303249098,
+        "volume": 1992808,
+        "liquidityScore": 80
+      },
+      {
+        "id": "sp-1764843746288-9099",
+        "type": "spread",
+        "name": "Spread +5.5",
+        "homeOdds": 1.97,
+        "awayOdds": 1.87,
+        "line": 5.5,
+        "volume": 1759430,
+        "liquidityScore": 87
+      },
+      {
+        "id": "tot-1764843746288-2472",
+        "type": "total",
+        "name": "Total 4.4",
+        "homeOdds": 1.92,
+        "awayOdds": 1.96,
+        "line": 4.4,
+        "overOdds": 1.97,
+        "underOdds": 1.96,
+        "volume": 1774708,
+        "liquidityScore": 83
+      }
+    ],
+    "createdAt": "2025-12-01T13:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "soccer-psg-rma-2025-12-08",
+    "canonicalId": "4e54dd0c-ea85-5ade-bfa1-a38a4d970ba8",
+    "sport": "soccer",
+    "league": "Premier League",
+    "homeTeam": {
+      "id": "psg",
+      "name": "Paris Saint-Germain",
+      "abbreviation": "PSG",
+      "city": "Paris"
+    },
+    "awayTeam": {
+      "id": "rma",
+      "name": "Real Madrid",
+      "abbreviation": "RMA",
+      "city": "Madrid"
+    },
+    "startTime": "2025-12-08T14:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Emirates Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746289-9150",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.3802281368821292,
+        "awayOdds": 2.2800000000000002,
+        "volume": 1689622,
+        "liquidityScore": 80
+      },
+      {
+        "id": "sp-1764843746289-2110",
+        "type": "spread",
+        "name": "Spread +5.9",
+        "homeOdds": 2,
+        "awayOdds": 1.85,
+        "line": 5.9,
+        "volume": 1373197,
+        "liquidityScore": 86
+      },
+      {
+        "id": "tot-1764843746289-9623",
+        "type": "total",
+        "name": "Total 2.1",
+        "homeOdds": 1.85,
+        "awayOdds": 1.86,
+        "line": 2.1,
+        "overOdds": 1.9,
+        "underOdds": 1.97,
+        "volume": 799872,
+        "liquidityScore": 94
+      }
+    ],
+    "createdAt": "2025-12-01T14:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "basketball-den-mia-2025-12-08",
+    "canonicalId": "669c4afa-d060-5fac-a0f6-02afd360d515",
+    "sport": "basketball",
+    "league": "NBA",
+    "homeTeam": {
+      "id": "den",
+      "name": "Nuggets",
+      "abbreviation": "DEN",
+      "city": "Denver"
+    },
+    "awayTeam": {
+      "id": "mia",
+      "name": "Heat",
+      "abbreviation": "MIA",
+      "city": "Miami"
+    },
+    "startTime": "2025-12-08T15:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Crypto.com Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-5624",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.425531914893617,
+        "awayOdds": 2.4299999999999997,
+        "volume": 1594719,
+        "liquidityScore": 76
+      },
+      {
+        "id": "sp-1764843746289-8407",
+        "type": "spread",
+        "name": "Spread +7.5",
+        "homeOdds": 1.87,
+        "awayOdds": 1.97,
+        "line": 7.5,
+        "volume": 2324173,
+        "liquidityScore": 89
+      },
+      {
+        "id": "tot-1764843746289-3139",
+        "type": "total",
+        "name": "Total 208.7",
+        "homeOdds": 1.96,
+        "awayOdds": 1.88,
+        "line": 208.7,
+        "overOdds": 1.88,
+        "underOdds": 1.9,
+        "volume": 1893103,
+        "liquidityScore": 82
+      }
+    ],
+    "createdAt": "2025-12-01T15:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "esports-faze-fnc-2025-12-08",
+    "canonicalId": "234c1648-d76b-548b-8ca8-cf8ab3d50cb8",
+    "sport": "esports",
+    "league": "LCK/LEC",
+    "homeTeam": {
+      "id": "faze",
+      "name": "FaZe Clan",
+      "abbreviation": "FAZE",
+      "city": "Los Angeles"
+    },
+    "awayTeam": {
+      "id": "fnc",
+      "name": "Fnatic",
+      "abbreviation": "FNC",
+      "city": "London"
+    },
+    "startTime": "2025-12-08T16:22:26.289Z",
+    "status": "scheduled",
+    "venue": "BLAST Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746290-3094",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.11,
+        "awayOdds": 1.3571428571428572,
+        "volume": 1605082,
+        "liquidityScore": 79
+      },
+      {
+        "id": "sp-1764843746290-2718",
+        "type": "spread",
+        "name": "Spread -10.4",
+        "homeOdds": 1.95,
+        "awayOdds": 1.86,
+        "line": -10.4,
+        "volume": 603600,
+        "liquidityScore": 92
+      },
+      {
+        "id": "tot-1764843746290-6390",
+        "type": "total",
+        "name": "Total 4.3",
+        "homeOdds": 1.88,
+        "awayOdds": 1.88,
+        "line": 4.3,
+        "overOdds": 1.86,
+        "underOdds": 1.86,
+        "volume": 2101728,
+        "liquidityScore": 72
+      }
+    ],
+    "createdAt": "2025-12-01T16:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.290Z"
+  },
+  {
+    "id": "hockey-col-fla-2025-12-08",
+    "canonicalId": "f11a5846-97d2-5411-96f0-6eb593fc2003",
+    "sport": "hockey",
+    "league": "NHL",
+    "homeTeam": {
+      "id": "col",
+      "name": "Avalanche",
+      "abbreviation": "COL",
+      "city": "Colorado"
+    },
+    "awayTeam": {
+      "id": "fla",
+      "name": "Panthers",
+      "abbreviation": "FLA",
+      "city": "Florida"
+    },
+    "startTime": "2025-12-08T23:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Rogers Place",
+    "markets": [
+      {
+        "id": "ml-1764843746289-8868",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.75,
+        "awayOdds": 1.3448275862068966,
+        "volume": 151950,
+        "liquidityScore": 98
+      },
+      {
+        "id": "sp-1764843746289-1404",
+        "type": "spread",
+        "name": "Spread +8.3",
+        "homeOdds": 1.85,
+        "awayOdds": 1.86,
+        "line": 8.3,
+        "volume": 2836226,
+        "liquidityScore": 85
+      },
+      {
+        "id": "tot-1764843746289-3526",
+        "type": "total",
+        "name": "Total 5.1",
+        "homeOdds": 1.85,
+        "awayOdds": 1.92,
+        "line": 5.1,
+        "overOdds": 1.95,
+        "underOdds": 1.89,
+        "volume": 2302772,
+        "liquidityScore": 70
+      }
+    ],
+    "createdAt": "2025-12-01T23:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "cricket-pak-nz-2025-12-09",
+    "canonicalId": "44f0d72f-e853-5de1-b18e-0a8c869f5ad4",
+    "sport": "cricket",
+    "league": "ICC",
+    "homeTeam": {
+      "id": "pak",
+      "name": "Pakistan",
+      "abbreviation": "PAK",
+      "city": "Lahore"
+    },
+    "awayTeam": {
+      "id": "nz",
+      "name": "New Zealand",
+      "abbreviation": "NZ",
+      "city": "Auckland"
+    },
+    "startTime": "2025-12-09T01:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Melbourne Cricket Ground",
+    "markets": [
+      {
+        "id": "ml-1764843746288-6399",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.18,
+        "awayOdds": 1.2941176470588236,
+        "volume": 274649,
+        "liquidityScore": 75
+      },
+      {
+        "id": "sp-1764843746288-8526",
+        "type": "spread",
+        "name": "Spread +6.7",
+        "homeOdds": 1.92,
+        "awayOdds": 1.96,
+        "line": 6.7,
+        "volume": 2803321,
+        "liquidityScore": 76
+      },
+      {
+        "id": "tot-1764843746288-9995",
+        "type": "total",
+        "name": "Total 291.9",
+        "homeOdds": 1.92,
+        "awayOdds": 2,
+        "line": 291.9,
+        "overOdds": 1.86,
+        "underOdds": 1.94,
+        "volume": 2074516,
+        "liquidityScore": 75
+      }
+    ],
+    "createdAt": "2025-12-02T01:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "f1-ham-rus-2025-12-09",
+    "canonicalId": "04f3740a-5d83-51b5-b7fd-81701aa36dff",
+    "sport": "f1",
+    "league": "F1",
+    "homeTeam": {
+      "id": "hamilton",
+      "name": "Lewis Hamilton",
+      "abbreviation": "HAM",
+      "city": "UK"
+    },
+    "awayTeam": {
+      "id": "russell",
+      "name": "George Russell",
+      "abbreviation": "RUS",
+      "city": "UK"
+    },
+    "startTime": "2025-12-09T01:22:26.290Z",
+    "status": "scheduled",
+    "venue": "Monaco",
+    "markets": [
+      {
+        "id": "ml-1764843746290-7613",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.5,
+        "awayOdds": 1.2857142857142856,
+        "volume": 699043,
+        "liquidityScore": 74
+      },
+      {
+        "id": "sp-1764843746290-5480",
+        "type": "spread",
+        "name": "Spread +8.9",
+        "homeOdds": 1.87,
+        "awayOdds": 1.94,
+        "line": 8.9,
+        "volume": 2743978,
+        "liquidityScore": 92
+      },
+      {
+        "id": "tot-1764843746290-5973",
+        "type": "total",
+        "name": "Total 18.1",
+        "homeOdds": 1.99,
+        "awayOdds": 1.87,
+        "line": 18.1,
+        "overOdds": 1.92,
+        "underOdds": 1.98,
+        "volume": 2113355,
+        "liquidityScore": 79
+      }
+    ],
+    "createdAt": "2025-12-02T01:22:26.290Z",
+    "updatedAt": "2025-12-04T10:22:26.290Z"
+  },
+  {
+    "id": "hockey-car-edm-2025-12-09",
+    "canonicalId": "2822a7a8-6db6-5499-895d-bf8f94ec079a",
+    "sport": "hockey",
+    "league": "NHL",
+    "homeTeam": {
+      "id": "car",
+      "name": "Hurricanes",
+      "abbreviation": "CAR",
+      "city": "Carolina"
+    },
+    "awayTeam": {
+      "id": "edm",
+      "name": "Oilers",
+      "abbreviation": "EDM",
+      "city": "Edmonton"
+    },
+    "startTime": "2025-12-09T03:22:26.287Z",
+    "status": "scheduled",
+    "venue": "T-Mobile Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746287-8907",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.44,
+        "awayOdds": 1.4166666666666667,
+        "volume": 372676,
+        "liquidityScore": 91
+      },
+      {
+        "id": "sp-1764843746287-7421",
+        "type": "spread",
+        "name": "Spread +0.7",
+        "homeOdds": 1.96,
+        "awayOdds": 1.85,
+        "line": 0.7,
+        "volume": 2250800,
+        "liquidityScore": 94
+      },
+      {
+        "id": "tot-1764843746287-8331",
+        "type": "total",
+        "name": "Total 4.2",
+        "homeOdds": 1.91,
+        "awayOdds": 1.94,
+        "line": 4.2,
+        "overOdds": 1.92,
+        "underOdds": 1.87,
+        "volume": 2447361,
+        "liquidityScore": 79
+      }
+    ],
+    "createdAt": "2025-12-02T03:22:26.287Z",
+    "updatedAt": "2025-12-04T10:22:26.287Z"
+  },
+  {
+    "id": "boxing-usy-can-2025-12-09",
+    "canonicalId": "9eceeb9e-16e6-5801-8730-43ac67c91e1c",
+    "sport": "boxing",
+    "league": "WBC/WBA",
+    "homeTeam": {
+      "id": "usyk",
+      "name": "Oleksandr Usyk",
+      "abbreviation": "USY",
+      "city": "Ukraine"
+    },
+    "awayTeam": {
+      "id": "canelo",
+      "name": "Canelo Alvarez",
+      "abbreviation": "CAN",
+      "city": "Mexico"
+    },
+    "startTime": "2025-12-09T03:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Madison Square Garden",
+    "markets": [
+      {
+        "id": "ml-1764843746289-9992",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.16,
+        "awayOdds": 1.4524886877828054,
+        "volume": 240742,
+        "liquidityScore": 72
+      },
+      {
+        "id": "sp-1764843746289-2139",
+        "type": "spread",
+        "name": "Spread -10.6",
+        "homeOdds": 1.92,
+        "awayOdds": 1.98,
+        "line": -10.6,
+        "volume": 2339235,
+        "liquidityScore": 83
+      },
+      {
+        "id": "tot-1764843746289-8529",
+        "type": "total",
+        "name": "Total 7.8",
+        "homeOdds": 1.96,
+        "awayOdds": 1.97,
+        "line": 7.8,
+        "overOdds": 2,
+        "underOdds": 1.94,
+        "volume": 981990,
+        "liquidityScore": 75
+      }
+    ],
+    "createdAt": "2025-12-02T03:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "tennis-sin-zve-2025-12-09",
+    "canonicalId": "56730888-af45-5f0e-81c2-5b1bb76ce8e6",
+    "sport": "tennis",
+    "league": "ATP",
+    "homeTeam": {
+      "id": "sinner",
+      "name": "Jannik Sinner",
+      "abbreviation": "SIN",
+      "city": "Italy"
+    },
+    "awayTeam": {
+      "id": "zverev",
+      "name": "Alexander Zverev",
+      "abbreviation": "ZVE",
+      "city": "Germany"
+    },
+    "startTime": "2025-12-09T09:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Indian Wells",
+    "markets": [
+      {
+        "id": "ml-1764843746289-8633",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.74,
+        "awayOdds": 1.4504504504504505,
+        "volume": 1603909,
+        "liquidityScore": 100
+      },
+      {
+        "id": "sp-1764843746289-6081",
+        "type": "spread",
+        "name": "Spread -1.8",
+        "homeOdds": 1.89,
+        "awayOdds": 1.92,
+        "line": -1.8,
+        "volume": 1405138,
+        "liquidityScore": 76
+      },
+      {
+        "id": "tot-1764843746289-9624",
+        "type": "total",
+        "name": "Total 30",
+        "homeOdds": 1.93,
+        "awayOdds": 1.91,
+        "line": 30,
+        "overOdds": 1.9,
+        "underOdds": 1.86,
+        "volume": 786823,
+        "liquidityScore": 85
+      }
+    ],
+    "createdAt": "2025-12-02T09:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "golf-koe-ror-2025-12-09",
+    "canonicalId": "3ff53b58-0a1d-59ad-a926-2c582d19d560",
+    "sport": "golf",
+    "league": "PGA",
+    "homeTeam": {
+      "id": "koepka",
+      "name": "Brooks Koepka",
+      "abbreviation": "KOE",
+      "city": "USA"
+    },
+    "awayTeam": {
+      "id": "mcilroy",
+      "name": "Rory McIlroy",
+      "abbreviation": "ROR",
+      "city": "Northern Ireland"
+    },
+    "startTime": "2025-12-09T10:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Augusta National",
+    "markets": [
+      {
+        "id": "ml-1764843746289-3271",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.95,
+        "awayOdds": 1.6711409395973154,
+        "volume": 155096,
+        "liquidityScore": 96
+      },
+      {
+        "id": "sp-1764843746289-6885",
+        "type": "spread",
+        "name": "Spread +7.4",
+        "homeOdds": 2,
+        "awayOdds": 1.9,
+        "line": 7.4,
+        "volume": 2405595,
+        "liquidityScore": 92
+      },
+      {
+        "id": "tot-1764843746289-4441",
+        "type": "total",
+        "name": "Total 282.2",
+        "homeOdds": 1.99,
+        "awayOdds": 1.93,
+        "line": 282.2,
+        "overOdds": 1.96,
+        "underOdds": 1.99,
+        "volume": 2329501,
+        "liquidityScore": 78
+      }
+    ],
+    "createdAt": "2025-12-02T10:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "f1-lec-sai-2025-12-09",
+    "canonicalId": "febda3e9-f83f-5f12-854a-ff701391c9c5",
+    "sport": "f1",
+    "league": "F1",
+    "homeTeam": {
+      "id": "leclerc",
+      "name": "Charles Leclerc",
+      "abbreviation": "LEC",
+      "city": "Monaco"
+    },
+    "awayTeam": {
+      "id": "sainz",
+      "name": "Carlos Sainz",
+      "abbreviation": "SAI",
+      "city": "Spain"
+    },
+    "startTime": "2025-12-09T13:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Monza",
+    "markets": [
+      {
+        "id": "ml-1764843746289-2367",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.3508771929824561,
+        "awayOdds": 3.15,
+        "volume": 449214,
+        "liquidityScore": 72
+      },
+      {
+        "id": "sp-1764843746289-3388",
+        "type": "spread",
+        "name": "Spread -10.5",
+        "homeOdds": 1.96,
+        "awayOdds": 1.88,
+        "line": -10.5,
+        "volume": 2738731,
+        "liquidityScore": 100
+      },
+      {
+        "id": "tot-1764843746289-6429",
+        "type": "total",
+        "name": "Total 16.7",
+        "homeOdds": 1.85,
+        "awayOdds": 1.89,
+        "line": 16.7,
+        "overOdds": 1.98,
+        "underOdds": 1.96,
+        "volume": 974067,
+        "liquidityScore": 92
+      }
+    ],
+    "createdAt": "2025-12-02T13:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "basketball-den-nyk-2025-12-09",
+    "canonicalId": "07d75087-b0e9-52a4-b85d-f61032d0e74f",
+    "sport": "basketball",
+    "league": "NBA",
+    "homeTeam": {
+      "id": "den",
+      "name": "Nuggets",
+      "abbreviation": "DEN",
+      "city": "Denver"
+    },
+    "awayTeam": {
+      "id": "nyy",
+      "name": "Knicks",
+      "abbreviation": "NYK",
+      "city": "New York"
+    },
+    "startTime": "2025-12-09T21:22:26.288Z",
+    "status": "scheduled",
+    "venue": "TD Garden",
+    "markets": [
+      {
+        "id": "ml-1764843746288-8781",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.46,
+        "awayOdds": 1.7194244604316546,
+        "volume": 778576,
+        "liquidityScore": 90
+      },
+      {
+        "id": "sp-1764843746288-3007",
+        "type": "spread",
+        "name": "Spread +10",
+        "homeOdds": 1.95,
+        "awayOdds": 1.99,
+        "line": 10,
+        "volume": 2759292,
+        "liquidityScore": 88
+      },
+      {
+        "id": "tot-1764843746288-8448",
+        "type": "total",
+        "name": "Total 217.2",
+        "homeOdds": 1.92,
+        "awayOdds": 1.87,
+        "line": 217.2,
+        "overOdds": 1.95,
+        "underOdds": 1.89,
+        "volume": 881064,
+        "liquidityScore": 89
+      }
+    ],
+    "createdAt": "2025-12-02T21:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "f1-sai-rus-2025-12-09",
+    "canonicalId": "a9dc9121-887c-53dc-ac7c-bbb757d5ead6",
+    "sport": "f1",
+    "league": "F1",
+    "homeTeam": {
+      "id": "sainz",
+      "name": "Carlos Sainz",
+      "abbreviation": "SAI",
+      "city": "Spain"
+    },
+    "awayTeam": {
+      "id": "russell",
+      "name": "George Russell",
+      "abbreviation": "RUS",
+      "city": "UK"
+    },
+    "startTime": "2025-12-09T22:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Monza",
+    "markets": [
+      {
+        "id": "ml-1764843746289-2453",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.78,
+        "awayOdds": 1.3802281368821292,
+        "volume": 1038667,
+        "liquidityScore": 74
+      },
+      {
+        "id": "sp-1764843746289-7150",
+        "type": "spread",
+        "name": "Spread +7.5",
+        "homeOdds": 1.94,
+        "awayOdds": 1.91,
+        "line": 7.5,
+        "volume": 2217663,
+        "liquidityScore": 90
+      },
+      {
+        "id": "tot-1764843746289-1932",
+        "type": "total",
+        "name": "Total 18.5",
+        "homeOdds": 1.88,
+        "awayOdds": 1.87,
+        "line": 18.5,
+        "overOdds": 1.86,
+        "underOdds": 1.92,
+        "volume": 2061370,
+        "liquidityScore": 84
+      }
+    ],
+    "createdAt": "2025-12-02T22:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "baseball-nyy-sd-2025-12-10",
+    "canonicalId": "ef3c01b7-4968-5c9a-b3fa-ab49e09a1fa4",
+    "sport": "baseball",
+    "league": "MLB",
+    "homeTeam": {
+      "id": "nyy",
+      "name": "Yankees",
+      "abbreviation": "NYY",
+      "city": "New York"
+    },
+    "awayTeam": {
+      "id": "sd",
+      "name": "Padres",
+      "abbreviation": "SD",
+      "city": "San Diego"
+    },
+    "startTime": "2025-12-10T05:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Truist Park",
+    "markets": [
+      {
+        "id": "ml-1764843746288-7825",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.93,
+        "awayOdds": 1.8403361344537816,
+        "volume": 1692224,
+        "liquidityScore": 76
+      },
+      {
+        "id": "sp-1764843746288-4126",
+        "type": "spread",
+        "name": "Spread -1.5",
+        "homeOdds": 1.96,
+        "awayOdds": 1.96,
+        "line": -1.5,
+        "volume": 359702,
+        "liquidityScore": 99
+      },
+      {
+        "id": "tot-1764843746288-3192",
+        "type": "total",
+        "name": "Total 8.7",
+        "homeOdds": 1.99,
+        "awayOdds": 1.9,
+        "line": 8.7,
+        "overOdds": 1.91,
+        "underOdds": 1.95,
+        "volume": 1819626,
+        "liquidityScore": 82
+      }
+    ],
+    "createdAt": "2025-12-03T05:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "boxing-fur-cra-2025-12-10",
+    "canonicalId": "c159239e-a9dc-55d7-b991-64763cb26004",
+    "sport": "boxing",
+    "league": "WBC/WBA",
+    "homeTeam": {
+      "id": "fury",
+      "name": "Tyson Fury",
+      "abbreviation": "FUR",
+      "city": "UK"
+    },
+    "awayTeam": {
+      "id": "crawford",
+      "name": "Terence Crawford",
+      "abbreviation": "CRA",
+      "city": "USA"
+    },
+    "startTime": "2025-12-10T06:22:26.288Z",
+    "status": "scheduled",
+    "venue": "T-Mobile Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746288-8869",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.3610108303249098,
+        "awayOdds": 2.35,
+        "volume": 1359718,
+        "liquidityScore": 81
+      },
+      {
+        "id": "sp-1764843746288-4185",
+        "type": "spread",
+        "name": "Spread -2.2",
+        "homeOdds": 1.97,
+        "awayOdds": 1.86,
+        "line": -2.2,
+        "volume": 2699063,
+        "liquidityScore": 82
+      },
+      {
+        "id": "tot-1764843746288-4578",
+        "type": "total",
+        "name": "Total 7.8",
+        "homeOdds": 1.96,
+        "awayOdds": 1.91,
+        "line": 7.8,
+        "overOdds": 1.91,
+        "underOdds": 1.88,
+        "volume": 2427870,
+        "liquidityScore": 74
+      }
+    ],
+    "createdAt": "2025-12-03T06:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "esports-faze-g2-2025-12-10",
+    "canonicalId": "aa82ffda-a2aa-51b7-90cb-d73152ed85ae",
+    "sport": "esports",
+    "league": "LCK/LEC",
+    "homeTeam": {
+      "id": "faze",
+      "name": "FaZe Clan",
+      "abbreviation": "FAZE",
+      "city": "Los Angeles"
+    },
+    "awayTeam": {
+      "id": "g2",
+      "name": "G2 Esports",
+      "abbreviation": "G2",
+      "city": "Berlin"
+    },
+    "startTime": "2025-12-10T08:22:26.289Z",
+    "status": "scheduled",
+    "venue": "LEC Studio",
+    "markets": [
+      {
+        "id": "ml-1764843746289-1289",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.7199999999999998,
+        "awayOdds": 1.2873563218390804,
+        "volume": 1168110,
+        "liquidityScore": 92
+      },
+      {
+        "id": "sp-1764843746289-4549",
+        "type": "spread",
+        "name": "Spread -13.1",
+        "homeOdds": 1.88,
+        "awayOdds": 1.93,
+        "line": -13.1,
+        "volume": 1787416,
+        "liquidityScore": 93
+      },
+      {
+        "id": "tot-1764843746289-7781",
+        "type": "total",
+        "name": "Total 3.2",
+        "homeOdds": 1.97,
+        "awayOdds": 1.92,
+        "line": 3.2,
+        "overOdds": 1.97,
+        "underOdds": 1.95,
+        "volume": 400188,
+        "liquidityScore": 88
+      }
+    ],
+    "createdAt": "2025-12-03T08:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "hockey-fla-bos-2025-12-10",
+    "canonicalId": "63dcb6f2-f1df-549a-b156-2208e08367e5",
+    "sport": "hockey",
+    "league": "NHL",
+    "homeTeam": {
+      "id": "fla",
+      "name": "Panthers",
+      "abbreviation": "FLA",
+      "city": "Florida"
+    },
+    "awayTeam": {
+      "id": "bos",
+      "name": "Bruins",
+      "abbreviation": "BOS",
+      "city": "Boston"
+    },
+    "startTime": "2025-12-10T13:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Amerant Bank Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-1567",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.6097560975609757,
+        "awayOdds": 2.16,
+        "volume": 1347808,
+        "liquidityScore": 97
+      },
+      {
+        "id": "sp-1764843746289-1273",
+        "type": "spread",
+        "name": "Spread -13.2",
+        "homeOdds": 1.96,
+        "awayOdds": 1.93,
+        "line": -13.2,
+        "volume": 2274974,
+        "liquidityScore": 98
+      },
+      {
+        "id": "tot-1764843746289-3316",
+        "type": "total",
+        "name": "Total 4.6",
+        "homeOdds": 1.99,
+        "awayOdds": 1.92,
+        "line": 4.6,
+        "overOdds": 1.86,
+        "underOdds": 1.85,
+        "volume": 2067162,
+        "liquidityScore": 88
+      }
+    ],
+    "createdAt": "2025-12-03T13:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "football-hou-bal-2025-12-10",
+    "canonicalId": "6a6fce19-d41f-5d62-9267-8bea56fed581",
+    "sport": "football",
+    "league": "NFL",
+    "homeTeam": {
+      "id": "hou",
+      "name": "Texans",
+      "abbreviation": "HOU",
+      "city": "Houston"
+    },
+    "awayTeam": {
+      "id": "bal",
+      "name": "Ravens",
+      "abbreviation": "BAL",
+      "city": "Baltimore"
+    },
+    "startTime": "2025-12-10T16:22:26.290Z",
+    "status": "scheduled",
+    "venue": "Lambeau Field",
+    "markets": [
+      {
+        "id": "ml-1764843746290-5727",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.4807692307692308,
+        "awayOdds": 2.73,
+        "volume": 1849654,
+        "liquidityScore": 92
+      },
+      {
+        "id": "sp-1764843746290-4712",
+        "type": "spread",
+        "name": "Spread -7.4",
+        "homeOdds": 1.95,
+        "awayOdds": 1.88,
+        "line": -7.4,
+        "volume": 2147426,
+        "liquidityScore": 81
+      },
+      {
+        "id": "tot-1764843746290-9658",
+        "type": "total",
+        "name": "Total 47.7",
+        "homeOdds": 1.9,
+        "awayOdds": 1.91,
+        "line": 47.7,
+        "overOdds": 1.88,
+        "underOdds": 1.98,
+        "volume": 694966,
+        "liquidityScore": 90
+      }
+    ],
+    "createdAt": "2025-12-03T16:22:26.290Z",
+    "updatedAt": "2025-12-04T10:22:26.290Z"
+  },
+  {
+    "id": "golf-sch-ror-2025-12-10",
+    "canonicalId": "0471f5a7-c0a7-5429-ad60-58cda1144bae",
+    "sport": "golf",
+    "league": "PGA",
+    "homeTeam": {
+      "id": "scheffler",
+      "name": "Scottie Scheffler",
+      "abbreviation": "SCH",
+      "city": "USA"
+    },
+    "awayTeam": {
+      "id": "mcilroy",
+      "name": "Rory McIlroy",
+      "abbreviation": "ROR",
+      "city": "Northern Ireland"
+    },
+    "startTime": "2025-12-10T18:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Royal Liverpool",
+    "markets": [
+      {
+        "id": "ml-1764843746288-2853",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.37,
+        "awayOdds": 1.7692307692307692,
+        "volume": 1392080,
+        "liquidityScore": 90
+      },
+      {
+        "id": "sp-1764843746288-6733",
+        "type": "spread",
+        "name": "Spread +6.5",
+        "homeOdds": 1.94,
+        "awayOdds": 1.92,
+        "line": 6.5,
+        "volume": 2209607,
+        "liquidityScore": 92
+      },
+      {
+        "id": "tot-1764843746288-4800",
+        "type": "total",
+        "name": "Total 276",
+        "homeOdds": 1.88,
+        "awayOdds": 1.87,
+        "line": 276,
+        "overOdds": 1.87,
+        "underOdds": 1.86,
+        "volume": 1401480,
+        "liquidityScore": 87
+      }
+    ],
+    "createdAt": "2025-12-03T18:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "boxing-ino-fur-2025-12-10",
+    "canonicalId": "41e97abc-7d7f-507b-b764-e6f00e563d21",
+    "sport": "boxing",
+    "league": "WBC/WBA",
+    "homeTeam": {
+      "id": "inoue",
+      "name": "Naoya Inoue",
+      "abbreviation": "INO",
+      "city": "Japan"
+    },
+    "awayTeam": {
+      "id": "fury",
+      "name": "Tyson Fury",
+      "abbreviation": "FUR",
+      "city": "UK"
+    },
+    "startTime": "2025-12-10T18:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Kingdom Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-3110",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.77,
+        "awayOdds": 1.341296928327645,
+        "volume": 1347730,
+        "liquidityScore": 76
+      },
+      {
+        "id": "sp-1764843746289-4233",
+        "type": "spread",
+        "name": "Spread +1.1",
+        "homeOdds": 1.98,
+        "awayOdds": 1.94,
+        "line": 1.1,
+        "volume": 2247291,
+        "liquidityScore": 85
+      },
+      {
+        "id": "tot-1764843746289-6725",
+        "type": "total",
+        "name": "Total 11.6",
+        "homeOdds": 1.95,
+        "awayOdds": 1.96,
+        "line": 11.6,
+        "overOdds": 1.9,
+        "underOdds": 1.96,
+        "volume": 1238001,
+        "liquidityScore": 83
+      }
+    ],
+    "createdAt": "2025-12-03T18:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "hockey-vgk-tor-2025-12-10",
+    "canonicalId": "0165e643-5ed5-5b88-bbd3-63fa8eee9e2a",
+    "sport": "hockey",
+    "league": "NHL",
+    "homeTeam": {
+      "id": "vgk",
+      "name": "Golden Knights",
+      "abbreviation": "VGK",
+      "city": "Vegas"
+    },
+    "awayTeam": {
+      "id": "tor",
+      "name": "Maple Leafs",
+      "abbreviation": "TOR",
+      "city": "Toronto"
+    },
+    "startTime": "2025-12-10T19:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Amerant Bank Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-2534",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.5714285714285714,
+        "awayOdds": 2.1399999999999997,
+        "volume": 1549038,
+        "liquidityScore": 100
+      },
+      {
+        "id": "sp-1764843746289-5046",
+        "type": "spread",
+        "name": "Spread +7.1",
+        "homeOdds": 1.87,
+        "awayOdds": 1.98,
+        "line": 7.1,
+        "volume": 602496,
+        "liquidityScore": 81
+      },
+      {
+        "id": "tot-1764843746289-9509",
+        "type": "total",
+        "name": "Total 5.1",
+        "homeOdds": 1.85,
+        "awayOdds": 1.91,
+        "line": 5.1,
+        "overOdds": 1.99,
+        "underOdds": 1.86,
+        "volume": 2202649,
+        "liquidityScore": 70
+      }
+    ],
+    "createdAt": "2025-12-03T19:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "football-gb-bal-2025-12-10",
+    "canonicalId": "ac97b422-d88b-5c68-9e85-6ae0be933b8e",
+    "sport": "football",
+    "league": "NFL",
+    "homeTeam": {
+      "id": "gb",
+      "name": "Packers",
+      "abbreviation": "GB",
+      "city": "Green Bay"
+    },
+    "awayTeam": {
+      "id": "bal",
+      "name": "Ravens",
+      "abbreviation": "BAL",
+      "city": "Baltimore"
+    },
+    "startTime": "2025-12-10T20:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Arrowhead Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746289-1554",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.2958579881656804,
+        "awayOdds": 3.76,
+        "volume": 129000,
+        "liquidityScore": 80
+      },
+      {
+        "id": "sp-1764843746289-9283",
+        "type": "spread",
+        "name": "Spread +1.9",
+        "homeOdds": 1.91,
+        "awayOdds": 1.91,
+        "line": 1.9,
+        "volume": 1060586,
+        "liquidityScore": 96
+      },
+      {
+        "id": "tot-1764843746289-6202",
+        "type": "total",
+        "name": "Total 45.7",
+        "homeOdds": 1.97,
+        "awayOdds": 1.94,
+        "line": 45.7,
+        "overOdds": 1.89,
+        "underOdds": 1.9,
+        "volume": 1853259,
+        "liquidityScore": 70
+      }
+    ],
+    "createdAt": "2025-12-03T20:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "cricket-ind-pak-2025-12-10",
+    "canonicalId": "9da536e5-a9c7-518d-8dd5-58d35e82789b",
+    "sport": "cricket",
+    "league": "ICC",
+    "homeTeam": {
+      "id": "ind",
+      "name": "India",
+      "abbreviation": "IND",
+      "city": "Mumbai"
+    },
+    "awayTeam": {
+      "id": "pak",
+      "name": "Pakistan",
+      "abbreviation": "PAK",
+      "city": "Lahore"
+    },
+    "startTime": "2025-12-10T21:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Lords",
+    "markets": [
+      {
+        "id": "ml-1764843746289-1413",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.71,
+        "awayOdds": 1.2873563218390804,
+        "volume": 1322622,
+        "liquidityScore": 73
+      },
+      {
+        "id": "sp-1764843746289-1089",
+        "type": "spread",
+        "name": "Spread +1.2",
+        "homeOdds": 1.9,
+        "awayOdds": 1.98,
+        "line": 1.2,
+        "volume": 1728256,
+        "liquidityScore": 88
+      },
+      {
+        "id": "tot-1764843746289-1420",
+        "type": "total",
+        "name": "Total 320.7",
+        "homeOdds": 1.98,
+        "awayOdds": 1.95,
+        "line": 320.7,
+        "overOdds": 1.97,
+        "underOdds": 1.98,
+        "volume": 2446425,
+        "liquidityScore": 90
+      }
+    ],
+    "createdAt": "2025-12-03T21:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "mma-asp-pan-2025-12-10",
+    "canonicalId": "cd08d682-88b6-5a4b-a1a4-4c89b85d1d91",
+    "sport": "mma",
+    "league": "UFC",
+    "homeTeam": {
+      "id": "aspinall",
+      "name": "Tom Aspinall",
+      "abbreviation": "ASP",
+      "city": "UK"
+    },
+    "awayTeam": {
+      "id": "pantoja",
+      "name": "Alexandre Pantoja",
+      "abbreviation": "PAN",
+      "city": "Brazil"
+    },
+    "startTime": "2025-12-10T23:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Madison Square Garden",
+    "markets": [
+      {
+        "id": "ml-1764843746289-2519",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.6451612903225805,
+        "awayOdds": 2.31,
+        "volume": 853653,
+        "liquidityScore": 96
+      },
+      {
+        "id": "sp-1764843746289-9898",
+        "type": "spread",
+        "name": "Spread +2.4",
+        "homeOdds": 1.87,
+        "awayOdds": 1.92,
+        "line": 2.4,
+        "volume": 2771551,
+        "liquidityScore": 98
+      },
+      {
+        "id": "tot-1764843746289-3643",
+        "type": "total",
+        "name": "Total 2.5",
+        "homeOdds": 1.97,
+        "awayOdds": 1.97,
+        "line": 2.5,
+        "overOdds": 1.99,
+        "underOdds": 1.9,
+        "volume": 2308453,
+        "liquidityScore": 84
+      }
+    ],
+    "createdAt": "2025-12-03T23:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "football-mia-buf-2025-12-11",
+    "canonicalId": "07495e28-e6d4-507f-8abe-d015d44a392d",
+    "sport": "football",
+    "league": "NFL",
+    "homeTeam": {
+      "id": "mia",
+      "name": "Dolphins",
+      "abbreviation": "MIA",
+      "city": "Miami"
+    },
+    "awayTeam": {
+      "id": "buf",
+      "name": "Bills",
+      "abbreviation": "BUF",
+      "city": "Buffalo"
+    },
+    "startTime": "2025-12-11T00:22:26.287Z",
+    "status": "scheduled",
+    "venue": "Levis Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746287-8441",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.6993006993006992,
+        "awayOdds": 2.8899999999999997,
+        "volume": 1160603,
+        "liquidityScore": 77
+      },
+      {
+        "id": "sp-1764843746287-4448",
+        "type": "spread",
+        "name": "Spread -1.5",
+        "homeOdds": 1.94,
+        "awayOdds": 1.9,
+        "line": -1.5,
+        "volume": 763756,
+        "liquidityScore": 88
+      },
+      {
+        "id": "tot-1764843746287-5239",
+        "type": "total",
+        "name": "Total 36.6",
+        "homeOdds": 1.85,
+        "awayOdds": 1.88,
+        "line": 36.6,
+        "overOdds": 1.87,
+        "underOdds": 1.91,
+        "volume": 971500,
+        "liquidityScore": 88
+      }
+    ],
+    "createdAt": "2025-12-04T00:22:26.287Z",
+    "updatedAt": "2025-12-04T10:22:26.287Z"
+  },
+  {
+    "id": "hockey-col-edm-2025-12-11",
+    "canonicalId": "efcadf2f-2408-516f-8367-4b52916e94f8",
+    "sport": "hockey",
+    "league": "NHL",
+    "homeTeam": {
+      "id": "col",
+      "name": "Avalanche",
+      "abbreviation": "COL",
+      "city": "Colorado"
+    },
+    "awayTeam": {
+      "id": "edm",
+      "name": "Oilers",
+      "abbreviation": "EDM",
+      "city": "Edmonton"
+    },
+    "startTime": "2025-12-11T04:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Ball Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-2405",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.8600000000000003,
+        "awayOdds": 1.7575757575757576,
+        "volume": 1978912,
+        "liquidityScore": 72
+      },
+      {
+        "id": "sp-1764843746289-1579",
+        "type": "spread",
+        "name": "Spread +8.9",
+        "homeOdds": 1.91,
+        "awayOdds": 2,
+        "line": 8.9,
+        "volume": 914196,
+        "liquidityScore": 88
+      },
+      {
+        "id": "tot-1764843746289-8737",
+        "type": "total",
+        "name": "Total 5.9",
+        "homeOdds": 1.94,
+        "awayOdds": 1.94,
+        "line": 5.9,
+        "overOdds": 1.95,
+        "underOdds": 1.9,
+        "volume": 1756686,
+        "liquidityScore": 93
+      }
+    ],
+    "createdAt": "2025-12-04T04:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "basketball-mia-cle-2025-12-11",
+    "canonicalId": "1c3abf7b-761d-5408-91f7-8d0a97841d30",
+    "sport": "basketball",
+    "league": "NBA",
+    "homeTeam": {
+      "id": "mia",
+      "name": "Heat",
+      "abbreviation": "MIA",
+      "city": "Miami"
+    },
+    "awayTeam": {
+      "id": "cle",
+      "name": "Cavaliers",
+      "abbreviation": "CLE",
+      "city": "Cleveland"
+    },
+    "startTime": "2025-12-11T05:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Ball Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746288-2446",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.3460207612456747,
+        "awayOdds": 3.52,
+        "volume": 529693,
+        "liquidityScore": 99
+      },
+      {
+        "id": "sp-1764843746288-3113",
+        "type": "spread",
+        "name": "Spread +13.9",
+        "homeOdds": 1.94,
+        "awayOdds": 1.93,
+        "line": 13.9,
+        "volume": 574174,
+        "liquidityScore": 93
+      },
+      {
+        "id": "tot-1764843746288-1739",
+        "type": "total",
+        "name": "Total 220.9",
+        "homeOdds": 1.99,
+        "awayOdds": 1.86,
+        "line": 220.9,
+        "overOdds": 1.91,
+        "underOdds": 1.89,
+        "volume": 1241606,
+        "liquidityScore": 71
+      }
+    ],
+    "createdAt": "2025-12-04T05:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "soccer-bay-mci-2025-12-11",
+    "canonicalId": "31711de9-9805-54fc-b670-64988c236d28",
+    "sport": "soccer",
+    "league": "Premier League",
+    "homeTeam": {
+      "id": "bay",
+      "name": "Bayern Munich",
+      "abbreviation": "BAY",
+      "city": "Munich"
+    },
+    "awayTeam": {
+      "id": "mci",
+      "name": "Manchester City",
+      "abbreviation": "MCI",
+      "city": "Manchester"
+    },
+    "startTime": "2025-12-11T07:22:26.288Z",
+    "status": "scheduled",
+    "venue": "Camp Nou",
+    "markets": [
+      {
+        "id": "ml-1764843746288-9860",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.2800000000000002,
+        "awayOdds": 1.78125,
+        "volume": 1310600,
+        "liquidityScore": 95
+      },
+      {
+        "id": "sp-1764843746288-6409",
+        "type": "spread",
+        "name": "Spread -8.4",
+        "homeOdds": 1.91,
+        "awayOdds": 1.98,
+        "line": -8.4,
+        "volume": 643473,
+        "liquidityScore": 89
+      },
+      {
+        "id": "tot-1764843746288-8592",
+        "type": "total",
+        "name": "Total 1.6",
+        "homeOdds": 1.99,
+        "awayOdds": 1.99,
+        "line": 1.6,
+        "overOdds": 1.85,
+        "underOdds": 1.86,
+        "volume": 2138810,
+        "liquidityScore": 87
+      }
+    ],
+    "createdAt": "2025-12-04T07:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "golf-tho-sch-2025-12-11",
+    "canonicalId": "53242495-7e6e-5733-8c6a-3337c9dcf86f",
+    "sport": "golf",
+    "league": "PGA",
+    "homeTeam": {
+      "id": "thomas",
+      "name": "Justin Thomas",
+      "abbreviation": "THO",
+      "city": "USA"
+    },
+    "awayTeam": {
+      "id": "scheffler",
+      "name": "Scottie Scheffler",
+      "abbreviation": "SCH",
+      "city": "USA"
+    },
+    "startTime": "2025-12-11T08:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Pebble Beach",
+    "markets": [
+      {
+        "id": "ml-1764843746289-5675",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.7633587786259541,
+        "awayOdds": 3.63,
+        "volume": 1395624,
+        "liquidityScore": 75
+      },
+      {
+        "id": "sp-1764843746289-7705",
+        "type": "spread",
+        "name": "Spread -1.7",
+        "homeOdds": 1.98,
+        "awayOdds": 1.89,
+        "line": -1.7,
+        "volume": 398949,
+        "liquidityScore": 88
+      },
+      {
+        "id": "tot-1764843746289-7729",
+        "type": "total",
+        "name": "Total 284.2",
+        "homeOdds": 1.94,
+        "awayOdds": 1.88,
+        "line": 284.2,
+        "overOdds": 1.93,
+        "underOdds": 1.94,
+        "volume": 706492,
+        "liquidityScore": 76
+      }
+    ],
+    "createdAt": "2025-12-04T08:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "golf-tho-ror-2025-12-11",
+    "canonicalId": "6fbf8558-79ce-56e8-a7af-b68dc12c5507",
+    "sport": "golf",
+    "league": "PGA",
+    "homeTeam": {
+      "id": "thomas",
+      "name": "Justin Thomas",
+      "abbreviation": "THO",
+      "city": "USA"
+    },
+    "awayTeam": {
+      "id": "mcilroy",
+      "name": "Rory McIlroy",
+      "abbreviation": "ROR",
+      "city": "Northern Ireland"
+    },
+    "startTime": "2025-12-11T10:22:26.288Z",
+    "status": "scheduled",
+    "venue": "TPC Sawgrass",
+    "markets": [
+      {
+        "id": "ml-1764843746288-5173",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 3.58,
+        "awayOdds": 1.8403361344537816,
+        "volume": 1532226,
+        "liquidityScore": 90
+      },
+      {
+        "id": "sp-1764843746288-9098",
+        "type": "spread",
+        "name": "Spread -10",
+        "homeOdds": 1.87,
+        "awayOdds": 1.92,
+        "line": -10,
+        "volume": 438178,
+        "liquidityScore": 81
+      },
+      {
+        "id": "tot-1764843746288-6289",
+        "type": "total",
+        "name": "Total 270.7",
+        "homeOdds": 1.98,
+        "awayOdds": 1.91,
+        "line": 270.7,
+        "overOdds": 1.99,
+        "underOdds": 2,
+        "volume": 1657911,
+        "liquidityScore": 79
+      }
+    ],
+    "createdAt": "2025-12-04T10:22:26.288Z",
+    "updatedAt": "2025-12-04T10:22:26.288Z"
+  },
+  {
+    "id": "mma-pan-jon-2025-12-11",
+    "canonicalId": "16c9c5e7-6e38-5896-880b-d144468b53fd",
+    "sport": "mma",
+    "league": "UFC",
+    "homeTeam": {
+      "id": "pantoja",
+      "name": "Alexandre Pantoja",
+      "abbreviation": "PAN",
+      "city": "Brazil"
+    },
+    "awayTeam": {
+      "id": "jones",
+      "name": "Jon Jones",
+      "abbreviation": "JON",
+      "city": "USA"
+    },
+    "startTime": "2025-12-11T10:22:26.289Z",
+    "status": "scheduled",
+    "venue": "T-Mobile Arena",
+    "markets": [
+      {
+        "id": "ml-1764843746289-3372",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 1.3389830508474576,
+        "awayOdds": 3.86,
+        "volume": 560646,
+        "liquidityScore": 99
+      },
+      {
+        "id": "sp-1764843746289-9929",
+        "type": "spread",
+        "name": "Spread +4.1",
+        "homeOdds": 1.89,
+        "awayOdds": 1.99,
+        "line": 4.1,
+        "volume": 1221299,
+        "liquidityScore": 80
+      },
+      {
+        "id": "tot-1764843746289-2217",
+        "type": "total",
+        "name": "Total 3.2",
+        "homeOdds": 1.89,
+        "awayOdds": 1.92,
+        "line": 3.2,
+        "overOdds": 1.89,
+        "underOdds": 1.91,
+        "volume": 176846,
+        "liquidityScore": 72
+      }
+    ],
+    "createdAt": "2025-12-04T10:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  },
+  {
+    "id": "boxing-ino-bet-2025-12-11",
+    "canonicalId": "c1eb8d3f-756b-5e82-bab5-7b120bd48029",
+    "sport": "boxing",
+    "league": "WBC/WBA",
+    "homeTeam": {
+      "id": "inoue",
+      "name": "Naoya Inoue",
+      "abbreviation": "INO",
+      "city": "Japan"
+    },
+    "awayTeam": {
+      "id": "beterbiev",
+      "name": "Artur Beterbiev",
+      "abbreviation": "BET",
+      "city": "Russia"
+    },
+    "startTime": "2025-12-11T10:22:26.289Z",
+    "status": "scheduled",
+    "venue": "Wembley Stadium",
+    "markets": [
+      {
+        "id": "ml-1764843746289-1079",
+        "type": "moneyline",
+        "name": "Moneyline",
+        "homeOdds": 2.92,
+        "awayOdds": 1.495049504950495,
+        "volume": 1488993,
+        "liquidityScore": 72
+      },
+      {
+        "id": "sp-1764843746289-9760",
+        "type": "spread",
+        "name": "Spread +5.5",
+        "homeOdds": 1.98,
+        "awayOdds": 1.87,
+        "line": 5.5,
+        "volume": 1639507,
+        "liquidityScore": 95
+      },
+      {
+        "id": "tot-1764843746289-3300",
+        "type": "total",
+        "name": "Total 9.9",
+        "homeOdds": 1.89,
+        "awayOdds": 2,
+        "line": 9.9,
+        "overOdds": 1.93,
+        "underOdds": 1.93,
+        "volume": 209905,
+        "liquidityScore": 73
+      }
+    ],
+    "createdAt": "2025-12-04T10:22:26.289Z",
+    "updatedAt": "2025-12-04T10:22:26.289Z"
+  }
+]

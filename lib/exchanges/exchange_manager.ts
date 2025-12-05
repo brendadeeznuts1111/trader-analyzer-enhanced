@@ -74,17 +74,25 @@ export class ExchangeManager {
     // If no credentials provided, try to get from secure storage
     let finalCredentials = credentials;
     if (!finalCredentials) {
-      try {
-        const { secrets } = await import('bun');
-        const apiKey = await secrets.get({
-          service: 'trader-analyzer',
-          name: `${exchangeName.toLowerCase()}-api-key`,
-        });
-        if (apiKey) {
-          finalCredentials = { apiKey };
+      // Try Bun secrets first (only in Bun runtime)
+      if (typeof globalThis.Bun !== 'undefined') {
+        try {
+          // Use eval to prevent Next.js bundler from seeing the import
+          const bunModule = await (0, eval)('import("bun")');
+          const apiKey = await bunModule.secrets.get({
+            service: 'trader-analyzer',
+            name: `${exchangeName.toLowerCase()}-api-key`,
+          });
+          if (apiKey) {
+            finalCredentials = { apiKey };
+          }
+        } catch {
+          // Bun secrets not available, fall through to env vars
         }
-      } catch {
-        // Fallback to environment variables
+      }
+
+      // Fallback to environment variables
+      if (!finalCredentials) {
         const envApiKey =
           process.env[`${exchangeName.toUpperCase()}_API_KEY`] ||
           process.env[`ORCA_${exchangeName.toUpperCase()}_APIKEY`];
@@ -171,9 +179,9 @@ export class ExchangeManager {
    * @param exchangeName Exchange name
    * @returns Exchange configuration
    */
-  public getExchangeConfig(exchangeName: string): import('./base_exchange').ExchangeConfig {
+  public getExchangeConfig(exchangeName: string): import('./base_exchange').ExchangeConfig | undefined {
     const exchange = this.getExchange(exchangeName);
-    return exchange.getConfig();
+    return exchange.getConfig?.();
   }
 
   /**
@@ -183,7 +191,10 @@ export class ExchangeManager {
   public getAllExchangeConfigs(): Map<string, import('./base_exchange').ExchangeConfig> {
     const configs = new Map<string, import('./base_exchange').ExchangeConfig>();
     this.exchanges.forEach((exchange, name) => {
-      configs.set(name, exchange.getConfig());
+      const config = exchange.getConfig?.();
+      if (config) {
+        configs.set(name, config);
+      }
     });
     return configs;
   }
@@ -204,11 +215,15 @@ export class ExchangeManager {
     const healthStatus = new Map<string, import('./base_exchange').ExchangeHealthStatus>();
     for (const [name, exchange] of this.exchanges) {
       try {
-        const status = await exchange.checkHealth();
-        healthStatus.set(name, status);
+        if (exchange.checkHealth) {
+          const status = await exchange.checkHealth();
+          healthStatus.set(name, status);
+        }
       } catch (error) {
         healthStatus.set(name, {
           status: 'offline',
+          circuitBreaker: 'open',
+          loadStatus: 'critical',
           responseTimeMs: 0,
           lastChecked: new Date().toISOString(),
           errorRate: 1,
@@ -217,9 +232,9 @@ export class ExchangeManager {
           apiStatus: {
             marketData: 'down',
             trading: 'down',
-            account: 'down'
+            account: 'down',
+            websocket: 'disconnected',
           },
-          error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }
@@ -234,8 +249,10 @@ export class ExchangeManager {
     const statistics = new Map<string, any>();
     for (const [name, exchange] of this.exchanges) {
       try {
-        const stats = await exchange.getStatistics();
-        statistics.set(name, stats);
+        if (exchange.getStatistics) {
+          const stats = await exchange.getStatistics();
+          statistics.set(name, stats);
+        }
       } catch (error) {
         statistics.set(name, {
           error: error instanceof Error ? error.message : 'Unknown error',
@@ -254,7 +271,7 @@ export class ExchangeManager {
     exchangeName: string
   ): Promise<{ exchange: any; health: any }> {
     const exchange = this.getExchange(exchangeName);
-    const health = await exchange.checkHealth();
+    const health = exchange.checkHealth ? await exchange.checkHealth() : null;
     return { exchange, health };
   }
 }

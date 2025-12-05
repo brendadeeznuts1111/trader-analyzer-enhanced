@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+.bun/
+
+# Build outputs
+.next/
+dist*/
+build/
+out/
+coverage/
+
+# Generated data (protect seeds, hierarchies, profiles)
+data/
+trader_profile_analysis.json
+*.cpuprofile
+
+# Env/secrets
+.env*.local
+
+# Deployment/standalone
+deploy/
+miniapp-standalone/
+
+# OS/Misc
+.DS_Store
+.bunignore
+bun.lockb
+*.pnp.*

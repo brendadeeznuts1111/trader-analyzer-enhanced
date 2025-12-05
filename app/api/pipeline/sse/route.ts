@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { buildApiHeaders, headersToObject } from '@/lib/api-headers';
 import { API_CONFIG } from '@/lib/constants';
+import { createPreflightResponse } from '@/lib/security/profiles';
 
 // SSE endpoint for pipeline stats - proxies to Bun backend
 export async function GET(request: NextRequest) {
@@ -59,15 +60,5 @@ export async function GET(request: NextRequest) {
 
 // Handle CORS preflight
 export async function OPTIONS(request: Request) {
-  const headers = buildApiHeaders({
-    cache: 'no-cache',
-    request,
-    custom: {
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    },
-  });
-
-  return new Response(null, {
-    headers: headersToObject(headers),
-  });
+  return createPreflightResponse(request);
 }

@@ -372,11 +372,7 @@ async function handleProps(msg: IncomingMessage) {
   const props = await sportsExchange.fetchPlayerProps(liveGame.id);
   const propsText = sportsExchange.formatPropsForTelegram(props, 8);
 
-  await reply(
-    `🏀 <b>${liveGame.event}</b>\n\n${propsText}`,
-    msg.chat.id,
-    msg.message_thread_id
-  );
+  await reply(`🏀 <b>${liveGame.event}</b>\n\n${propsText}`, msg.chat.id, msg.message_thread_id);
 }
 
 async function handleSignal(msg: IncomingMessage) {
@@ -482,7 +478,12 @@ async function handleAsk(msg: IncomingMessage) {
   if (result.recommendations.length > 0) {
     text += `<b>Recommendations:</b>\n`;
     for (const rec of result.recommendations.slice(0, 3)) {
-      const emoji = rec.signal === 'strong_buy' || rec.signal === 'buy' ? '🟢' : rec.signal === 'hold' ? '🟡' : '🔴';
+      const emoji =
+        rec.signal === 'strong_buy' || rec.signal === 'buy'
+          ? '🟢'
+          : rec.signal === 'hold'
+            ? '🟡'
+            : '🔴';
       text += `${emoji} ${rec.market} - ${rec.signal.toUpperCase()} (${(rec.confidence * 100).toFixed(0)}%)\n`;
     }
   }
@@ -605,7 +606,11 @@ async function handleCallbackQuery(query: CallbackQuery) {
   } else if (data.startsWith('confirm_bet_')) {
     await handleConfirmBet(data, chatId!, threadId);
   } else if (data === 'cancel_bet') {
-    await reply(`❌ <b>Bet Cancelled</b>\n\nUse /signal for new trading signals.`, chatId!, threadId);
+    await reply(
+      `❌ <b>Bet Cancelled</b>\n\nUse /signal for new trading signals.`,
+      chatId!,
+      threadId
+    );
   } else if (data.startsWith('bot_')) {
     await handleBotCallback(data, chatId!, threadId);
   } else if (data.startsWith('trends_')) {
@@ -696,8 +701,12 @@ async function handleNBACallback(data: string, chatId: number, threadId?: number
           hour: '2-digit',
           minute: '2-digit',
         });
-        const homeML = game.odds.home ? (game.odds.home > 0 ? '+' : '') + game.odds.home.toFixed(0) : 'N/A';
-        const awayML = game.odds.away ? (game.odds.away > 0 ? '+' : '') + game.odds.away.toFixed(0) : 'N/A';
+        const homeML = game.odds.home
+          ? (game.odds.home > 0 ? '+' : '') + game.odds.home.toFixed(0)
+          : 'N/A';
+        const awayML = game.odds.away
+          ? (game.odds.away > 0 ? '+' : '') + game.odds.away.toFixed(0)
+          : 'N/A';
         text += `• <b>${game.teams?.home || 'Home'}</b> vs <b>${game.teams?.away || 'Away'}</b>\n`;
         text += `  📍 ${gameTime} | ML: ${homeML}/${awayML}\n\n`;
       }
@@ -718,22 +727,14 @@ async function handleNBACallback(data: string, chatId: number, threadId?: number
       }
       const props = await sportsExchange.fetchPlayerProps(liveGame.id);
       const propsText = sportsExchange.formatPropsForTelegram(props, 10);
-      await reply(
-        `🎯 <b>${liveGame.event} Props</b>\n\n${propsText}`,
-        chatId,
-        threadId
-      );
+      await reply(`🎯 <b>${liveGame.event} Props</b>\n\n${propsText}`, chatId, threadId);
       break;
     }
 
     case 'signal': {
       const markets = await sportsExchange.fetchBasketballMarkets('NBA');
       if (markets.length === 0) {
-        await reply(
-          `📊 <b>NBA Signal</b>\n\n<i>No markets available.</i>`,
-          chatId,
-          threadId
-        );
+        await reply(`📊 <b>NBA Signal</b>\n\n<i>No markets available.</i>`, chatId, threadId);
         return;
       }
       const ragContext = await sportsExchange.buildRAGContext('NBA betting signal', 'basketball');
@@ -824,8 +825,12 @@ async function handleSportsCallback(data: string, chatId: number, threadId?: num
       // Generate signals for top 3 markets
       for (const market of markets.slice(0, 3)) {
         const tradingSignal = await sportsExchange.generateTradingSignal(market.id, ragContext);
-        const emoji = tradingSignal.signal === 'buy' || tradingSignal.signal === 'strong_buy' ? '🟢' :
-                      tradingSignal.signal === 'sell' || tradingSignal.signal === 'strong_sell' ? '🔴' : '⚪';
+        const emoji =
+          tradingSignal.signal === 'buy' || tradingSignal.signal === 'strong_buy'
+            ? '🟢'
+            : tradingSignal.signal === 'sell' || tradingSignal.signal === 'strong_sell'
+              ? '🔴'
+              : '⚪';
         text += `${emoji} <b>${market.event}</b>\n`;
         text += `   ${tradingSignal.signal.toUpperCase().replace('_', ' ')} | ${(tradingSignal.confidence * 100).toFixed(0)}% conf\n\n`;
       }
@@ -864,9 +869,7 @@ async function handleBetCallback(data: string, chatId: number, threadId?: number
   ];
 
   await sendWithKeyboard(
-    `💰 <b>Place Bet</b>\n\n` +
-      `Market: <code>${marketId}</code>\n\n` +
-      `Select your bet amount:`,
+    `💰 <b>Place Bet</b>\n\n` + `Market: <code>${marketId}</code>\n\n` + `Select your bet amount:`,
     keyboard,
     chatId,
     { threadId, parseMode: 'HTML' }
@@ -878,11 +881,7 @@ async function handleSignalRefresh(chatId: number, threadId?: number) {
 
   const markets = await sportsExchange.fetchBasketballMarkets('NBA');
   if (markets.length === 0) {
-    await reply(
-      `📊 <b>Trading Signals</b>\n\n<i>No markets available.</i>`,
-      chatId,
-      threadId
-    );
+    await reply(`📊 <b>Trading Signals</b>\n\n<i>No markets available.</i>`, chatId, threadId);
     return;
   }
 
@@ -1023,8 +1022,7 @@ async function handleBotCallback(data: string, chatId: number, threadId?: number
       ];
 
       await sendWithKeyboard(
-        `⚙️ <b>Bot Configuration</b>\n\n` +
-          `Select your preferences:`,
+        `⚙️ <b>Bot Configuration</b>\n\n` + `Select your preferences:`,
         keyboard,
         chatId,
         { threadId, parseMode: 'HTML' }
@@ -1050,7 +1048,9 @@ async function handleTrendsCallback(data: string, chatId: number, threadId?: num
     case 'nba':
       text = `🏀 <b>NBA Specific Trends</b>\n\n`;
       text += trends
-        .filter(t => t.trend.toLowerCase().includes('home') || t.trend.toLowerCase().includes('road'))
+        .filter(
+          t => t.trend.toLowerCase().includes('home') || t.trend.toLowerCase().includes('road')
+        )
         .map(t => `• ${t.trend} (${(t.confidence * 100).toFixed(0)}%)`)
         .join('\n');
       break;
@@ -1058,7 +1058,9 @@ async function handleTrendsCallback(data: string, chatId: number, threadId?: num
     case 'props':
       text = `🎯 <b>Player Props Trends</b>\n\n`;
       text += trends
-        .filter(t => t.trend.toLowerCase().includes('prop') || t.trend.toLowerCase().includes('player'))
+        .filter(
+          t => t.trend.toLowerCase().includes('prop') || t.trend.toLowerCase().includes('player')
+        )
         .map(t => `• ${t.trend} (${(t.confidence * 100).toFixed(0)}%)`)
         .join('\n');
       break;

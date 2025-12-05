@@ -1,0 +1,18 @@
+{
+  "hierarchyId": "test-hierarchy",
+  "exchangeId": "test-exchange",
+  "version": "4.0.0",
+  "timestamp": "2025-12-04T10:39:55.922Z",
+  "dataHash": "3b39e91a",
+  "signature": "1432a5a2-c8f8-550c-9181-82c28f5adeb0",
+  "metadata": {
+    "totalNodes": 0,
+    "totalMarkets": 0,
+    "exportedAt": "2025-12-04T10:39:55.922Z",
+    "compressed": false
+  },
+  "data": {
+    "nodes": [],
+    "markets": []
+  }
+}

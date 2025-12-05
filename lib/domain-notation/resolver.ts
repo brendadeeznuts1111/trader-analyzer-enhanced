@@ -11,7 +11,7 @@ export class DefaultBlueprintResolver implements BlueprintResolver {
   async resolve(blueprintId: string, version?: string): Promise<Blueprint | null> {
     // Parse blueprint reference with version (e.g., "BP-UI-001@1.0.0")
     const [id, ver] = blueprintId.split('@');
-    
+
     if (ver) {
       return this.getVersionedBlueprint(id, ver);
     }
@@ -27,14 +27,14 @@ export class DefaultBlueprintResolver implements BlueprintResolver {
   private getVersionedBlueprint(id: string, version: string): Blueprint | null {
     const versions = this.versionMap.get(id);
     if (!versions) return null;
-    
+
     return versions.get(version) || null;
   }
 
   private getLatestBlueprint(id: string): Blueprint | null {
     const versions = this.versionMap.get(id);
     if (!versions) return null;
-    
+
     // Find highest version using semantic version comparison
     let latest: Blueprint | null = null;
     for (const blueprint of versions.values()) {
@@ -48,11 +48,11 @@ export class DefaultBlueprintResolver implements BlueprintResolver {
   private compareVersions(v1: string, v2: string): number {
     const parts1 = v1.split('.').map(Number);
     const parts2 = v2.split('.').map(Number);
-    
+
     for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
       const p1 = parts1[i] || 0;
       const p2 = parts2[i] || 0;
-      
+
       if (p1 > p2) return 1;
       if (p1 < p2) return -1;
     }
@@ -97,7 +97,7 @@ export class DefaultBlueprintResolver implements BlueprintResolver {
         inheritedProperties[key] = {
           ...parentProp,
           ...childProp,
-          value: childProp.value || parentProp.value
+          value: childProp.value || parentProp.value,
         };
       } else {
         // Use child property as-is
@@ -108,7 +108,7 @@ export class DefaultBlueprintResolver implements BlueprintResolver {
     return {
       ...child,
       properties: inheritedProperties,
-      root: child.root || parent.root
+      root: child.root || parent.root,
     };
   }
 
@@ -118,7 +118,7 @@ export class DefaultBlueprintResolver implements BlueprintResolver {
     }
 
     this.blueprints.set(`${blueprint.id}@${blueprint.version}`, blueprint);
-    
+
     if (!this.versionMap.has(blueprint.id)) {
       this.versionMap.set(blueprint.id, new Map());
     }
@@ -154,7 +154,11 @@ export class MemoizedPropertyResolver implements PropertyResolver {
 
   constructor(private blueprintResolver: BlueprintResolver) {}
 
-  private getCacheKey(properties: Record<string, PropertyDefinition>, blueprint?: Blueprint, root?: string): string {
+  private getCacheKey(
+    properties: Record<string, PropertyDefinition>,
+    blueprint?: Blueprint,
+    root?: string
+  ): string {
     return `${JSON.stringify(properties)}:${blueprint?.id || ''}:${blueprint?.version || ''}:${root || ''}`;
   }
 
@@ -165,12 +169,12 @@ export class MemoizedPropertyResolver implements PropertyResolver {
   ): Promise<Record<string, any>> {
     const start = performance.now();
     const cacheKey = this.getCacheKey(properties, blueprint, root);
-    
+
     // Check cache first
     const cached = this.cache.get(cacheKey);
     const cachedTime = this.cacheTTL.get(cacheKey);
-    
-    if (cached && cachedTime && (Date.now() - cachedTime) < this.maxCacheAge) {
+
+    if (cached && cachedTime && Date.now() - cachedTime < this.maxCacheAge) {
       return cached;
     }
 
@@ -200,7 +204,7 @@ export class MemoizedPropertyResolver implements PropertyResolver {
   getCacheStats(): { size: number; hitRate: number } {
     return {
       size: this.cache.size,
-      hitRate: 0 // Would track in production
+      hitRate: 0, // Would track in production
     };
   }
 
@@ -230,7 +234,7 @@ export class MemoizedPropertyResolver implements PropertyResolver {
     if (prop.chain) {
       const chainIds = prop.chain.replace(/[\[\]]/g, '').split(',');
       const chainedValues = [];
-      
+
       for (const chainId of chainIds) {
         const chainBlueprint = await this.blueprintResolver.resolve(chainId.trim());
         if (chainBlueprint) {
@@ -240,7 +244,7 @@ export class MemoizedPropertyResolver implements PropertyResolver {
 
       resolvedValue = {
         value: resolvedValue,
-        chain: chainedValues
+        chain: chainedValues,
       };
     }
 
@@ -279,7 +283,7 @@ export class MemoizedPropertyResolver implements PropertyResolver {
       if (property.constraints.includes('required') && (value === null || value === undefined)) {
         return false;
       }
-      
+
       if (property.constraints.includes('positive') && typeof value === 'number' && value <= 0) {
         return false;
       }

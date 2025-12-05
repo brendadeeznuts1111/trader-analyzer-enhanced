@@ -443,6 +443,101 @@
     }
     .fab:active { transform: scale(0.9); }
 
+    /* Toggle Button */
+    .toggle-btn {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      border-radius: 14px;
+      border: none;
+      background: #4b5563;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-btn[data-active="true"] {
+      background: var(--success);
+    }
+    .toggle-knob {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    .toggle-btn[data-active="true"] .toggle-knob {
+      transform: translateX(20px);
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal.hidden {
+      display: none;
+    }
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+    }
+    .modal-content {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      background: var(--secondary-bg);
+      border-radius: 24px 24px 0 0;
+      padding: 24px;
+      padding-bottom: 40px;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .modal-handle {
+      width: 48px;
+      height: 4px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 2px;
+      margin: 0 auto 20px;
+    }
+
+    /* Strategy Item */
+    .strategy-item {
+      padding: 16px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .strategy-item:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    .strategy-item.active {
+      border-color: var(--button-color);
+      background: rgba(59, 130, 246, 0.2);
+    }
+    .strategy-risk {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .strategy-risk.low { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+    .strategy-risk.medium { background: rgba(234, 179, 8, 0.2); color: var(--warning); }
+    .strategy-risk.high { background: rgba(239, 68, 68, 0.2); color: var(--error); }
+
     .hidden { display: none !important; }
 
     /* Trade List */
@@ -663,41 +758,149 @@
 
     <!-- Bot Tab -->
     <div id="tab-bot" class="tab-content hidden">
-      <div class="card">
-        <div class="card-header">
-          <h2>Trading Bot</h2>
-          <span id="bot-status" class="status-badge status-offline">Stopped</span>
+      <!-- Auth Banner -->
+      <div id="auth-banner" class="card hidden" style="background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.3);">
+        <p style="font-size: 13px; color: var(--warning); display: flex; align-items: center; gap: 8px;">
+          <span>⚠️</span>
+          <span id="auth-message">Verifying Telegram authentication...</span>
+        </p>
+      </div>
+
+      <!-- Main Bot Control Card - Enhanced -->
+      <div class="card" style="background: linear-gradient(135deg, rgba(42,42,42,0.9) 0%, rgba(30,30,30,0.95) 100%); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; position: relative; overflow: hidden;">
+        <div id="bot-pulse" class="hidden" style="position: absolute; inset: 0; overflow: hidden; pointer-events: none;">
+          <div style="position: absolute; top: -50%; left: -50%; width: 100%; height: 100%; background: radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 70%); border-radius: 50%; animation: pulse 2s infinite;"></div>
         </div>
-        <div style="margin-top: 8px;">
-          <div id="bot-uptime-row" class="flex-between hidden" style="font-size: 13px; opacity: 0.6; margin-bottom: 12px;">
-            <span>Running for</span>
-            <span id="bot-uptime" style="font-weight: 600;">0h 0m</span>
+        
+        <div style="position: relative; z-index: 1;">
+          <div class="card-header">
+            <h2 style="font-size: 18px;">Trading Bot</h2>
+            <div id="bot-status" class="status-badge status-offline" style="display: flex; align-items: center; gap: 6px;">
+              <span id="bot-status-dot" style="width: 8px; height: 8px; border-radius: 50%; background: currentColor;"></span>
+              <span id="bot-status-text">STOPPED</span>
+            </div>
           </div>
+
+          <!-- Strategy Selector -->
+          <div style="margin: 16px 0;">
+            <label style="font-size: 12px; opacity: 0.7; display: block; margin-bottom: 8px;">Active Strategy</label>
+            <button id="strategy-selector" onclick="showStrategyModal()" style="width: 100%; padding: 14px 16px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: var(--text-color); text-align: left; cursor: pointer; transition: all 0.2s;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div id="strategy-name" style="font-weight: 600;">Momentum</div>
+                  <div id="strategy-desc" style="font-size: 12px; opacity: 0.6;">Follow market trends</div>
+                </div>
+                <span style="font-size: 18px;">→</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Live Stats Grid -->
+          <div id="bot-live-stats" class="grid hidden" style="margin-bottom: 16px;">
+            <div class="card stat" style="padding: 12px; background: rgba(0,0,0,0.3);">
+              <div class="stat-label">Session P&L</div>
+              <div class="stat-value small" id="bot-session-pnl" style="color: var(--success);">$0.00</div>
+            </div>
+            <div class="card stat" style="padding: 12px; background: rgba(0,0,0,0.3);">
+              <div class="stat-label">Session Trades</div>
+              <div class="stat-value small" id="bot-session-trades">0</div>
+            </div>
+            <div class="card stat" style="padding: 12px; background: rgba(0,0,0,0.3);">
+              <div class="stat-label">Active Positions</div>
+              <div class="stat-value small" id="bot-active-positions">0</div>
+            </div>
+            <div class="card stat" style="padding: 12px; background: rgba(0,0,0,0.3);">
+              <div class="stat-label">Uptime</div>
+              <div class="stat-value small" id="bot-uptime">0h 0m</div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
           <div class="btn-group">
-            <button id="btn-start" class="btn btn-start">Start</button>
-            <button id="btn-stop" class="btn btn-stop" disabled>Stop</button>
+            <button id="btn-start" class="btn btn-start" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4); font-size: 15px; padding: 16px;">
+              <span id="start-text">▶ START</span>
+              <span id="start-loading" class="hidden" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <span style="width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+                Starting...
+              </span>
+            </button>
+            <button id="btn-stop" class="btn btn-stop" disabled style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); font-size: 15px; padding: 16px;">
+              <span id="stop-text">■ STOP</span>
+              <span id="stop-loading" class="hidden" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <span style="width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+                Stopping...
+              </span>
+            </button>
           </div>
         </div>
       </div>
 
-      <div class="card">
+      <!-- Quick Settings Card -->
+      <div class="card" style="border-radius: 16px;">
         <div class="card-header">
-          <h2>Bot Stats</h2>
+          <h2 style="display: flex; align-items: center; gap: 8px;">⚡ Quick Settings</h2>
         </div>
-        <div style="font-size: 13px; opacity: 0.6;">
-          <div class="flex-between" style="padding: 8px 0; border-bottom: 1px solid var(--border-color);">
-            <span>Session Trades</span>
-            <span id="bot-session-trades">0</span>
+        <div style="margin-top: 8px;">
+          <!-- Auto Compound Toggle -->
+          <div class="setting-row">
+            <div>
+              <span class="setting-label">Auto Compound</span>
+              <p style="font-size: 11px; opacity: 0.5; margin-top: 2px;">Reinvest profits automatically</p>
+            </div>
+            <button id="toggle-compound" onclick="toggleSetting('compound')" class="toggle-btn" data-active="false">
+              <span class="toggle-knob"></span>
+            </button>
           </div>
-          <div class="flex-between" style="padding: 8px 0; border-bottom: 1px solid var(--border-color);">
-            <span>Session P&L</span>
-            <span id="bot-session-pnl">$0</span>
+          
+          <!-- Trailing Stop Toggle -->
+          <div class="setting-row">
+            <div>
+              <span class="setting-label">Trailing Stop</span>
+              <p style="font-size: 11px; opacity: 0.5; margin-top: 2px;">Dynamic stop-loss protection</p>
+            </div>
+            <button id="toggle-trailing" onclick="toggleSetting('trailing')" class="toggle-btn" data-active="false">
+              <span class="toggle-knob"></span>
+            </button>
           </div>
-          <div class="flex-between" style="padding: 8px 0;">
-            <span>Last Trade</span>
-            <span id="bot-last-trade">-</span>
+
+          <!-- Risk Level -->
+          <div style="padding: 14px 0;">
+            <div class="flex-between" style="margin-bottom: 10px;">
+              <span class="setting-label">Risk Level</span>
+              <span id="risk-label" style="font-size: 13px; font-weight: 700; color: var(--warning);">Moderate</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button onclick="setRiskLevel('conservative')" class="risk-btn" data-level="conservative" style="flex: 1; padding: 10px; border-radius: 10px; border: none; cursor: pointer; font-size: 16px; background: rgba(255,255,255,0.1); transition: all 0.2s;">🛡️</button>
+              <button onclick="setRiskLevel('moderate')" class="risk-btn active" data-level="moderate" style="flex: 1; padding: 10px; border-radius: 10px; border: none; cursor: pointer; font-size: 16px; background: var(--warning); transition: all 0.2s;">⚖️</button>
+              <button onclick="setRiskLevel('aggressive')" class="risk-btn" data-level="aggressive" style="flex: 1; padding: 10px; border-radius: 10px; border: none; cursor: pointer; font-size: 16px; background: rgba(255,255,255,0.1); transition: all 0.2s;">🔥</button>
+            </div>
           </div>
         </div>
+      </div>
+
+      <!-- User Info Card -->
+      <div id="user-card" class="card hidden" style="border-radius: 16px;">
+        <div class="card-header">
+          <h2 style="display: flex; align-items: center; gap: 8px;">👤 Signed In</h2>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; margin-top: 12px;">
+          <div id="user-avatar" style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700;">?</div>
+          <div style="flex: 1;">
+            <div id="user-name" style="font-weight: 600;">Loading...</div>
+            <div id="user-username" style="font-size: 13px; opacity: 0.6;"></div>
+          </div>
+          <span style="padding: 4px 10px; border-radius: 20px; background: rgba(34, 197, 94, 0.2); color: var(--success); font-size: 11px; font-weight: 700;">✓ Verified</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Strategy Modal -->
+    <div id="strategy-modal" class="modal hidden">
+      <div class="modal-backdrop" onclick="hideStrategyModal()"></div>
+      <div class="modal-content">
+        <div class="modal-handle"></div>
+        <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">Select Strategy</h3>
+        <div id="strategy-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
       </div>
     </div>
 
@@ -1552,23 +1755,42 @@
 
     function updateBotUI(data) {
       const statusEl = document.getElementById('bot-status');
+      const statusText = document.getElementById('bot-status-text');
+      const statusDot = document.getElementById('bot-status-dot');
       const startBtn = document.getElementById('btn-start');
       const stopBtn = document.getElementById('btn-stop');
-      const uptimeRow = document.getElementById('bot-uptime-row');
+      const liveStats = document.getElementById('bot-live-stats');
+      const botPulse = document.getElementById('bot-pulse');
 
       if (data.running) {
-        statusEl.textContent = 'Running';
         statusEl.className = 'status-badge status-online';
+        statusText.textContent = 'ACTIVE';
+        statusDot.style.animation = 'pulse 2s infinite';
         startBtn.disabled = true;
         stopBtn.disabled = false;
-        uptimeRow.classList.remove('hidden');
+        stopBtn.style.boxShadow = '0 4px 20px rgba(239, 68, 68, 0.4)';
+        startBtn.style.boxShadow = 'none';
+        liveStats.classList.remove('hidden');
+        botPulse.classList.remove('hidden');
+        
+        // Update live stats
         document.getElementById('bot-uptime').textContent = formatUptime(data.uptime || 0);
+        const pnl = data.sessionPnL || 0;
+        const pnlEl = document.getElementById('bot-session-pnl');
+        pnlEl.textContent = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`;
+        pnlEl.style.color = pnl >= 0 ? 'var(--success)' : 'var(--error)';
+        document.getElementById('bot-session-trades').textContent = data.sessionTrades || 0;
+        document.getElementById('bot-active-positions').textContent = data.activePositions || 0;
       } else {
-        statusEl.textContent = 'Stopped';
         statusEl.className = 'status-badge status-offline';
+        statusText.textContent = 'STOPPED';
+        statusDot.style.animation = 'none';
         startBtn.disabled = false;
         stopBtn.disabled = true;
-        uptimeRow.classList.add('hidden');
+        startBtn.style.boxShadow = '0 4px 20px rgba(34, 197, 94, 0.4)';
+        stopBtn.style.boxShadow = 'none';
+        liveStats.classList.add('hidden');
+        botPulse.classList.add('hidden');
       }
     }
 
@@ -1585,6 +1807,158 @@
       if (!show && currentTab === 'dashboard') {
         document.getElementById('tab-dashboard').classList.remove('hidden');
       }
+    }
+
+    // ==================== STRATEGY MANAGEMENT ====================
+    const STRATEGIES = [
+      { id: 'scalping', name: 'Scalping', description: 'Quick trades, small profits', risk: 'high' },
+      { id: 'momentum', name: 'Momentum', description: 'Follow market trends', risk: 'medium' },
+      { id: 'arbitrage', name: 'Arbitrage', description: 'Cross-market opportunities', risk: 'low' },
+      { id: 'grid', name: 'Grid Trading', description: 'Range-bound strategy', risk: 'medium' },
+      { id: 'dca', name: 'DCA Bot', description: 'Dollar cost averaging', risk: 'low' },
+    ];
+
+    let selectedStrategy = 'momentum';
+    let botSettings = {
+      autoCompound: false,
+      trailingStop: false,
+      riskLevel: 'moderate'
+    };
+
+    function showStrategyModal() {
+      haptic('light');
+      const modal = document.getElementById('strategy-modal');
+      const list = document.getElementById('strategy-list');
+      
+      list.innerHTML = STRATEGIES.map(s => `
+        <div class="strategy-item ${s.id === selectedStrategy ? 'active' : ''}" onclick="selectStrategy('${s.id}')">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: 600;">${s.name}</div>
+              <div style="font-size: 12px; opacity: 0.6;">${s.description}</div>
+            </div>
+            <span class="strategy-risk ${s.risk}">${s.risk.toUpperCase()}</span>
+          </div>
+        </div>
+      `).join('');
+      
+      modal.classList.remove('hidden');
+    }
+
+    function hideStrategyModal() {
+      document.getElementById('strategy-modal').classList.add('hidden');
+    }
+
+    function selectStrategy(strategyId) {
+      selectedStrategy = strategyId;
+      const strategy = STRATEGIES.find(s => s.id === strategyId);
+      if (strategy) {
+        document.getElementById('strategy-name').textContent = strategy.name;
+        document.getElementById('strategy-desc').textContent = strategy.description;
+        haptic('success');
+        showToast(`Strategy: ${strategy.name}`, 'success');
+      }
+      hideStrategyModal();
+    }
+
+    function toggleSetting(setting) {
+      haptic('selection');
+      const btn = document.getElementById(`toggle-${setting}`);
+      const isActive = btn.dataset.active === 'true';
+      btn.dataset.active = (!isActive).toString();
+      
+      if (setting === 'compound') {
+        botSettings.autoCompound = !isActive;
+      } else if (setting === 'trailing') {
+        botSettings.trailingStop = !isActive;
+      }
+    }
+
+    function setRiskLevel(level) {
+      haptic('selection');
+      botSettings.riskLevel = level;
+      
+      // Update UI
+      document.querySelectorAll('.risk-btn').forEach(btn => {
+        const btnLevel = btn.dataset.level;
+        if (btnLevel === level) {
+          btn.style.background = level === 'conservative' ? 'var(--success)' : 
+                                  level === 'moderate' ? 'var(--warning)' : 'var(--error)';
+          btn.classList.add('active');
+        } else {
+          btn.style.background = 'rgba(255,255,255,0.1)';
+          btn.classList.remove('active');
+        }
+      });
+      
+      const label = document.getElementById('risk-label');
+      label.textContent = level.charAt(0).toUpperCase() + level.slice(1);
+      label.style.color = level === 'conservative' ? 'var(--success)' : 
+                          level === 'moderate' ? 'var(--warning)' : 'var(--error)';
+    }
+
+    // ==================== TELEGRAM AUTHENTICATION ====================
+    async function authenticateWithTelegram() {
+      if (!tg?.initData || !tg?.initDataUnsafe?.user) {
+        document.getElementById('auth-banner').classList.remove('hidden');
+        document.getElementById('auth-message').textContent = 'Not running in Telegram';
+        return;
+      }
+
+      try {
+        const res = await fetchWithTimeout(`${getApiUrl()}/api/telegram?action=verify_webapp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            initData: tg.initData,
+            user: tg.initDataUnsafe.user,
+            authDate: tg.initDataUnsafe.auth_date,
+            hash: tg.initDataUnsafe.hash
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.verified) {
+            // Show user card
+            const user = tg.initDataUnsafe.user;
+            document.getElementById('user-card').classList.remove('hidden');
+            document.getElementById('user-avatar').textContent = user.first_name.charAt(0);
+            document.getElementById('user-name').textContent = `${user.first_name} ${user.last_name || ''}`;
+            document.getElementById('user-username').textContent = user.username ? `@${user.username}` : '';
+            
+            // Load saved settings if available
+            if (data.settings) {
+              Object.assign(botSettings, data.settings);
+            }
+          }
+        } else {
+          // Still show user info even if verification fails
+          const user = tg.initDataUnsafe.user;
+          document.getElementById('user-card').classList.remove('hidden');
+          document.getElementById('user-avatar').textContent = user.first_name.charAt(0);
+          document.getElementById('user-name').textContent = `${user.first_name} ${user.last_name || ''}`;
+          document.getElementById('user-username').textContent = user.username ? `@${user.username}` : '';
+          
+          document.getElementById('auth-banner').classList.remove('hidden');
+          document.getElementById('auth-message').textContent = 'Running in limited mode';
+        }
+      } catch (e) {
+        console.error('Auth failed:', e);
+        // Show user info anyway
+        if (tg?.initDataUnsafe?.user) {
+          const user = tg.initDataUnsafe.user;
+          document.getElementById('user-card').classList.remove('hidden');
+          document.getElementById('user-avatar').textContent = user.first_name.charAt(0);
+          document.getElementById('user-name').textContent = `${user.first_name} ${user.last_name || ''}`;
+          document.getElementById('user-username').textContent = user.username ? `@${user.username}` : '';
+        }
+      }
+    }
+
+    // Call auth on init
+    if (tg) {
+      authenticateWithTelegram();
     }
   </script>
 </body>
