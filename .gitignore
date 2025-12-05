@@ -82,3 +82,10 @@ next-env.d.ts
 data/*.db
 data/*.db-shm
 data/*.db-wal
+
+# ============ Bun ============
+.bun/install/cache/
+.bun/install/
+*.bun/install/cache/
+HOME/.bun/install/cache/
+Users/nolarose/.bun/install/cache/
