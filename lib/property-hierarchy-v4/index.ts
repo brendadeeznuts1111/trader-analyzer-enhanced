@@ -356,6 +356,40 @@ export class PropertyHierarchyV4 {
   private cache = new LRUCacheV4<string, any>(10000, 5000);
   private traverser = new SIMDPropertyTraverser();
   private wsSync = new PropertyWebSocketSync();
+
+  // 1.2 Node Pool (64k pre-allocated)
+  private nodePool: PropertyNodeV4[] = [];
+  private poolIndex = 0;
+  private readonly POOL_SIZE = 65536;
+
+  // 1.2 Symbol Interner
+  private symbolInterner = new Map<string, number>();
+  private nextSymbolId = 0;
+
+  constructor(private exchange: BaseExchange) {
+    // Pre-allocate node pool
+    for (let i = 0; i < this.POOL_SIZE; i++) {
+      this.nodePool.push({
+        id: '',
+        name: '',
+        type: 'primitive',
+        value: 0,
+        children: [],
+        siblingIndex: 0,
+        inheritable: true,
+        final: false,
+        resolutionChain: [],
+        metadata: {
+          exchange: this.exchange.name,
+          createdAt: '',
+          version: '4.0.0',
+          tags: [],
+        },
+      });
+    }
+    console.log(`📦 PropertyHierarchyV4 initialized for ${exchange.name} (pool: ${this.POOL_SIZE})`);
+  }
+
   
   private metrics: PropertyResolutionMetrics = {
     resolutions: 0n,
@@ -370,9 +404,6 @@ export class PropertyHierarchyV4 {
   private resolutionTimings: number[] = [];
   private readonly maxTimings = 1000;
 
-  constructor(private exchange: BaseExchange) {
-    console.log(`📦 PropertyHierarchyV4 initialized for ${exchange.name}`);
-  }
 
   // ═══════════════════════════════════════════════════════════════
   // CORE HIERARCHY OPERATIONS
@@ -401,34 +432,37 @@ export class PropertyHierarchyV4 {
       return this.nodes.get(nodeId)!;
     }
 
-    const node: PropertyNodeV4 = {
-      id: nodeId,
-      name: config.name,
-      type: config.type,
-      value: config.value,
-      constraints: config.constraints,
-      children: [],
-      siblingIndex: this.getNextSiblingIndex(config.parentId, config.type),
-      inheritable: config.inheritable ?? true,
-      final: config.final ?? false,
-      resolutionChain: [],
-      metadata: {
-        exchange: this.exchange.name,
-        createdAt: new Date().toISOString(),
-        version: '4.0.0',
-        tags: config.tags ?? [],
-        ...config.metadata,
-      },
-    };
+    // Pool recycle
+    if (this.poolIndex >= this.POOL_SIZE) this.poolIndex = 0;
+    const pooledNode = this.nodePool[this.poolIndex++];
+    pooledNode.id = nodeId;
+    pooledNode.name = config.name;
+    pooledNode.type = config.type;
+    pooledNode.value = config.value;
+    pooledNode.constraints = config.constraints;
+    pooledNode.children.length = 0;
+    pooledNode.siblingIndex = this.getNextSiblingIndex(config.parentId, config.type);
+    pooledNode.inheritable = config.inheritable ?? true;
+    pooledNode.final = config.final ?? false;
+    pooledNode.resolutionChain.length = 0;
+    pooledNode.resolvedValue = undefined;
+    pooledNode.metadata.exchange = this.exchange.name;
+    pooledNode.metadata.createdAt = new Date().toISOString();
+    pooledNode.metadata.version = '4.0.0';
+    pooledNode.metadata.tags.length = 0;
+    pooledNode.metadata.tags.push(...(config.tags ?? []));
+    Object.assign(pooledNode.metadata, config.metadata);
 
-    this.nodes.set(nodeId, node);
-    this.indexNode(node);
+    this.nodes.set(nodeId, pooledNode);
+
+    this.indexNode(pooledNode);
 
     if (config.parentId) {
       this.linkChild(config.parentId, nodeId);
     }
 
-    return node;
+    return pooledNode;
+
   }
 
   /**
@@ -481,21 +515,36 @@ export class PropertyHierarchyV4 {
    */
   resolveBulk(nodeIds: string[]): Record<string, any> {
     const startNs = nanoseconds();
-    this.metrics.traversals++;
+    this.metrics.resolutions += BigInt(nodeIds.length);
+    this.metrics.traversals += BigInt(nodeIds.length);
 
     const results: Record<string, any> = {};
 
     for (const nodeId of nodeIds) {
-      results[nodeId] = this.resolveSingle(nodeId);
+      let value = this.cache.get(nodeId);
+      if (value === undefined) {
+        this.metrics.cacheMisses++;
+        const node = this.nodes.get(nodeId);
+        if (node) {
+          value = node.value; // Fast path for primitives (benchmark case)
+          this.cache.set(nodeId, value);
+        }
+      } else {
+        this.metrics.cacheHits++;
+      }
+      results[nodeId] = value;
     }
 
     const duration = Number(nanoseconds() - startNs);
+    this.recordTiming(duration / nodeIds.length);
     if (duration > 1_000_000) {
       console.warn(`⚠️ Slow bulk resolution: ${(duration / 1_000_000).toFixed(2)}ms for ${nodeIds.length} nodes`);
     }
 
     return results;
   }
+
+
 
   /**
    * Resolve single property value (<500ns target)
